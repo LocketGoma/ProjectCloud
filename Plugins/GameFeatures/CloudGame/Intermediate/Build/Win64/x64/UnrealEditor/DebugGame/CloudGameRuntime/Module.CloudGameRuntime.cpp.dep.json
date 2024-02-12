@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\programing\\unreal\\projectcloud\\plugins\\gamefeatures\\cloudgame\\intermediate\\build\\win64\\x64\\unrealeditor\\debuggame\\cloudgameruntime\\module.cloudgameruntime.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\programing\\ue5_git\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.nonoptimized.cpp20.h.pch",
+        "Includes": [
+            "f:\\programing\\unreal\\projectcloud\\plugins\\gamefeatures\\cloudgame\\intermediate\\build\\win64\\x64\\unrealeditor\\debuggame\\cloudgameruntime\\definitions.cloudgameruntime.h",
+            "f:\\programing\\unreal\\projectcloud\\plugins\\gamefeatures\\cloudgame\\source\\cloudgameruntime\\private\\cloudgameruntimemodule.cpp",
+            "f:\\programing\\unreal\\projectcloud\\plugins\\gamefeatures\\cloudgame\\source\\cloudgameruntime\\public\\cloudgameruntimemodule.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

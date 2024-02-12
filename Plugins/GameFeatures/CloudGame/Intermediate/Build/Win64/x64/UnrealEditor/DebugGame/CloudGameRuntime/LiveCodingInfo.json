@@ -1,0 +1,8 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.CloudGameRuntime.cpp.obj": [
+			"CloudGameRuntimeModule.cpp.obj"
+		]
+	}
+}
