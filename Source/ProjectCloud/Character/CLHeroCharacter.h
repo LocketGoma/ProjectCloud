@@ -9,6 +9,15 @@
 /**
  * 
  */
+//컨트롤 모드 처리용 enum
+UENUM()
+enum class EControlMode : uint8
+{
+	Keyboard,
+	Gamepad,
+	Touch			//or Mouse
+};
+
 UCLASS()
 class PROJECTCLOUD_API ACLHeroCharacter : public ACLBaseCharacter
 {
