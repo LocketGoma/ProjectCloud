@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/Controller.h"
 #include "Components/InputComponent.h"
+#include "ProjectCloud/Components/CLAttackerNodeComponent.h"
 
 
 ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
@@ -28,6 +29,22 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
+}
+
+void ACLHeroCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (AttackerComponentBP)
+	{
+		AttackerComponent = Cast<UCAttackerNodeComponent>(AddComponentByClass(AttackerComponentBP, true, FTransform::Identity, false));
+	}
+
+}
+
+void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
 }
 
 void InitializeDefaultPawnInputBindings()
@@ -66,10 +83,10 @@ void InitializeDefaultPawnInputBindings()
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Gamepad_RightX, 1.f));
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Left, -1.f));
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Right, 1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_Turn", EKeys::MouseX, 1.f));
 
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_LookUpRate", EKeys::Gamepad_RightY, 1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_LookUp", EKeys::MouseY, -1.f));
+		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_Turn", EKeys::MouseX, 1.f));
+		//UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_LookUp", EKeys::MouseY, -1.f));
 	}
 }
 
@@ -86,15 +103,15 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveForward", this, &ACLHeroCharacter::MoveForward);
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveRight", this, &ACLHeroCharacter::MoveRight);
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveUp", this, &ACLHeroCharacter::MoveUp_World);
-			PlayerInputComponent->BindAxis("DefaultPawn_Turn", this, &ACLHeroCharacter::AddControllerYawInput);
 			PlayerInputComponent->BindAxis("DefaultPawn_TurnRate", this, &ACLHeroCharacter::TurnAtRate);
+			PlayerInputComponent->BindAxis("DefaultPawn_Turn", this, &ACLHeroCharacter::AddControllerYawInput);
 		}
 
-		if (bFreeCamera)
-		{
-			PlayerInputComponent->BindAxis("DefaultPawn_LookUp", this, &ACLHeroCharacter::AddControllerPitchInput);
-			PlayerInputComponent->BindAxis("DefaultPawn_LookUpRate", this, &ACLHeroCharacter::LookUpAtRate);
-		}
+		//if (bFreeCamera)
+		//{
+		//	PlayerInputComponent->BindAxis("DefaultPawn_LookUp", this, &ACLHeroCharacter::AddControllerPitchInput);
+		//	PlayerInputComponent->BindAxis("DefaultPawn_LookUpRate", this, &ACLHeroCharacter::LookUpAtRate);
+		//}
 	}
 }
 
@@ -150,4 +167,12 @@ void ACLHeroCharacter::TurnAtRate(float Rate)
 void ACLHeroCharacter::LookUpAtRate(float Rate)
 {
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds() * CustomTimeDilation);
+}
+
+void ACLHeroCharacter::RotateAttackPoint(float Val)
+{	
+	if (AttackerComponent)
+	{
+		//Do Something		
+	}
 }

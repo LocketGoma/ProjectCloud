@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,7 +9,7 @@
 /**
  * 
  */
-//ÄÁÆ®·Ñ ¸ğµå Ã³¸®¿ë enum
+//ì»¨íŠ¸ë¡¤ ëª¨ë“œ ì²˜ë¦¬ìš© enum
 UENUM()
 enum class EControlMode : uint8
 {
@@ -18,6 +18,8 @@ enum class EControlMode : uint8
 	Touch			//or Mouse
 };
 
+class UCAttackerNodeComponent;
+
 UCLASS()
 class PROJECTCLOUD_API ACLHeroCharacter : public ACLBaseCharacter
 {
@@ -25,6 +27,12 @@ class PROJECTCLOUD_API ACLHeroCharacter : public ACLBaseCharacter
 
 public:
 	ACLHeroCharacter(const FObjectInitializer& ObjectInitializer);
+
+
+	//--Actor Override
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	//--End Actor Override
 
 	// Begin Pawn overrides
 	virtual void SetupPlayerInputComponent(UInputComponent* InInputComponent) override;
@@ -65,6 +73,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void LookUpAtRate(float Rate);
 
+private:	
+	void RotateAttackPoint(float Val);
+
+public:
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character")
 	float BaseTurnRate;
@@ -80,15 +93,21 @@ public:
 	uint32 bAddDefaultMovementBindings : 1;
 	//--End of Copy
 
+protected:
+	//nothappa : ê³µê²© ì§€ì  ì»´í¬ë„ŒíŠ¸ BP ì›ë³¸
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
+	TSubclassOf<UCAttackerNodeComponent> AttackerComponentBP;
+
 
 private:
-	//nothappa : Å°º¸µå ¿òÁ÷ÀÓ È°¼ºÈ­¿©ºÎ (±âº» - ºñÈ°¼º)
+	//nothappa : í‚¤ë³´ë“œ ì›€ì§ì„ í™œì„±í™”ì—¬ë¶€ (ê¸°ë³¸ - ë¹„í™œì„±)
 	UPROPERTY(EditDefaultsOnly, Category = "Debug", meta=(AllowPrivateAccess = true))
 	bool bDebugMove = false;
 
-	//nothappa : ÀÚÀ¯ Ä«¸Ş¶ó
+	//nothappa : ììœ  ì¹´ë©”ë¼
 	UPROPERTY(EditDefaultsOnly, Category = "Debug", meta=(AllowPrivateAccess = true))
 	bool bFreeCamera = false;
 
-	
+	UPROPERTY(VisibleAnywhere, Category = "Character")
+	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
 };
