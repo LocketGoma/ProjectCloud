@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -94,10 +94,8 @@ public:
 	//--End of Copy
 
 protected:
-	//nothappa : 공격 지점 컴포넌트 BP 원본
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
-	TSubclassOf<UCAttackerNodeComponent> AttackerComponentBP;
-
+	UPROPERTY(VisibleAnywhere, Category = "Character")
+	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
 
 private:
 	//nothappa : 키보드 움직임 활성화여부 (기본 - 비활성)
@@ -108,6 +106,4 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Debug", meta=(AllowPrivateAccess = true))
 	bool bFreeCamera = false;
 
-	UPROPERTY(VisibleAnywhere, Category = "Character")
-	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
 };

@@ -24,6 +24,9 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 
+	AttackerComponent = CreateDefaultSubobject<UCAttackerNodeComponent>(TEXT("AttackerNodeComponent"));	
+	AttackerComponent->SetupAttachment(RootComponent);
+
 	// This is the default pawn class, we want to have it be able to move out of the box.
 	bAddDefaultMovementBindings = true;
 
@@ -34,12 +37,6 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 void ACLHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (AttackerComponentBP)
-	{
-		AttackerComponent = Cast<UCAttackerNodeComponent>(AddComponentByClass(AttackerComponentBP, true, FTransform::Identity, false));
-	}
-
 }
 
 void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -103,8 +100,8 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveForward", this, &ACLHeroCharacter::MoveForward);
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveRight", this, &ACLHeroCharacter::MoveRight);
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveUp", this, &ACLHeroCharacter::MoveUp_World);
-			PlayerInputComponent->BindAxis("DefaultPawn_TurnRate", this, &ACLHeroCharacter::TurnAtRate);
-			PlayerInputComponent->BindAxis("DefaultPawn_Turn", this, &ACLHeroCharacter::AddControllerYawInput);
+			PlayerInputComponent->BindAxis("DefaultPawn_TurnRate", this, &ACLHeroCharacter::RotateAttackPoint);
+			PlayerInputComponent->BindAxis("DefaultPawn_Turn", this, &ACLHeroCharacter::RotateAttackPoint);
 		}
 
 		//if (bFreeCamera)
@@ -171,8 +168,8 @@ void ACLHeroCharacter::LookUpAtRate(float Rate)
 
 void ACLHeroCharacter::RotateAttackPoint(float Val)
 {	
-	if (AttackerComponent)
+	if (AttackerComponent && Val != 0.f)
 	{
-		//Do Something		
+		AttackerComponent->AddRotation(Val);
 	}
 }

@@ -16,7 +16,8 @@ UCAttackerNodeComponent::UCAttackerNodeComponent()
 	CorePoint->InitSphereRadius(10.0f);
 	AttackPoint->InitSphereRadius(10.0f);
 	CorePoint->SetCollisionProfileName(TEXT("None"));
-	AttackPoint->SetCollisionProfileName(TEXT("None"));	
+	AttackPoint->SetCollisionProfileName(TEXT("None"));
+
 }
 
 
@@ -25,16 +26,45 @@ void UCAttackerNodeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	CorePoint->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	AttackPoint->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+	AttackPoint->SetRelativeLocation(FVector(AttactPointLength, 0, 0));	
 }
 
-
-// Called every frame
-void UCAttackerNodeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UCAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (NewLenght >= 0.0f)
+	{
+		AttackPoint->SetRelativeLocation(AttackPoint->GetRelativeLocation() * (NewLenght / AttactPointLength));
 
-	// ...
+		K2_UpdateAttactPointLength(NewLenght);
+
+	}
 }
 
+void UCAttackerNodeComponent::UpdateRotation(float Val)
+{
+	SetRelativeRotation(FRotator(0, Val, 0));
+
+	K2_UpdateRotation(GetRelativeRotation());
+}
+
+void UCAttackerNodeComponent::AddRotation(float Val)
+{
+	AddRelativeRotation(FRotator(0, Val, 0));
+
+	K2_UpdateRotation(GetRelativeRotation());
+}
+
+const USceneComponent* UCAttackerNodeComponent::GetAttackPoint()
+{
+	//방향 뿜어줄때는 AttackPoint의 RightVector 뿜어주면 됨 <- 아니면 바꾸던지
+
+	return AttackPoint;
+}
+
+const FTransform UCAttackerNodeComponent::GetAttackPointTransform()
+{
+	return AttackPoint->GetComponentTransform();
+}

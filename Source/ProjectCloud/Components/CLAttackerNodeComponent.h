@@ -1,15 +1,15 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/SceneComponent.h"
 #include "CLAttackerNodeComponent.generated.h"
 
 class USphereComponent;
 
-UCLASS(Blueprintable, BlueprintType, meta=(BlueprintSpawnableComponent) )
-class PROJECTCLOUD_API UCAttackerNodeComponent : public UActorComponent
+UCLASS(BlueprintType, meta=(BlueprintSpawnableComponent))
+class PROJECTCLOUD_API UCAttackerNodeComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
@@ -22,9 +22,31 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintCallable)
+	void UpdateAttactPointLength(float NewLenght);
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateRotation(float Val);
+
+	UFUNCTION()
+	void AddRotation(float Val);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_UpdateRotation(FRotator newRotation);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_UpdateAttactPointLength(float NewLength);
+
+	UFUNCTION(BlueprintCallable)
+	const USceneComponent* GetAttackPoint();
+
+	UFUNCTION(BlueprintCallable)
+	const FTransform GetAttackPointTransform();
+
+public:
+	//중심에서 공격지점까지 거리
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(UIMin="0", UIMax="200", ClampMin = "0"))
+	float AttactPointLength = 0.f;
 
 private:
 	//공격 지점
