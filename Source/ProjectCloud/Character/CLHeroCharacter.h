@@ -59,19 +59,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void MoveUp_World(float Val);
 
-	/**
-	 * Called via input to turn at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void TurnAtRate(float Rate);
-
-	/**
-	* Called via input to look up at a given rate (or down if Rate is negative).
-	* @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	*/
-	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void LookUpAtRate(float Rate);
 
 private:	
 	void RotateAttackPoint(float Val);
@@ -100,12 +87,8 @@ protected:
 	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
 
 private:
-	//nothappa : 키보드 움직임 활성화여부 (기본 - 비활성)
+	//nothappa : 디버그 모드
 	UPROPERTY(EditDefaultsOnly, Category = "Debug", meta=(AllowPrivateAccess = true))
 	bool bDebugMove = false;
-
-	//nothappa : 자유 카메라
-	UPROPERTY(EditDefaultsOnly, Category = "Debug", meta=(AllowPrivateAccess = true))
-	bool bFreeCamera = false;
 
 };
