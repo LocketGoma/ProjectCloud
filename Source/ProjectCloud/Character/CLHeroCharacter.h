@@ -76,6 +76,8 @@ public:
 private:	
 	void RotateAttackPoint(float Val);
 
+	void TrackingMousePosition(FVector Position);
+
 public:
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */

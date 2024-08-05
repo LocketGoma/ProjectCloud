@@ -5,6 +5,7 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/Controller.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/InputComponent.h"
 #include "ProjectCloud/Components/CLAttackerNodeComponent.h"
 
@@ -77,12 +78,12 @@ void InitializeDefaultPawnInputBindings()
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveUp", EKeys::Gamepad_RightTriggerAxis, 0.5f));
 #endif
 
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Gamepad_RightX, 1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Left, -1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Right, 1.f));
+		//UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Gamepad_RightX, 1.f));
+		//UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Left, -1.f));
+		//UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_TurnRate", EKeys::Right, 1.f));
 
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_LookUpRate", EKeys::Gamepad_RightY, 1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_Turn", EKeys::MouseX, 1.f));
+		//UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_LookUpRate", EKeys::Gamepad_RightY, 1.f));
+		//UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_Turn", EKeys::MouseX, 1.f));
 		//UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_LookUp", EKeys::MouseY, -1.f));
 	}
 }
@@ -100,9 +101,11 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveForward", this, &ACLHeroCharacter::MoveForward);
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveRight", this, &ACLHeroCharacter::MoveRight);
 			PlayerInputComponent->BindAxis("DefaultPawn_MoveUp", this, &ACLHeroCharacter::MoveUp_World);
-			PlayerInputComponent->BindAxis("DefaultPawn_TurnRate", this, &ACLHeroCharacter::RotateAttackPoint);
-			PlayerInputComponent->BindAxis("DefaultPawn_Turn", this, &ACLHeroCharacter::RotateAttackPoint);
+			//PlayerInputComponent->BindAxis("DefaultPawn_TurnRate", this, &ACLHeroCharacter::RotateAttackPoint);
+			//PlayerInputComponent->BindAxis("DefaultPawn_Turn", this, &ACLHeroCharacter::RotateAttackPoint);
+	
 		}
+		PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
 
 		//if (bFreeCamera)
 		//{
@@ -172,4 +175,31 @@ void ACLHeroCharacter::RotateAttackPoint(float Val)
 	{
 		AttackerComponent->AddRotation(Val);
 	}
+}
+
+void ACLHeroCharacter::TrackingMousePosition(FVector Position)
+{
+	FHitResult HitResult;
+	FVector2D MousePosition = FVector2D(Position.X, Position.Y);
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (MousePosition.IsNearlyZero(0.1f))
+		{
+			PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
+		}
+
+		if (PlayerController->GetHitResultAtScreenPosition(MousePosition, ECC_Visibility, true, HitResult))
+		{
+			FVector TargetLocation = HitResult.Location;
+			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
+
+			if (AttackerComponent)
+			{
+				AttackerComponent->UpdateRotation(TargetRotation.Yaw);
+			}
+		}
+	}
+
+
+
 }
