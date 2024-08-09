@@ -1,10 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "CLAttackerNodeComponent.h"
 #include "Components/SphereComponent.h"
+#include "ProjectCloud/Weapon/CLWeapon.h"
 
 // Sets default values for this component's properties
-UCAttackerNodeComponent::UCAttackerNodeComponent()
+UCAttackerNodeComponent::UCAttackerNodeComponent()	
 {
+	bWeaponRelativeSpin = false;
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
@@ -30,6 +32,13 @@ void UCAttackerNodeComponent::BeginPlay()
 	AttackPoint->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
 
 	AttackPoint->SetRelativeLocation(FVector(AttactPointLength, 0, 0));	
+
+	if (WeaponActorClass)
+	{
+		WeaponActor = GetWorld()->SpawnActor<ACLWeapon>(WeaponActorClass);
+
+		WeaponActor->AttachToComponent(AttackPoint, FAttachmentTransformRules::KeepRelativeTransform);
+	}
 }
 
 void UCAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
@@ -46,6 +55,11 @@ void UCAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
 void UCAttackerNodeComponent::UpdateRotation(float Val)
 {
 	SetRelativeRotation(FRotator(0, Val, 0));
+	
+	if (!bWeaponRelativeSpin)
+	{
+		WeaponActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
+	}
 
 	K2_UpdateRotation(GetRelativeRotation());
 }
@@ -53,6 +67,11 @@ void UCAttackerNodeComponent::UpdateRotation(float Val)
 void UCAttackerNodeComponent::AddRotation(float Val)
 {
 	AddRelativeRotation(FRotator(0, Val, 0));
+
+	if (!bWeaponRelativeSpin)
+	{
+		WeaponActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
+	}
 
 	K2_UpdateRotation(GetRelativeRotation());
 }
@@ -68,3 +87,4 @@ const FTransform UCAttackerNodeComponent::GetAttackPointTransform()
 {
 	return AttackPoint->GetComponentTransform();
 }
+

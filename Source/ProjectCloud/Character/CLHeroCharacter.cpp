@@ -156,8 +156,8 @@ void ACLHeroCharacter::TrackingMousePosition(FVector Position)
 
 			if (bDebugMove)
 			{
-				UE_LOG(LogTemp, Log, TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw);
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw));
+				//UE_LOG(LogTemp, Log, TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw);
+				GEngine->AddOnScreenDebugMessage(-1, 0.016f, FColor::Blue, FString::Printf(TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw));
 			}
 		}
 	}

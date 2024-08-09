@@ -48,6 +48,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(UIMin="0", UIMax="200", ClampMin = "0"))
 	float AttactPointLength = 0.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class ACLWeapon> WeaponActorClass;
+
+	//무기가 바라보는 방향을 그대로 볼지
+	UPROPERTY(EditDefaultsOnly)
+	bool bWeaponRelativeSpin;
+
 private:
 	//공격 지점
 	UPROPERTY()
@@ -56,6 +63,9 @@ private:
 	//캐릭터 중심 지점
 	UPROPERTY()
 	USphereComponent* CorePoint;
+
+	UPROPERTY()
+	ACLWeapon* WeaponActor;
 
 		
 };
