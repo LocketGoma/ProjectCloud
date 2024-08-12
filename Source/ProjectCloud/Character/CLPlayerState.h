@@ -10,6 +10,7 @@
  * 
  */
 class UAbilitySystemComponent;
+class UGameplayAbilitySet;
 
 UCLASS()
 class PROJECTCLOUD_API ACLPlayerState : public APlayerState
@@ -19,6 +20,17 @@ class PROJECTCLOUD_API ACLPlayerState : public APlayerState
 	ACLPlayerState(const FObjectInitializer& ObjectInitializer);
 
 public:
+	UAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
+	void SetAbilitiesFromActionSet(UGameplayAbilitySet* AbilitySet);
+
+private:
+	void CopyAbilitesToPawn();
+
+private:
 	TObjectPtr<UAbilitySystemComponent> AbilityComponent;
+
+	bool bAbilitySet;
+
+
 	
 };

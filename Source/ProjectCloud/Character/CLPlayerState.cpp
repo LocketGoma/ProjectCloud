@@ -3,8 +3,32 @@
 
 #include "CLPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayAbilitySet.h"
+#include "CLHeroCharacter.h"
 
 ACLPlayerState::ACLPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	bAbilitySet = false;
+	AbilityComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	//AbilityComponent->SetIsReplicated(true);
+	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+}
+
+void ACLPlayerState::SetAbilitiesFromActionSet(UGameplayAbilitySet* AbilitySet)
+{
+	if (!ensure(AbilityComponent))
+	{
+		return;
+	}	
+
+	if (!bAbilitySet)
+	{
+		for (FGameplayAbilityBindInfo Ability : AbilitySet->Abilities)
+		{
+			AbilityComponent->GiveAbility(Ability.GameplayAbilityClass);
+		}
+		bAbilitySet = true;;
+	}
 }

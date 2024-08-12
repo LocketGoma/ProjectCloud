@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,6 +9,7 @@
 class UInputComponent;
 class UPawnMovementComponent;
 class USphereComponent;
+class UGameplayAbilitySet;
 
 UCLASS(config = Game, Blueprintable, BlueprintType)
 class PROJECTCLOUD_API ACLBaseCharacter : public APaperCharacter
@@ -24,4 +24,8 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 //--End Actor Override
+
+	//적용시킬 AbilitySet
+	UPROPERTY(EditDefaultsOnly, meta=(Category="Settings"))
+	TObjectPtr<UGameplayAbilitySet> AbilitySet;
 };

@@ -5,10 +5,19 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/PlayerController.h"
+#include "AbilitySystemComponent.h"
+#include "CLPlayerState.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/InputComponent.h"
 #include "ProjectCloud/Components/CLAttackerNodeComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "GameplayTagContainer.h"
+#include "NativeGameplayTags.h"
 
+UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Attack, "Input.Action.Attack");
 
 ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -38,6 +47,15 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 void ACLHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnRep_PlayerState();
+
+	if (GetPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* SubSystem =
+			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetPlayerController()->GetLocalPlayer()))
+			SubSystem->AddMappingContext(InputContext, 0);
+	}
 }
 
 void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -80,8 +98,27 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		PlayerInputComponent->BindAxis("DefaultPawn_MoveForward", this, &ACLHeroCharacter::MoveForward);
 		PlayerInputComponent->BindAxis("DefaultPawn_MoveRight", this, &ACLHeroCharacter::MoveRight);
-		PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
 	}
+
+	// Set up action bindings
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+
+		// Jumping
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		// Moving
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Move);
+
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACLHeroCharacter::BaseAttack);
+
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	}
+	PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
+
 }
 
 void ACLHeroCharacter::UpdateNavigationRelevance()
@@ -126,6 +163,74 @@ void ACLHeroCharacter::MoveUp_World(float Val)
 	{
 		AddMovementInput(FVector::UpVector, Val);
 	}
+}
+
+void ACLHeroCharacter::OnRep_PlayerState()
+{
+	if (ACLPlayerState * PS = Cast<ACLPlayerState>(GetPlayerState()))
+	{
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+		PS->SetAbilitiesFromActionSet(AbilitySet);
+	}
+}
+
+APlayerController* ACLHeroCharacter::GetPlayerController() const
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+		return PlayerController;
+
+	return nullptr;
+}
+
+//TO DO : 어빌리티로 변경
+void ACLHeroCharacter::Move(const FInputActionValue& Value)
+{
+	// input is a Vector2D
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		// find out which way is forward
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get forward vector
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+		// get right vector 
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		// add movement 
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
+	}
+}
+
+//TO DO : 어빌리티로 변경
+void ACLHeroCharacter::Look(const FInputActionValue& Value)
+{
+	// input is a Vector2D
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		// add yaw and pitch input to controller
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ACLHeroCharacter::BaseAttack(const FInputActionValue& Value)
+{
+	if (ACLPlayerState* PS = Cast<ACLPlayerState>(GetPlayerState()))
+	{
+		FGameplayEventData TempPayload;
+		TempPayload.EventTag = TAG_Attack;
+		PS->GetAbilitySystemComponent()->HandleGameplayEvent(TAG_Attack, &TempPayload);		
+	}
+	
+
+
 }
 
 void ACLHeroCharacter::RotateAttackPoint(float Val)

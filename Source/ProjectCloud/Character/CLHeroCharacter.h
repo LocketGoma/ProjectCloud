@@ -19,6 +19,9 @@ enum class EControlMode : uint8
 };
 
 class UCAttackerNodeComponent;
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
 
 UCLASS()
 class PROJECTCLOUD_API ACLHeroCharacter : public ACLBaseCharacter
@@ -59,6 +62,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void MoveUp_World(float Val);
 
+	void OnRep_PlayerState() override;
+
+	UFUNCTION(BlueprintCallable)
+	class APlayerController* GetPlayerController() const;
+	
+
+protected:
+
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void Look(const FInputActionValue& Value);
+
+	//디버그용
+	void BaseAttack(const FInputActionValue& Value);
 
 private:	
 	void RotateAttackPoint(float Val);
@@ -78,9 +97,26 @@ public:
 
 public:
 	/** If true, adds default input bindings for movement and camera look. */
-	UPROPERTY(Category = Pawn, EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
 	uint32 bAddDefaultMovementBindings : 1;
 	//--End of Copy
+
+private:
+	/** MappingContext */
+	UPROPERTY(EditDefaultsOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> InputContext;
+
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* JumpAction;
+
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* MoveAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* AttackAction;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character")

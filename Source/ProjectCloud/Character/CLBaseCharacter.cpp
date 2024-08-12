@@ -4,6 +4,7 @@
 #include "CLBaseCharacter.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Engine/CollisionProfile.h"
+#include "GameplayAbilitySet.h"
 #include "Components/CapsuleComponent.h"
 
 
@@ -35,3 +36,4 @@ void ACLBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 }
+
