@@ -4,7 +4,7 @@
 #include "CLBaseCharacter.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Engine/CollisionProfile.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 
 
 ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -19,6 +19,9 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	BaseEyeHeight = 0.0f;
 	bCollideWhenPlacing = false;
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	GetCapsuleComponent()->SetCapsuleHalfHeight(8.f);
+	GetCapsuleComponent()->SetCapsuleRadius(16.f);
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 }
