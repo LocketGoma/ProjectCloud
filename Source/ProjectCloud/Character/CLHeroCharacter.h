@@ -21,6 +21,7 @@ enum class EControlMode : uint8
 class UCAttackerNodeComponent;
 class UInputMappingContext;
 class UInputAction;
+class UCLAbilityInputConfig;
 struct FInputActionValue;
 
 UCLASS()
@@ -117,6 +118,9 @@ private:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
+	UCLAbilityInputConfig* InputConfig;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character")

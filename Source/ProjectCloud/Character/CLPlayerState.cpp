@@ -2,7 +2,7 @@
 
 
 #include "CLPlayerState.h"
-#include "AbilitySystemComponent.h"
+#include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "GameplayAbilitySet.h"
 #include "CLHeroCharacter.h"
 
@@ -10,7 +10,7 @@ ACLPlayerState::ACLPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bAbilitySet = false;
-	AbilityComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilityComponent = CreateDefaultSubobject<UCLAbilitySystemComponent>("AbilitySystemComponent");
 	//AbilityComponent->SetIsReplicated(true);
 	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 

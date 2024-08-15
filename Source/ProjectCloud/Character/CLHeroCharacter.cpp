@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
-#include "AbilitySystemComponent.h"
+#include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "CLPlayerState.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/InputComponent.h"
@@ -167,10 +167,13 @@ void ACLHeroCharacter::MoveUp_World(float Val)
 
 void ACLHeroCharacter::OnRep_PlayerState()
 {
+	UEnhancedInputComponent* EnhancedInputComponent = GetComponentByClass<UEnhancedInputComponent>();
+
 	if (ACLPlayerState * PS = Cast<ACLPlayerState>(GetPlayerState()))
 	{
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 		PS->SetAbilitiesFromActionSet(AbilitySet);
+		PS->GetAbilitySystemComponent()->BindInputActions(InputConfig, EnhancedInputComponent);
 	}
 }
 
@@ -228,9 +231,6 @@ void ACLHeroCharacter::BaseAttack(const FInputActionValue& Value)
 		TempPayload.EventTag = TAG_Attack;
 		PS->GetAbilitySystemComponent()->HandleGameplayEvent(TAG_Attack, &TempPayload);		
 	}
-	
-
-
 }
 
 void ACLHeroCharacter::RotateAttackPoint(float Val)
