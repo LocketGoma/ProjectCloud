@@ -7,12 +7,20 @@
 ACLGameState::ACLGameState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {	
+
 }
 
 void ACLGameState::BeginPlay()
 {
-	SpawnManagerComponent = SpawnManagerComponentClass.GetDefaultObject();
-	SpawnManagerComponent;
+	if (SpawnManagerComponentClass)
+	{
+		SpawnManagerComponent = Cast<UCLSpawnManagerComponent>(AddComponentByClass(SpawnManagerComponentClass, false, FTransform::Identity, false));
+	}
+
+	check(SpawnManagerComponent);
+	//UE_LOG(LogTemp, Error, TEXT("Not set SpawnManaget in GameState. Please Set SapwnManagerClass in GameState."));
+
+	Super::BeginPlay();
 }
 
 const UCLSpawnManagerComponent* ACLGameState::GetSpawnManagerComponent() const
