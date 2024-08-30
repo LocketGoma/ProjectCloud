@@ -10,6 +10,7 @@
  * 
  */
 class ACLGameState;
+class ACLBaseCharacter;
 
 UCLASS(Blueprintable)
 class PROJECTCLOUD_API UCLSpawnManagerComponent : public UGameStateComponent
@@ -23,10 +24,10 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Spawn")
-	const TMap<TSubclassOf<APawn>, float> GetMonsterListAndFrequency() const;
+	const TMap<TSubclassOf<ACLBaseCharacter>, float> GetMonsterListAndFrequency() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Spawn")
-	const TArray<TSubclassOf<APawn>> GetMonsterList() const;
+	const TArray<TSubclassOf<ACLBaseCharacter>> GetMonsterList() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Spawn")
 	const int32 GetMonsterCount();
@@ -44,7 +45,6 @@ public:
 private:
 	TSubclassOf<APawn> GetSapwnMonsterType();
 
-
 	bool SpawnMonstersInternal(int32 NowCount, int32 TargetCount);
 
 private:
@@ -52,7 +52,7 @@ private:
 
 	//몬스터 종류 (
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn|SpawnType|Base", meta = (AllowPrivateAccess = "true"))
-	TMap<TSubclassOf<APawn>, float> MonsterAndFrequencies;
+	TMap<TSubclassOf<ACLBaseCharacter>, float> MonsterAndFrequencies;
 	
 	//한번에 스폰하는 몬스터 수
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn|Config", meta = (UIMin = "0", UIMax = "100", ClampMin = "0", AllowPrivateAccess = "true"))

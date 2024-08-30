@@ -1,6 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "CLEnemyCharacter.h"
 
 ACLEnemyCharacter::ACLEnemyCharacter(const FObjectInitializer& ObjectInitializer)
@@ -16,4 +14,11 @@ void ACLEnemyCharacter::BeginPlay()
 void ACLEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+}
+
+void ACLEnemyCharacter::SetTargetPlayer(APawn* NewTarget)
+{
+	check(NewTarget);
+
+	TargetPlayer = NewTarget;
 }

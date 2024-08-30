@@ -24,4 +24,11 @@ public:
 	//--End Actor Override	
 
 	
+	void SetTargetPlayer(APawn* NewTarget);
+
+	TWeakObjectPtr<APawn> GetTargetPlayer() { return TargetPlayer; }
+
+private:	
+	UPROPERTY()
+	TWeakObjectPtr<APawn> TargetPlayer;
 };

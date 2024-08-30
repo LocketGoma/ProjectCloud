@@ -1,4 +1,7 @@
 #include "CLSpawnManagerComponent.h"
+#include "ProjectCloud/System/CLGameState.h"
+#include "ProjectCloud/Character/CLBaseCharacter.h"
+#include "ProjectCloud/Character/CLEnemyCharacter.h"
 
 UCLSpawnManagerComponent::UCLSpawnManagerComponent(const FObjectInitializer& ObjectInitializer)
 	: Super (ObjectInitializer)
@@ -17,7 +20,7 @@ void UCLSpawnManagerComponent::BeginPlay()
 
 }
 
-const TMap<TSubclassOf<APawn>, float> UCLSpawnManagerComponent::GetMonsterListAndFrequency() const
+const TMap<TSubclassOf<ACLBaseCharacter>, float> UCLSpawnManagerComponent::GetMonsterListAndFrequency() const
 {
 	if (MonsterAndFrequencies.IsEmpty())
 	{
@@ -27,11 +30,11 @@ const TMap<TSubclassOf<APawn>, float> UCLSpawnManagerComponent::GetMonsterListAn
 	return MonsterAndFrequencies;
 }
 
-const TArray<TSubclassOf<APawn>> UCLSpawnManagerComponent::GetMonsterList() const
+const TArray<TSubclassOf<ACLBaseCharacter>> UCLSpawnManagerComponent::GetMonsterList() const
 {
-	TArray<TSubclassOf<APawn>> MonsterList;
+	TArray<TSubclassOf<ACLBaseCharacter>> MonsterList;
 
-	for (TPair< TSubclassOf<APawn>, float> Monster : MonsterAndFrequencies)
+	for (TPair< TSubclassOf<ACLBaseCharacter>, float> Monster : MonsterAndFrequencies)
 	{
 		MonsterList.AddUnique(Monster.Key);
 	}
@@ -50,15 +53,14 @@ APawn* UCLSpawnManagerComponent::SapwnMonster(TSubclassOf<APawn> MonsterType)
 	{
 		return nullptr;
 	}
-	APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(MonsterType.Get());
+	ACLEnemyCharacter* SpawnedPawn = GetWorld()->SpawnActor<ACLEnemyCharacter>(MonsterType.Get());
+	APawn* TargetPlayer = GEngine->GetFirstLocalPlayerController(GetWorld())->GetPawn();
+
+	SpawnedPawn->SetTargetPlayer(TargetPlayer);
 
 	return SpawnedPawn;
 }
 
-bool UCLSpawnManagerComponent::SpawnMonsters(int32 count)
-{
-	return SpawnMonstersInternal(0, count);
-}
 
 bool UCLSpawnManagerComponent::SpawnMonsterAtSingleGroup()
 {
@@ -81,6 +83,11 @@ TSubclassOf<APawn> UCLSpawnManagerComponent::GetSapwnMonsterType()
 	}
 
 	return nullptr;
+}
+
+bool UCLSpawnManagerComponent::SpawnMonsters(int32 count)
+{
+	return SpawnMonstersInternal(0, count);
 }
 
 bool UCLSpawnManagerComponent::SpawnMonstersInternal(int32 NowCount, int32 TargetCount)
