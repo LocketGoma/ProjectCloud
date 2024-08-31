@@ -6,6 +6,8 @@
 #include "CLBaseCharacter.h"
 #include "CLEnemyCharacter.generated.h"
 
+class UBehaviorTree;
+
 /**
  * 
  */
@@ -28,7 +30,14 @@ public:
 
 	TWeakObjectPtr<APawn> GetTargetPlayer() { return TargetPlayer; }
 
+
 private:	
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UBehaviorTree> BTAsset;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	FString TargetPlayerValueName;
+
 	UPROPERTY()
 	TWeakObjectPtr<APawn> TargetPlayer;
 };
