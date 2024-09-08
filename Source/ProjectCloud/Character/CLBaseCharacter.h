@@ -8,7 +8,6 @@
 
 class UInputComponent;
 class UPawnMovementComponent;
-class USphereComponent;
 class UGameplayAbilitySet;
 
 UCLASS(config = Game, Blueprintable, BlueprintType)
