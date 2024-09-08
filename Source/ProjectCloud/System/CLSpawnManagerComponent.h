@@ -34,13 +34,13 @@ public:
 
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
-	APawn* SapwnMonster(TSubclassOf<APawn> MonsterType);
+	APawn* SpawnMonster(TSubclassOf<APawn> MonsterType);
 
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
-	bool SpawnMonsters(int32 count);
+	void SpawnMonsters(int32 count);
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
-	bool SpawnMonsterAtSingleGroup();
+	void SpawnMonsterAtSingleGroup();
 
 private:
 	TSubclassOf<APawn> GetSapwnMonsterType();
@@ -50,7 +50,7 @@ private:
 private:
 	FTimerHandle SpawnTimeHandle;
 
-	//몬스터 종류 (
+	//몬스터 종류
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn|SpawnType|Base", meta = (AllowPrivateAccess = "true"))
 	TMap<TSubclassOf<ACLBaseCharacter>, float> MonsterAndFrequencies;
 	

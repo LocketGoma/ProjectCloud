@@ -2,6 +2,7 @@
 #include "ProjectCloud/System/CLGameState.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Character/CLEnemyCharacter.h"
+#include "AIController.h"
 
 UCLSpawnManagerComponent::UCLSpawnManagerComponent(const FObjectInitializer& ObjectInitializer)
 	: Super (ObjectInitializer)
@@ -47,24 +48,30 @@ const int32 UCLSpawnManagerComponent::GetMonsterCount()
 	return GetMonsterListAndFrequency().Num();
 }
 
-APawn* UCLSpawnManagerComponent::SapwnMonster(TSubclassOf<APawn> MonsterType)
+APawn* UCLSpawnManagerComponent::SpawnMonster(TSubclassOf<APawn> MonsterType)
 {
 	if (!ensure(IsValid(MonsterType)))
 	{
 		return nullptr;
 	}
 	ACLEnemyCharacter* SpawnedPawn = GetWorld()->SpawnActor<ACLEnemyCharacter>(MonsterType.Get());
+	AAIController* SpawnedEnemyController = GetWorld()->SpawnActor<AAIController>();
+
+	SpawnedEnemyController->UnPossess();
+	SpawnedEnemyController->Possess(SpawnedPawn);
+
 	APawn* TargetPlayer = GEngine->GetFirstLocalPlayerController(GetWorld())->GetPawn();
 
 	SpawnedPawn->SetTargetPlayer(TargetPlayer);
+	SpawnedPawn->SetAI();
 
 	return SpawnedPawn;
 }
 
 
-bool UCLSpawnManagerComponent::SpawnMonsterAtSingleGroup()
+void UCLSpawnManagerComponent::SpawnMonsterAtSingleGroup()
 {
-	return false;
+	SpawnMonsters(SpawnCountForSingleSpawnGroup);
 }
 
 TSubclassOf<APawn> UCLSpawnManagerComponent::GetSapwnMonsterType()
@@ -85,9 +92,14 @@ TSubclassOf<APawn> UCLSpawnManagerComponent::GetSapwnMonsterType()
 	return nullptr;
 }
 
-bool UCLSpawnManagerComponent::SpawnMonsters(int32 count)
+void UCLSpawnManagerComponent::SpawnMonsters(int32 count)
 {
-	return SpawnMonstersInternal(0, count);
+	bool Result = SpawnMonstersInternal(0, count);
+
+	if (!Result)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Something Wrong Event Checked in MonsterSpawn Logic. Please Check UCLSpawnManagerComponent Class or else"));
+	}
 }
 
 bool UCLSpawnManagerComponent::SpawnMonstersInternal(int32 NowCount, int32 TargetCount)
@@ -102,8 +114,13 @@ bool UCLSpawnManagerComponent::SpawnMonstersInternal(int32 NowCount, int32 Targe
 	}
 	
 	//2 Spawn 시도
-	SapwnMonster(GetSapwnMonsterType());
+	//+ 스폰된 모든 몬스터의 정보를 가지고 있어야 되는 경우 로직 추가
+	APawn* SpawnedMonster = SpawnMonster(GetSapwnMonsterType());
 
+	if (!IsValid(SpawnedMonster))
+	{
+		return false;
+	}
 
 
 	GetWorldTimerManager().SetTimer(SpawnTimeHandle, FTimerDelegate::CreateLambda([this, NowCount, TargetCount]

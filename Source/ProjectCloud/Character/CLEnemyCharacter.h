@@ -7,6 +7,7 @@
 #include "CLEnemyCharacter.generated.h"
 
 class UBehaviorTree;
+class AAIController;
 
 /**
  * 
@@ -27,6 +28,8 @@ public:
 
 	
 	void SetTargetPlayer(APawn* NewTarget);
+
+	void SetAI();
 
 	TWeakObjectPtr<APawn> GetTargetPlayer() { return TargetPlayer; }
 
