@@ -16,8 +16,10 @@
 #include "InputMappingContext.h"
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
+#include "ProjectCloud/System/CLCharacterAttributeSet.h"
 
 UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Attack, "Input.Action.Attack");
+UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Health, "Attribute.Data.Health");
 
 ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -42,13 +44,15 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
+
+	AttributeSet = CreateDefaultSubobject<UCLCharacterAttributeSet>(TEXT("AttributeSet"));
 }
 
 void ACLHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnRep_PlayerState();
+	SetAbilitySystemComponent();
 
 	if (GetPlayerController())
 	{
@@ -63,6 +67,7 @@ void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+//Duplicated?
 void InitializeDefaultPawnInputBindings()
 {
 	static bool bBindingsAdded = false;
@@ -165,7 +170,7 @@ void ACLHeroCharacter::MoveUp_World(float Val)
 	}
 }
 
-void ACLHeroCharacter::OnRep_PlayerState()
+void ACLHeroCharacter::SetAbilitySystemComponent()
 {
 	UEnhancedInputComponent* EnhancedInputComponent = GetComponentByClass<UEnhancedInputComponent>();
 
@@ -174,6 +179,39 @@ void ACLHeroCharacter::OnRep_PlayerState()
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 		PS->SetAbilitiesFromActionSet(AbilitySet);
 		PS->GetAbilitySystemComponent()->BindInputActions(InputConfig, EnhancedInputComponent);
+
+		//특정 GameplayEffect에서 데이터 가져오는 방법
+		if (IsValid(HealthGE))
+		{
+			//FGameplayEffectContextHandle EffectContext = PS->GetAbilitySystemComponent()->MakeEffectContext();
+			//FGameplayEffectSpecHandle SpecHandle = PS->GetAbilitySystemComponent()->MakeOutgoingSpec(HealthGE, 1.0f, EffectContext);
+
+			//if (SpecHandle.IsValid())
+			//{
+			//	const FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
+			//	float Health = Spec->Modifiers[0].GetEvaluatedMagnitude();
+
+			//	AttributeSet->SetHealth(Health);
+			//}
+
+			const UGameplayEffect* GameplayEffect = HealthGE.GetDefaultObject();
+
+
+			for (const FGameplayModifierInfo& Modifier : GameplayEffect->Modifiers)
+			{
+				if (Modifier.Attribute == AttributeSet->HealthAttribute())
+				{
+					float Health;
+					Modifier.ModifierMagnitude.GetStaticMagnitudeIfPossible(0, Health);
+
+					AttributeSet->SetHealth(Health);
+				}
+			}
+
+		}
+
+		PS->GetAbilitySystemComponent()->AddAttributeSetSubobject(AttributeSet);
+
 	}
 }
 

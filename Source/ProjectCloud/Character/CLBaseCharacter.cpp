@@ -6,7 +6,7 @@
 #include "Engine/CollisionProfile.h"
 #include "GameplayAbilitySet.h"
 #include "Components/CapsuleComponent.h"
-
+#include "ProjectCloud/System/CLCharacterAttributeSet.h"
 
 ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

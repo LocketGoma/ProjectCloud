@@ -8,6 +8,8 @@
 
 class UBehaviorTree;
 class AAIController;
+class UCLAbilitySystemComponent;
+class UCLEnemyAttributeSet;
 
 /**
  * 
@@ -31,6 +33,10 @@ public:
 
 	void SetAI();
 
+	virtual void SetAbilitySystemComponent() override;
+
+	UCLAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
+
 	TWeakObjectPtr<APawn> GetTargetPlayer() { return TargetPlayer; }
 
 
@@ -41,6 +47,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	FString TargetPlayerValueName;
 
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	bool bManualTargetSettings = false;
+
 	UPROPERTY()
 	TWeakObjectPtr<APawn> TargetPlayer;
+
+	UPROPERTY()
+	UCLEnemyAttributeSet* AttributeSet;
+
+	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;
 };

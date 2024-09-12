@@ -22,6 +22,7 @@ class UCAttackerNodeComponent;
 class UInputMappingContext;
 class UInputAction;
 class UCLAbilityInputConfig;
+class UCLCharacterAttributeSet;
 struct FInputActionValue;
 
 UCLASS()
@@ -63,11 +64,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void MoveUp_World(float Val);
 
-	void OnRep_PlayerState() override;
-
 	UFUNCTION(BlueprintCallable)
 	class APlayerController* GetPlayerController() const;
-	
+
+	virtual void SetAbilitySystemComponent() override;	
 
 protected:
 
@@ -80,7 +80,7 @@ protected:
 	//디버그용
 	void BaseAttack(const FInputActionValue& Value);
 
-private:	
+private:
 	void RotateAttackPoint(float Val);
 
 	void TrackingMousePosition(FVector Position);
@@ -122,13 +122,18 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
 	UCLAbilityInputConfig* InputConfig;
 
+	UPROPERTY()
+	UCLCharacterAttributeSet* AttributeSet;
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character")
 	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
+
 
 private:
 	//nothappa : 디버그 모드
 	UPROPERTY(EditDefaultsOnly, Category = "Debug", meta=(AllowPrivateAccess = true))
 	bool bDebugMove = false;
+
 
 };

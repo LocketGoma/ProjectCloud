@@ -29,8 +29,5 @@ private:
 private:
 	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;
 
-	bool bAbilitySet;
-
-
-	
+	bool bAbilitySet;	
 };

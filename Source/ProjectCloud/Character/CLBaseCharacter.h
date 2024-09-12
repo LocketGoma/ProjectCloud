@@ -9,6 +9,7 @@
 class UInputComponent;
 class UPawnMovementComponent;
 class UGameplayAbilitySet;
+class UGameplayEffect;
 
 UCLASS(config = Game, Blueprintable, BlueprintType)
 class PROJECTCLOUD_API ACLBaseCharacter : public APaperCharacter
@@ -23,8 +24,12 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 //--End Actor Override
+	virtual void SetAbilitySystemComponent() PURE_VIRTUAL(ACLBaseCharacter::SetAbilitySystemComponent, );
 
 	//적용시킬 AbilitySet
 	UPROPERTY(EditDefaultsOnly, meta=(Category="Settings"))
 	TObjectPtr<UGameplayAbilitySet> AbilitySet;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	TSubclassOf<UGameplayEffect> HealthGE;
 };
