@@ -9,6 +9,8 @@
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UCapsuleComponent;
+class UCLWeaponAttributeSet;
+class UGameplayEffect;
 
 UCLASS()
 class PROJECTCLOUD_API ACLProjectileActor : public AActor
@@ -23,9 +25,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
-
 public:
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	TSubclassOf<UGameplayEffect> DamageGE;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UNiagaraSystem> MainVFX;
 
@@ -41,5 +44,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
+
+	UPROPERTY()
+	UCLWeaponAttributeSet* AttributeSet;
 
 };
