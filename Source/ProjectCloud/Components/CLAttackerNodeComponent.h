@@ -4,10 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLAttackerNodeComponent.generated.h"
 
+class ACLWeapon;
 class USphereComponent;
 
+//구조
+//어태커 노드에서 무기를 가지고 있음
+//무기 정보는 캐릭터 -> 어태커 노드를 통해 획득 (플레이어가 직접 무기 정보를 가지고 있진 않음)
+
+//무기를 소지하는 노드 컴포넌트
 UCLASS(BlueprintType, meta=(BlueprintSpawnableComponent))
 class PROJECTCLOUD_API UCAttackerNodeComponent : public USceneComponent
 {
@@ -37,11 +44,19 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_UpdateAttactPointLength(float NewLength);
 
+//유틸함수 리스트
+public:
 	UFUNCTION(BlueprintCallable)
 	const USceneComponent* GetAttackPoint();
 
 	UFUNCTION(BlueprintCallable)
 	const FTransform GetAttackPointTransform();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	AActor* GetWeaponActor();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const EWeaponType GetWeaponType() const;
 
 public:
 	//중심에서 공격지점까지 거리
@@ -49,7 +64,7 @@ public:
 	float AttactPointLength = 0.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<class ACLWeapon> WeaponActorClass;
+	TSubclassOf<ACLWeapon> WeaponActorClass;
 
 	//무기가 바라보는 방향을 그대로 볼지
 	UPROPERTY(EditDefaultsOnly)

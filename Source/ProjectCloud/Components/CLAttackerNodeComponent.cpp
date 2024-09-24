@@ -88,3 +88,13 @@ const FTransform UCAttackerNodeComponent::GetAttackPointTransform()
 	return AttackPoint->GetComponentTransform();
 }
 
+AActor* UCAttackerNodeComponent::GetWeaponActor()
+{
+	return nullptr;
+}
+
+const EWeaponType UCAttackerNodeComponent::GetWeaponType() const
+{
+	return EWeaponType();
+}
+

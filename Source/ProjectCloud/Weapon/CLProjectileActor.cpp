@@ -23,6 +23,9 @@ ACLProjectileActor::ACLProjectileActor()
 	RootComponent = Cast<USceneComponent>(CapsuleComponent);
 	NiagaraComponent->SetupAttachment(RootComponent);
 
+	//변수 초기화
+	LaunchVector = FVector::ZeroVector;
+	LaunchSpeed = 0.f;
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +37,7 @@ void ACLProjectileActor::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Some of ACLProjectileActor(%s) are Not Have MainVFX. That Actor must have MainVFX. Fix It."), *GetName());
 		return;
-	}
+	}	
 	UNiagaraFunctionLibrary::SpawnSystemAttached(MainVFX, NiagaraComponent, FName(), FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
 
 	if (SubVFX)

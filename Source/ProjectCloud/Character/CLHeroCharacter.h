@@ -25,6 +25,10 @@ class UCLAbilityInputConfig;
 class UCLCharacterAttributeSet;
 struct FInputActionValue;
 
+//구조
+//어태커 노드에서 무기를 가지고 있음
+//무기 정보는 캐릭터 -> 어태커 노드를 통해 획득 (플레이어가 직접 무기 정보를 가지고 있진 않음)
+
 UCLASS()
 class PROJECTCLOUD_API ACLHeroCharacter : public ACLBaseCharacter
 {

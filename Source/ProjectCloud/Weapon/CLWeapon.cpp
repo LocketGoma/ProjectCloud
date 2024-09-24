@@ -33,6 +33,9 @@ ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
 	}
 
 	CoreComponent->BodyInstance.bLockZRotation = true;	
+
+	WeaponType = EWeaponType::Weapon_None;
+
 }
 
 // Called when the game starts or when spawned
@@ -46,5 +49,16 @@ void ACLWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+const EWeaponType ACLWeapon::GetWeaponType() const
+{
+	if (!ensureAlways(WeaponType == EWeaponType::Weapon_None))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("잘못된 무기 타입을 사용하고 있습니다."));
+	}
+
+
+	return WeaponType;
 }
 

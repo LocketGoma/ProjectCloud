@@ -38,6 +38,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UNiagaraSystem> TrailVFX;
 
+	//나아가는 방향
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attributes")
+	FVector LaunchVector;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (UIMin = 0, ClampMin = 0))
+	float LaunchSpeed;
+
 private:
 	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
