@@ -53,7 +53,7 @@ public:
 	const FTransform GetAttackPointTransform();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	AActor* GetWeaponActor();
+	ACLWeapon* GetWeaponActor();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;

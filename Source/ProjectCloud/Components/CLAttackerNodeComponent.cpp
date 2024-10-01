@@ -19,9 +19,7 @@ UCAttackerNodeComponent::UCAttackerNodeComponent()
 	AttackPoint->InitSphereRadius(10.0f);
 	CorePoint->SetCollisionProfileName(TEXT("None"));
 	AttackPoint->SetCollisionProfileName(TEXT("None"));
-
 }
-
 
 // Called when the game starts
 void UCAttackerNodeComponent::BeginPlay()
@@ -48,7 +46,6 @@ void UCAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
 		AttackPoint->SetRelativeLocation(AttackPoint->GetRelativeLocation() * (NewLenght / AttactPointLength));
 
 		K2_UpdateAttactPointLength(NewLenght);
-
 	}
 }
 
@@ -69,7 +66,7 @@ void UCAttackerNodeComponent::AddRotation(float Val)
 	AddRelativeRotation(FRotator(0, Val, 0));
 
 	if (!bWeaponRelativeSpin)
-	{
+	{		
 		WeaponActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
 	}
 
@@ -88,13 +85,13 @@ const FTransform UCAttackerNodeComponent::GetAttackPointTransform()
 	return AttackPoint->GetComponentTransform();
 }
 
-AActor* UCAttackerNodeComponent::GetWeaponActor()
+ACLWeapon* UCAttackerNodeComponent::GetWeaponActor()
 {
-	return nullptr;
+	return WeaponActor;
 }
 
 const EWeaponType UCAttackerNodeComponent::GetWeaponType() const
 {
-	return EWeaponType();
+	return WeaponActor->GetWeaponType();
 }
 

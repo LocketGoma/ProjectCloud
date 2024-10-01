@@ -8,6 +8,7 @@
 #include "CLWeapon.generated.h"
 
 class UPaperFlipbookComponent;
+class ACLProjectileActor;
 class USphereComponent;
 
 UCLASS()
@@ -26,8 +27,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const AActor* GetProjectile() const { return Projectile; }
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Attack();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;
@@ -39,7 +40,7 @@ private:
 	TObjectPtr<class UPaperFlipbookComponent> Sprite;
 
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<AActor> Projectile;
+	TSubclassOf<ACLProjectileActor> ProjectileClass;
 
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EWeaponType WeaponType;

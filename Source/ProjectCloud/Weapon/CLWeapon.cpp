@@ -3,6 +3,7 @@
 #include "CLWeapon.h"
 #include "Components/SphereComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "ProjectCloud/Weapon/CLProjectileActor.h"
 
 FName ACLWeapon::SpriteComponentName(TEXT("Sprite0"));
 ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
@@ -51,14 +52,21 @@ void ACLWeapon::Tick(float DeltaTime)
 
 }
 
+void ACLWeapon::Attack_Implementation()
+{
+	FRotator Rotation = GetRootComponent()->GetRelativeRotation();
+
+	ACLProjectileActor* Projectile = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation);
+	Projectile->LaunchVector = GetActorForwardVector();
+	Projectile->LaunchProjectile();
+}
+
 const EWeaponType ACLWeapon::GetWeaponType() const
 {
 	if (!ensureAlways(WeaponType == EWeaponType::Weapon_None))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("잘못된 무기 타입을 사용하고 있습니다."));
 	}
-
-
 	return WeaponType;
 }
 

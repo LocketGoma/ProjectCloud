@@ -23,6 +23,7 @@ class UInputMappingContext;
 class UInputAction;
 class UCLAbilityInputConfig;
 class UCLCharacterAttributeSet;
+class ACLWeapon;
 struct FInputActionValue;
 
 //구조
@@ -71,7 +72,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	class APlayerController* GetPlayerController() const;
 
-	virtual void SetAbilitySystemComponent() override;	
+	virtual void SetAbilitySystemComponent() override;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon")
+	UCAttackerNodeComponent* GetAttackerNode();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon")
+	ACLWeapon* GetWeaponActor();
+
 
 protected:
 

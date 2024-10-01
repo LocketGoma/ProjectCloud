@@ -11,8 +11,10 @@ class UNiagaraSystem;
 class UCapsuleComponent;
 class UCLWeaponAttributeSet;
 class UGameplayEffect;
+class UArrowComponent;
+class UCharacterMovementComponent;
 
-UCLASS()
+UCLASS(BlueprintType)
 class PROJECTCLOUD_API ACLProjectileActor : public AActor
 {
 	GENERATED_BODY()
@@ -21,9 +23,15 @@ public:
 	// Sets default values for this actor's properties
 	ACLProjectileActor();
 
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable)
+	void LaunchProjectile();
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UCharacterMovementComponent* GetMovementComponent() { return MovementComponent; }
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
@@ -46,6 +54,9 @@ public:
 	float LaunchSpeed;
 
 private:
+	void SetNiagaraEffect();
+
+
 	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
 
@@ -54,5 +65,18 @@ private:
 
 	UPROPERTY()
 	UCLWeaponAttributeSet* AttributeSet;
+
+	//MovementComponent -> 필요시 UProjectileMovementComponent 로 변경
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCharacterMovementComponent> MovementComponent;
+
+#if WITH_EDITORONLY_DATA
+	/** Component shown in the editor only to indicate character facing */
+	UPROPERTY()
+	TObjectPtr<UArrowComponent> ArrowComponent;
+#endif
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float EffectSize;
+	
 
 };

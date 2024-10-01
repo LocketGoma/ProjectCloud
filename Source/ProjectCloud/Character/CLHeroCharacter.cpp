@@ -215,6 +215,26 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 	}
 }
 
+UCAttackerNodeComponent* ACLHeroCharacter::GetAttackerNode()
+{
+	if (!ensure(AttackerComponent))
+	{
+		return nullptr;
+	}
+
+	return AttackerComponent;
+}
+
+ACLWeapon* ACLHeroCharacter::GetWeaponActor()
+{
+	if (!ensure(AttackerComponent))
+	{
+		return nullptr;
+	}
+
+	return AttackerComponent->GetWeaponActor();
+}
+
 APlayerController* ACLHeroCharacter::GetPlayerController() const
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
