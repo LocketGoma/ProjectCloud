@@ -26,6 +26,9 @@ public:
 //--End Actor Override
 	virtual void SetAbilitySystemComponent() PURE_VIRTUAL(ACLBaseCharacter::SetAbilitySystemComponent, );
 
+	UFUNCTION()
+	virtual void DeathEvent();
+
 	//적용시킬 AbilitySet
 	UPROPERTY(EditDefaultsOnly, meta=(Category="Settings"))
 	TObjectPtr<UGameplayAbilitySet> AbilitySet;

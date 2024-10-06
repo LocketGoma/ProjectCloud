@@ -23,8 +23,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	FGameplayAttributeData Damage;
 
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
+	friend class UCLDamageCalculation;
+	friend struct FPlayerDamageStatics;
+
 public:
 	ATTRIBUTE_ACCESSORS(UCLEnemyAttributeSet, Health)
 	ATTRIBUTE_ACCESSORS(UCLEnemyAttributeSet, Damage)
+
+
 
 };

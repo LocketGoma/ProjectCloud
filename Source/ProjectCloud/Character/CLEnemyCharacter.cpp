@@ -27,6 +27,7 @@ void ACLEnemyCharacter::BeginPlay()
 
 	if (GetController())
 	{
+		SetAbilitySystemComponent();
 		SetAI();
 	}
 }

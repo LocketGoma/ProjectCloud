@@ -37,3 +37,10 @@ void ACLBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+void ACLBaseCharacter::DeathEvent()
+{
+	//Do Something
+
+	Destroy();
+}
+

@@ -9,10 +9,11 @@
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UCapsuleComponent;
+class UGameplayEffect;
 class UCLWeaponAttributeSet;
 class UGameplayEffect;
 class UArrowComponent;
-class UCharacterMovementComponent;
+class UProjectileMovementComponent;
 
 UCLASS(BlueprintType)
 class PROJECTCLOUD_API ACLProjectileActor : public AActor
@@ -26,12 +27,17 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	UFUNCTION(BlueprintCallable)
 	void LaunchProjectile();
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	UCharacterMovementComponent* GetMovementComponent() { return MovementComponent; }
+	UProjectileMovementComponent* GetMovementComponent() { return MovementComponent; }
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
@@ -65,10 +71,10 @@ private:
 
 	UPROPERTY()
 	UCLWeaponAttributeSet* AttributeSet;
-
-	//MovementComponent -> 필요시 UProjectileMovementComponent 로 변경
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UCharacterMovementComponent> MovementComponent;
+		
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY()
+	TObjectPtr<UProjectileMovementComponent> MovementComponent;
 
 #if WITH_EDITORONLY_DATA
 	/** Component shown in the editor only to indicate character facing */
@@ -77,6 +83,7 @@ private:
 #endif
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float EffectSize;
+
 	
 
 };

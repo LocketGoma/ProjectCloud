@@ -10,6 +10,7 @@
 /**
  * 
  */
+
 UCLASS()
 class PROJECTCLOUD_API UCLWeaponAttributeSet : public UCLBaseAttributeSet
 {
@@ -50,5 +51,6 @@ private:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	//FGameplayAttributeData Cooldown;
 
-
+	friend class UCLDamageCalculation;
+	friend struct FPlayerDamageStatics;
 };
