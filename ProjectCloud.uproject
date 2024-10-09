@@ -12,7 +12,8 @@
 				"Paper2D",
 				"ModularGameplay",
 				"Engine",
-				"GameplayAbilities"
+				"GameplayAbilities",
+				"CoreUObject"
 			]
 		}
 	],

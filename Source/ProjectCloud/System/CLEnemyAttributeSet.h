@@ -31,7 +31,4 @@ private:
 public:
 	ATTRIBUTE_ACCESSORS(UCLEnemyAttributeSet, Health)
 	ATTRIBUTE_ACCESSORS(UCLEnemyAttributeSet, Damage)
-
-
-
 };

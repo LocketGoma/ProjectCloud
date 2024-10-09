@@ -17,9 +17,10 @@
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
 #include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
-UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Attack, "Input.Action.Attack");
-UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Health, "Attribute.Data.Health");
+//UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Attack, "Input.Action.Attack");
+//UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Health, "Attribute.Data.Health");
 
 ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

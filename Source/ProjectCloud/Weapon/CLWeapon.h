@@ -10,6 +10,7 @@
 class UPaperFlipbookComponent;
 class ACLProjectileActor;
 class USphereComponent;
+class UCLWeaponInstance;
 
 UCLASS()
 class PROJECTCLOUD_API ACLWeapon : public AActor
@@ -27,12 +28,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponFromInstance();
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Attack();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Reload();
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;
-
 
 
 private:	
@@ -44,6 +50,9 @@ private:
 
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EWeaponType WeaponType;
+
+	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCLWeaponInstance> WeaponInstance;
 
 	UPROPERTY()
 	USphereComponent* CoreComponent;

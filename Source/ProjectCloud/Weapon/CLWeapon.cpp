@@ -3,6 +3,8 @@
 #include "CLWeapon.h"
 #include "Components/SphereComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "ProjectCloud/Weapon/CLWeaponInstance.h"
+#include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/Weapon/CLProjectileActor.h"
 
 FName ACLWeapon::SpriteComponentName(TEXT("Sprite0"));
@@ -52,6 +54,16 @@ void ACLWeapon::Tick(float DeltaTime)
 
 }
 
+void ACLWeapon::SetWeaponFromInstance()
+{
+	if (!ensure(WeaponInstance))
+	{
+		return;
+	}
+	//GetOwner->GetASC->GetTagContaniner->AddTag / RemoveTag
+
+}
+
 void ACLWeapon::Attack_Implementation()
 {
 	FRotator Rotation = GetRootComponent()->GetRelativeRotation();
@@ -59,6 +71,11 @@ void ACLWeapon::Attack_Implementation()
 	ACLProjectileActor* Projectile = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation);
 	Projectile->LaunchVector = GetActorForwardVector();
 	Projectile->LaunchProjectile();
+}
+
+void ACLWeapon::Reload_Implementation()
+{
+
 }
 
 const EWeaponType ACLWeapon::GetWeaponType() const

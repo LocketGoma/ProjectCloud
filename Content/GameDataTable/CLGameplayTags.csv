@@ -2,4 +2,6 @@ Name,Tag,DevComment
 Input.Action.Attack,Input.Action.Attack,
 Attribute.Data.Damage,Attribute.Data.Damage,
 Attribute.Data.Health,Attribute.Data.Health,
-Attribute.Data.Ammo,Attribute.Data.Ammo,
+Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Max MagineAmmo
+Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,
+Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Max Ammo
