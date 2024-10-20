@@ -69,6 +69,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void MoveUp_World(float Val);
 
+//--Get/Set
+
 	UFUNCTION(BlueprintCallable)
 	class APlayerController* GetPlayerController() const;
 
@@ -80,6 +82,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon")
 	ACLWeapon* GetWeaponActor();
 
+	virtual float GetHealth() override;
 
 protected:
 

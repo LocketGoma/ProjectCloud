@@ -26,6 +26,9 @@ public:
 //--End Actor Override
 	virtual void SetAbilitySystemComponent() PURE_VIRTUAL(ACLBaseCharacter::SetAbilitySystemComponent, );
 
+//--Getters
+	virtual float GetHealth() { return 0; }
+
 	UFUNCTION()
 	virtual void DeathEvent();
 

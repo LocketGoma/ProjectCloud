@@ -13,9 +13,7 @@ ACLEnemyCharacter::ACLEnemyCharacter(const FObjectInitializer& ObjectInitializer
 	: Super(ObjectInitializer)
 {
 	AbilityComponent = CreateDefaultSubobject<UCLAbilitySystemComponent>("AbilitySystemComponent");	
-	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-
-	AttributeSet = CreateDefaultSubobject<UCLEnemyAttributeSet>(TEXT("AttributeSet"));
+	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);	
 }
 
 void ACLEnemyCharacter::BeginPlay()
@@ -25,9 +23,10 @@ void ACLEnemyCharacter::BeginPlay()
 	if (bManualTargetSettings && !TargetPlayer.IsValid())
 		TargetPlayer = GetWorld()->GetFirstPlayerController()->GetPawn();
 
+	SetAbilitySystemComponent();
+
 	if (GetController())
 	{
-		SetAbilitySystemComponent();
 		SetAI();
 	}
 }
@@ -35,6 +34,14 @@ void ACLEnemyCharacter::BeginPlay()
 void ACLEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+}
+
+float ACLEnemyCharacter::GetHealth()
+{
+	//const UCLEnemyAttributeSet* AttributeSet = Cast<UCLEnemyAttributeSet>(GetAbilitySystemComponent()->GetAttributeSet(UCLEnemyAttributeSet::StaticClass()));
+	const UCLEnemyAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLEnemyAttributeSet>();
+
+	return AttributeSet->GetHealth();
 }
 
 void ACLEnemyCharacter::SetTargetPlayer(APawn* NewTarget)
@@ -74,10 +81,12 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 		{
 			FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
 
-			float HealthAmount = Spec->GetModifierMagnitude(0, false);
-			AttributeSet->SetHealth(HealthAmount);
+			UCLEnemyAttributeSet* NewAttributeSet = NewObject<UCLEnemyAttributeSet>(this);
+			GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
 
-			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);
+			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);	
+
+			const UCLEnemyAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLEnemyAttributeSet>();
 		}
 	}
 

@@ -28,7 +28,10 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//--End Actor Override	
 
+	//--Get/Set
 	
+	virtual float GetHealth() override;
+
 	void SetTargetPlayer(APawn* NewTarget);
 
 	void SetAI();
@@ -52,9 +55,6 @@ private:
 
 	UPROPERTY()
 	TWeakObjectPtr<APawn> TargetPlayer;
-
-	UPROPERTY()
-	UCLEnemyAttributeSet* AttributeSet;
 
 	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;
 };

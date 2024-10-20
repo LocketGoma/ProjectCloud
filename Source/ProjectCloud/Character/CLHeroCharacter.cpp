@@ -236,6 +236,11 @@ ACLWeapon* ACLHeroCharacter::GetWeaponActor()
 	return AttackerComponent->GetWeaponActor();
 }
 
+float ACLHeroCharacter::GetHealth()
+{
+	return 0.0f;
+}
+
 APlayerController* ACLHeroCharacter::GetPlayerController() const
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
