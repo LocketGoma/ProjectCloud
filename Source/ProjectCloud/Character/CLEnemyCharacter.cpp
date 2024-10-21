@@ -84,9 +84,7 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 			UCLEnemyAttributeSet* NewAttributeSet = NewObject<UCLEnemyAttributeSet>(this);
 			GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
 
-			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);	
-
-			const UCLEnemyAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLEnemyAttributeSet>();
+			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);			
 		}
 	}
 

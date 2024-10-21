@@ -9,27 +9,16 @@
 
 UCLDamageCalculation::UCLDamageCalculation()
 {
-	RelevantAttributesToCapture.Add(FPlayerDamageStatics::Get().HealthDef);
 	RelevantAttributesToCapture.Add(FPlayerDamageStatics::Get().DamageDef);
 }
 
 void UCLDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-    //float Health = 0.0f;
     float Damage = 0.0f;
-    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FPlayerDamageStatics::Get().HealthDef, FAggregatorEvaluateParameters(), Damage);
+    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FPlayerDamageStatics::Get().DamageDef, FAggregatorEvaluateParameters(), Damage);
 
-    //float AttackPower = 0.0f;
-    //ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FPlayerDamageStatics::Get().DamageDef, FAggregatorEvaluateParameters(), AttackPower);
+    //아래 함수만 사용하면 Base와 Current가 동시에 업데이트되는 문제가 있다고 함.
+    //아니 Lyra놈들 Damage를 따로 받아서 이걸 AttributeSet에서 연산을 다시 시켰네??????
+    OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(FPlayerDamageStatics::Get().DamageDef.AttributeToCapture, EGameplayModOp::Override, Damage));
 
-
-    ACLBaseCharacter* TargetCharacter = Cast<ACLBaseCharacter>(ExecutionParams.GetTargetAbilitySystemComponent()->GetOwnerActor());
-    float CurrentHealth = TargetCharacter->GetHealth();
-
-    //대미지 계산
-    //float Damage = AttackPower - Health;
-
-    //좀 이상한데...
-
-    OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(FPlayerDamageStatics::Get().HealthDef.AttributeToCapture, EGameplayModOp::Additive, CurrentHealth - Damage));
 }

@@ -10,10 +10,6 @@
 
 //여기는 플레이어 -> 몬스터 상대인것만 제작하기
 
-/**
- * 
- */
-
 USTRUCT()
 struct PROJECTCLOUD_API FPlayerDamageStatics
 {
@@ -22,11 +18,8 @@ struct PROJECTCLOUD_API FPlayerDamageStatics
 
 	FPlayerDamageStatics()
 	{
-		HealthDef = FGameplayEffectAttributeCaptureDefinition(UCLEnemyAttributeSet::StaticClass()->FindPropertyByName(GET_MEMBER_NAME_CHECKED(UCLEnemyAttributeSet, Health)), EGameplayEffectAttributeCaptureSource::Target, true);
-		DamageDef = FGameplayEffectAttributeCaptureDefinition(UCLWeaponAttributeSet::StaticClass()->FindPropertyByName(GET_MEMBER_NAME_CHECKED(UCLWeaponAttributeSet, Damage)), EGameplayEffectAttributeCaptureSource::Source, true);
+		DamageDef = FGameplayEffectAttributeCaptureDefinition(UCLEnemyAttributeSet::GetDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
-
-	FGameplayEffectAttributeCaptureDefinition HealthDef;
 	FGameplayEffectAttributeCaptureDefinition DamageDef;
 
 	static const FPlayerDamageStatics& Get()
