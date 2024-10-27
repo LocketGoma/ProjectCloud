@@ -8,6 +8,7 @@
 
 class UInputComponent;
 class UPawnMovementComponent;
+class UCLAbilitySystemComponent;
 class UGameplayAbilitySet;
 class UGameplayEffect;
 
@@ -25,6 +26,8 @@ public:
 
 //--End Actor Override
 	virtual void SetAbilitySystemComponent() PURE_VIRTUAL(ACLBaseCharacter::SetAbilitySystemComponent, );
+
+	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent();
 
 //--Getters
 	virtual float GetHealth() { return 0; }

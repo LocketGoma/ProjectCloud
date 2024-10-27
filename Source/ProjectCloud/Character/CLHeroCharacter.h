@@ -76,6 +76,8 @@ public:
 
 	virtual void SetAbilitySystemComponent() override;
 
+	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent() override;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon")
 	UCAttackerNodeComponent* GetAttackerNode();
 

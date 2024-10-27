@@ -34,8 +34,9 @@ void UCAttackerNodeComponent::BeginPlay()
 	if (WeaponActorClass)
 	{
 		WeaponActor = GetWorld()->SpawnActor<ACLWeapon>(WeaponActorClass);
-
+		WeaponActor->SetOwner(GetOwner());
 		WeaponActor->AttachToComponent(AttackPoint, FAttachmentTransformRules::KeepRelativeTransform);
+		WeaponActor->SetWeaponFromInstance();
 	}
 }
 

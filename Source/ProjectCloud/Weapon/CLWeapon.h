@@ -11,6 +11,7 @@ class UPaperFlipbookComponent;
 class ACLProjectileActor;
 class USphereComponent;
 class UCLWeaponInstance;
+class UCLAbilitySystemComponent;
 
 UCLASS()
 class PROJECTCLOUD_API ACLWeapon : public AActor
@@ -37,8 +38,19 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Reload();
 
+//Getter
+public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const int GetMagazineSize();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const int GetMagazineAmmo();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const int GetSpareAmmo();
 
 
 private:	
@@ -49,16 +61,17 @@ private:
 	TSubclassOf<ACLProjectileActor> ProjectileClass;
 
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EWeaponType WeaponType;
+	TSubclassOf<UCLWeaponInstance> WeaponInstance;
 
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UCLWeaponInstance> WeaponInstance;
+	EWeaponType WeaponType;
 
 	UPROPERTY()
 	USphereComponent* CoreComponent;
 
-public:
+	UCLAbilitySystemComponent* GetOwnerAbilitySystemComponent() const;
 
+public:
 	/** Returns Sprite subobject **/
 	FORCEINLINE class UPaperFlipbookComponent* GetSprite() const { return Sprite; }
 

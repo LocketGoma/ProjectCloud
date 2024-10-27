@@ -210,10 +210,18 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 			}
 
 		}
-
 		PS->GetAbilitySystemComponent()->AddAttributeSetSubobject(AttributeSet);
-
 	}
+}
+
+UCLAbilitySystemComponent* ACLHeroCharacter::GetAbilitySystemComponent()
+{
+	if (ACLPlayerState* PS = Cast<ACLPlayerState>(GetPlayerState()))
+	{
+		return PS->GetAbilitySystemComponent();
+	}
+
+	return nullptr;
 }
 
 UCAttackerNodeComponent* ACLHeroCharacter::GetAttackerNode()

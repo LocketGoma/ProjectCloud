@@ -37,6 +37,12 @@ void ACLBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+//반드시 오버라이드 할것
+UCLAbilitySystemComponent* ACLBaseCharacter::GetAbilitySystemComponent()
+{
+	return nullptr;
+}
+
 void ACLBaseCharacter::DeathEvent()
 {
 	//Do Something

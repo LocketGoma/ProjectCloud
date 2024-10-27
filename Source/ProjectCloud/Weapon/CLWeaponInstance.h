@@ -39,6 +39,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FWeaponInstance MagazineAmmo;
 
+	//Spare는 임시 처리, 나중에 "탄 수 제한"이 있는 무기가 생길 경우 제대로 쓸 예정.
 	UPROPERTY(EditDefaultsOnly)
 	FWeaponInstance SpareAmmo;
 
