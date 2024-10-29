@@ -100,8 +100,7 @@ void ACLWeapon::Attack_Implementation()
 		FTimerHandle TempHandle;
 		GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::Reload, 1.5f, false);
 	}
-
-	//To do 
+	
 	/*
 	* 1. 탄 쏠때 탄환 남았는지 체크	
 	* 2. 남아있으면 1발 줄이고 발사
@@ -121,9 +120,26 @@ void ACLWeapon::Reload_Implementation()
 	{
 		return;
 	}
-	//Mag Size만큼 Mag Ammo 채움
-	ASC->SetLooseGameplayTagCount(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, WeaponInstance.GetDefaultObject()->MagazineSize.Value);
 
+	//1. 무한일때 - 풀 장전
+	if (WeaponInstance.GetDefaultObject()->bInfinity == true)
+	{
+
+		//Mag Size만큼 Mag Ammo 채움
+		ASC->SetLooseGameplayTagCount(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, WeaponInstance.GetDefaultObject()->MagazineSize.Value);
+		
+		return;
+	}	
+	
+	//2. 탄이 비었을때 - 풀 장전 + 탄 감소
+	//3. 탄이 비긴 했는데 남은 탄약이 부족할때 = 부족한 만큼만 채우기
+	int RequestedAmmo = GetMagazineSize() - GetMagazineAmmo();
+	if (GetSpareAmmo() < RequestedAmmo)
+	{
+		RequestedAmmo = GetSpareAmmo();
+	}
+	ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, RequestedAmmo);
+	ASC->RemoveLooseGameplayTag(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag, RequestedAmmo);
 }
 
 const EWeaponType ACLWeapon::GetWeaponType() const
