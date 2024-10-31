@@ -38,6 +38,11 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Reload();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool ReloadEvent();
+
+
+
 //Getter
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -53,7 +58,18 @@ public:
 	const int GetSpareAmmo();
 
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void UpdateWeaponEventType(EWeaponEventType NewEvent);
+
+	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	EWeaponEventType WeaponEventType;
+
 private:	
+	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", UIMin = "0.1", UIMax="10", ClampMin = "0.1"))
+	float ReloadTime;
+
+
 	UPROPERTY(Category = "Weapon", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UPaperFlipbookComponent> Sprite;
 
@@ -65,6 +81,7 @@ private:
 
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EWeaponType WeaponType;
+
 
 	UPROPERTY()
 	USphereComponent* CoreComponent;

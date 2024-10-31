@@ -13,3 +13,28 @@ enum class EWeaponType : uint8
 	Weapon_Melee,
 	Weapon_Launcher
 };
+
+
+UENUM()
+enum class EWeaponEventType : uint8
+{
+	Event_Default,
+	Event_AutoFire,
+	Event_MagaineEmpty,		//탄창이 비었음
+	Event_Reloading,
+	Event_Overheat,
+	Event_AmmoEmpty			//잔탄 없음
+};
+
+
+namespace WeaponUtilites
+{
+	static bool IsWeaponActivate(EWeaponEventType Type)
+	{
+		if (Type == EWeaponEventType::Event_Default || Type == EWeaponEventType::Event_AutoFire)
+			return true;
+		else
+			return false;
+	}
+
+}

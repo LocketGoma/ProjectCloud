@@ -41,6 +41,8 @@ ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
 
 	WeaponType = EWeaponType::Weapon_None;
 
+	ReloadTime = 1.5f;
+
 }
 
 // Called when the game starts or when spawned
@@ -95,12 +97,19 @@ void ACLWeapon::Attack_Implementation()
 		Projectile->LaunchProjectile();
 
 	}
-	else
+	else if (WeaponEventType == EWeaponEventType::Event_MagaineEmpty)
 	{
+		ReloadEvent();
+
 		FTimerHandle TempHandle;
-		GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::Reload, 1.5f, false);
+		GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::Reload, ReloadTime, false);
 	}
 	
+	if (WeaponUtilites::IsWeaponActivate(WeaponEventType) && GetMagazineAmmo() == 0)
+	{
+		UpdateWeaponEventType(EWeaponEventType::Event_MagaineEmpty);		
+	}
+
 	/*
 	* 1. 탄 쏠때 탄환 남았는지 체크	
 	* 2. 남아있으면 1발 줄이고 발사
@@ -114,6 +123,14 @@ void ACLWeapon::Reload_Implementation()
 	{
 		return;
 	}
+
+	if (GetMagazineAmmo() == 0 && GetSpareAmmo() == 0)
+	{
+		//탄약 없음!
+		UpdateWeaponEventType(EWeaponEventType::Event_AmmoEmpty);
+		return;
+	}
+
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
 	if (!ensure(ASC))
@@ -124,22 +141,33 @@ void ACLWeapon::Reload_Implementation()
 	//1. 무한일때 - 풀 장전
 	if (WeaponInstance.GetDefaultObject()->bInfinity == true)
 	{
-
 		//Mag Size만큼 Mag Ammo 채움
-		ASC->SetLooseGameplayTagCount(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, WeaponInstance.GetDefaultObject()->MagazineSize.Value);
-		
-		return;
+		ASC->SetLooseGameplayTagCount(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, WeaponInstance.GetDefaultObject()->MagazineSize.Value);	
 	}	
-	
-	//2. 탄이 비었을때 - 풀 장전 + 탄 감소
-	//3. 탄이 비긴 했는데 남은 탄약이 부족할때 = 부족한 만큼만 채우기
-	int RequestedAmmo = GetMagazineSize() - GetMagazineAmmo();
-	if (GetSpareAmmo() < RequestedAmmo)
+	else
 	{
-		RequestedAmmo = GetSpareAmmo();
+		//2. 탄이 비었을때 - 풀 장전 + 탄 감소
+		//3. 탄이 비긴 했는데 남은 탄약이 부족할때 = 부족한 만큼만 채우기
+		int RequestedAmmo = GetMagazineSize() - GetMagazineAmmo();
+		if (GetSpareAmmo() <= RequestedAmmo)
+		{
+			RequestedAmmo = GetSpareAmmo();
+		}
+		ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, RequestedAmmo);
+		ASC->RemoveLooseGameplayTag(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag, RequestedAmmo);
 	}
-	ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, RequestedAmmo);
-	ASC->RemoveLooseGameplayTag(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag, RequestedAmmo);
+
+	UpdateWeaponEventType(EWeaponEventType::Event_Default);
+}
+
+bool ACLWeapon::ReloadEvent_Implementation()
+{
+	//탄약 비었으면 "Empty!" 이벤트 UI 띄우게 하기 위한 처리
+	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
+		return false;
+
+	UpdateWeaponEventType(EWeaponEventType::Event_Reloading);
+	return true;
 }
 
 const EWeaponType ACLWeapon::GetWeaponType() const
@@ -182,6 +210,15 @@ const int ACLWeapon::GetSpareAmmo()
 		return -1;
 	}
 	return ASC->GetGameplayTagCount(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag);
+}
+
+void ACLWeapon::UpdateWeaponEventType(EWeaponEventType NewEvent)
+{
+	UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponEventType"), true);
+	if (EnumPtr)
+		UE_LOG(LogTemp, Log, TEXT("기존 무기 이벤트 타입 : [%s], 신규 무기 이벤트 타입 : [%s]"), *(EnumPtr->GetNameStringByValue((int64)WeaponEventType)), *(EnumPtr->GetNameStringByValue((int64)NewEvent)));
+
+	WeaponEventType = NewEvent;
 }
 
 UCLAbilitySystemComponent* ACLWeapon::GetOwnerAbilitySystemComponent() const
