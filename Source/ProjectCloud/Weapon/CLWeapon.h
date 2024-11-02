@@ -41,10 +41,16 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	bool ReloadEvent();
 
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void UpdateAmmoEvent();
 
 
 //Getter
 public:
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	AController* GetOwnerController();
+
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;
 
@@ -57,6 +63,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const int GetSpareAmmo();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const bool GetIsInfinite();
 
 public:
 	UFUNCTION(BlueprintCallable)

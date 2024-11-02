@@ -76,6 +76,8 @@ void ACLWeapon::SetWeaponFromInstance()
 	ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineSize.KeyTag, WeaponInstance.GetDefaultObject()->MagazineSize.Value);
 	ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag, WeaponInstance.GetDefaultObject()->SpareAmmo.Value);	
 
+	UpdateAmmoEvent();
+
 }
 
 void ACLWeapon::Attack_Implementation()
@@ -110,6 +112,8 @@ void ACLWeapon::Attack_Implementation()
 		UpdateWeaponEventType(EWeaponEventType::Event_MagaineEmpty);		
 	}
 
+	UpdateAmmoEvent();
+
 	/*
 	* 1. 탄 쏠때 탄환 남았는지 체크	
 	* 2. 남아있으면 1발 줄이고 발사
@@ -124,10 +128,9 @@ void ACLWeapon::Reload_Implementation()
 		return;
 	}
 
-	if (GetMagazineAmmo() == 0 && GetSpareAmmo() == 0)
+	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
 	{
 		//탄약 없음!
-		UpdateWeaponEventType(EWeaponEventType::Event_AmmoEmpty);
 		return;
 	}
 
@@ -156,18 +159,41 @@ void ACLWeapon::Reload_Implementation()
 		ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, RequestedAmmo);
 		ASC->RemoveLooseGameplayTag(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag, RequestedAmmo);
 	}
-
+	UpdateAmmoEvent();
 	UpdateWeaponEventType(EWeaponEventType::Event_Default);
 }
 
 bool ACLWeapon::ReloadEvent_Implementation()
 {
 	//탄약 비었으면 "Empty!" 이벤트 UI 띄우게 하기 위한 처리
-	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
+	if ((GetMagazineAmmo() == 0 && GetSpareAmmo() == 0))
+	{
+		UpdateWeaponEventType(EWeaponEventType::Event_AmmoEmpty);
 		return false;
+	}
+	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
+	{
+		return false;
+	}
 
 	UpdateWeaponEventType(EWeaponEventType::Event_Reloading);
 	return true;
+}
+
+AController* ACLWeapon::GetOwnerController()
+{
+	if (!GetOwner())
+	{
+		return nullptr;
+	}
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+
+	if (IsValid(OwnerPawn))
+	{
+		return OwnerPawn->GetController();
+	}
+
+	return nullptr;
 }
 
 const EWeaponType ACLWeapon::GetWeaponType() const
@@ -210,6 +236,11 @@ const int ACLWeapon::GetSpareAmmo()
 		return -1;
 	}
 	return ASC->GetGameplayTagCount(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag);
+}
+
+const bool ACLWeapon::GetIsInfinite()
+{	
+	return WeaponInstance.GetDefaultObject()->bInfinity;
 }
 
 void ACLWeapon::UpdateWeaponEventType(EWeaponEventType NewEvent)
