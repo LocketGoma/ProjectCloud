@@ -69,30 +69,30 @@ void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 //Duplicated?
-void InitializeDefaultPawnInputBindings()
-{
-	static bool bBindingsAdded = false;
-	if (!bBindingsAdded)
-	{
-		bBindingsAdded = true;
-
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::W, 1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::S, -1.f));
-		
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::A, -1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::D, 1.f));
-
-		// HACK: Android controller bindings in ini files seem to not work
-		//  Direct overrides here some to work
-#if !PLATFORM_ANDROID
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveUp", EKeys::Gamepad_LeftThumbstick, 1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveUp", EKeys::Gamepad_RightThumbstick, -1.f));
-#else
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::Gamepad_LeftX, 1.f));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::Gamepad_LeftY, 1.f));		;
-#endif
-	}
-}
+//void InitializeDefaultPawnInputBindings()
+//{
+//	static bool bBindingsAdded = false;
+//	if (!bBindingsAdded)
+//	{
+//		bBindingsAdded = true;
+//
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::W, 1.f));
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::S, -1.f));
+//		
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::A, -1.f));
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::D, 1.f));
+//
+//		// HACK: Android controller bindings in ini files seem to not work
+//		//  Direct overrides here some to work
+//#if !PLATFORM_ANDROID
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveUp", EKeys::Gamepad_LeftThumbstick, 1.f));
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveUp", EKeys::Gamepad_RightThumbstick, -1.f));
+//#else
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::Gamepad_LeftX, 1.f));
+//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::Gamepad_LeftY, 1.f));		;
+//#endif
+//	}
+//}
 
 void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -100,7 +100,7 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	if (bAddDefaultMovementBindings)
 	{
-		InitializeDefaultPawnInputBindings();
+		//InitializeDefaultPawnInputBindings();
 
 		PlayerInputComponent->BindAxis("DefaultPawn_MoveForward", this, &ACLHeroCharacter::MoveForward);
 		PlayerInputComponent->BindAxis("DefaultPawn_MoveRight", this, &ACLHeroCharacter::MoveRight);

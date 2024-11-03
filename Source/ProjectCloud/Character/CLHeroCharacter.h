@@ -38,7 +38,6 @@ class PROJECTCLOUD_API ACLHeroCharacter : public ACLBaseCharacter
 public:
 	ACLHeroCharacter(const FObjectInitializer& ObjectInitializer);
 
-
 	//--Actor Override
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
