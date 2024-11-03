@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/System/CLEnemyAttributeSet.h"
+#include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "GameplayAbilitySet.h"
 
 
@@ -88,4 +89,28 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 		}
 	}
 
+}
+
+void ACLEnemyCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor && OtherActor != this && OtherComp)
+	{
+		ACLBaseCharacter* TargetCharacter = Cast<ACLBaseCharacter>(OtherActor);
+		if (TargetCharacter)
+		{
+			UAbilitySystemComponent* ASC = TargetCharacter->GetAbilitySystemComponent();
+
+			if (ASC)
+			{
+				FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+				EffectContext.AddSourceObject(this);
+
+				FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DamageGE, 1, EffectContext);
+				if (SpecHandle.IsValid())
+				{
+					ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+				}
+			}
+		}
+	}
 }

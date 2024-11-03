@@ -42,6 +42,13 @@ public:
 
 	TWeakObjectPtr<APawn> GetTargetPlayer() { return TargetPlayer; }
 
+public:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	TSubclassOf<UGameplayEffect> DamageGE;
 
 private:	
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))

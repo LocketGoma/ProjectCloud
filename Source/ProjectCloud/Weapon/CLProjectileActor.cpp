@@ -34,8 +34,8 @@ ACLProjectileActor::ACLProjectileActor()
 	{
 		//MovementComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		MovementComponent->UpdatedComponent = RootComponent;
-		MovementComponent->InitialSpeed = 30.0f;
-		MovementComponent->MaxSpeed = 100.0f;
+		MovementComponent->InitialSpeed = 75.0f;
+		MovementComponent->MaxSpeed = 1000.0f;
 		MovementComponent->bRotationFollowsVelocity = true;
 		MovementComponent->bShouldBounce = false;
 		MovementComponent->ProjectileGravityScale = 0.0f; // No gravity effect
@@ -59,6 +59,7 @@ ACLProjectileActor::ACLProjectileActor()
 	
 	//변수 초기화
 	EffectSize = 100.f;	
+	MaximimLifetime = 30.f;
 	LaunchSpeed = MovementComponent->InitialSpeed;
 
 	CapsuleComponent->OnComponentHit.AddDynamic(this, &ACLProjectileActor::OnHit);
@@ -75,6 +76,17 @@ void ACLProjectileActor::BeginPlay()
 		ArrowComponent->SetSimulatePhysics(false);
 	}
 #endif // WITH_EDITORONLY_DATA
+		
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACLProjectileActor::ActiveDestroyEvent, MaximimLifetime, false);
+
+}
+
+void ACLProjectileActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearTimer(DestroyTimerHandle);
+	DestroyTimerHandle.Invalidate();
 }
 
 void ACLProjectileActor::Tick(float DeltaTime)
@@ -83,7 +95,6 @@ void ACLProjectileActor::Tick(float DeltaTime)
 	{
 		NiagaraComponent->SetWorldLocation(GetActorLocation());
 	}
-
 }
 
 void ACLProjectileActor::LaunchProjectile()
@@ -111,6 +122,11 @@ void ACLProjectileActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		}
 		Destroy();
 	}
+}
+
+void ACLProjectileActor::ActiveDestroyEvent()
+{
+	Destroy();
 }
 
 void ACLProjectileActor::SetNiagaraEffect()

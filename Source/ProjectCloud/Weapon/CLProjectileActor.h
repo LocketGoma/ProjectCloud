@@ -26,6 +26,7 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -38,6 +39,8 @@ public:
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	void ActiveDestroyEvent();
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
@@ -84,6 +87,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float EffectSize;
 
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	float MaximimLifetime;
+
+	FTimerHandle DestroyTimerHandle;
 	
 
 };

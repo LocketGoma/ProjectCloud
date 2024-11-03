@@ -29,6 +29,10 @@ public:
 
 	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent();
 
+	//Health Update 발생시 호출되는 Event
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void UpdateHealthEvent();
+
 //--Getters
 	virtual float GetHealth() { return 0; }
 

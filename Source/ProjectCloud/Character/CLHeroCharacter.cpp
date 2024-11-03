@@ -184,23 +184,25 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 		//특정 GameplayEffect에서 데이터 가져오는 방법
 		if (IsValid(HealthGE))
 		{
-			//FGameplayEffectContextHandle EffectContext = PS->GetAbilitySystemComponent()->MakeEffectContext();
-			//FGameplayEffectSpecHandle SpecHandle = PS->GetAbilitySystemComponent()->MakeOutgoingSpec(HealthGE, 1.0f, EffectContext);
+			FGameplayEffectContextHandle EffectContext = PS->GetAbilitySystemComponent()->MakeEffectContext();
+			FGameplayEffectSpecHandle SpecHandle = PS->GetAbilitySystemComponent()->MakeOutgoingSpec(HealthGE, 1.0f, EffectContext);
 
-			//if (SpecHandle.IsValid())
-			//{
-			//	const FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
-			//	float Health = Spec->Modifiers[0].GetEvaluatedMagnitude();
+			if (SpecHandle.IsValid())
+			{
+				FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
 
-			//	AttributeSet->SetHealth(Health);
-			//}
+				UCLCharacterAttributeSet* NewAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
+				GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
+
+				GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);
+			}
 
 			const UGameplayEffect* GameplayEffect = HealthGE.GetDefaultObject();
 
 
 			for (const FGameplayModifierInfo& Modifier : GameplayEffect->Modifiers)
 			{
-				if (Modifier.Attribute == AttributeSet->HealthAttribute())
+				if (Modifier.Attribute == AttributeSet->GetHealthAttribute())
 				{
 					float Health;
 					Modifier.ModifierMagnitude.GetStaticMagnitudeIfPossible(0, Health);

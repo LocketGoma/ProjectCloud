@@ -2,6 +2,8 @@
 
 
 #include "CLCharacterAttributeSet.h"
+#include "ProjectCloud/Character/CLBaseCharacter.h"
+#include "GameplayEffectExtension.h"
 
 UCLCharacterAttributeSet::UCLCharacterAttributeSet()
 {
@@ -9,14 +11,14 @@ UCLCharacterAttributeSet::UCLCharacterAttributeSet()
 	Mana = 100.f;
 }
 
-FGameplayAttribute UCLCharacterAttributeSet::HealthAttribute()
+FGameplayAttribute UCLCharacterAttributeSet::GetHealthAttribute()
 {
 	static FProperty* Property = FindFieldChecked<FProperty>(UCLCharacterAttributeSet::StaticClass(), GET_MEMBER_NAME_CHECKED(UCLCharacterAttributeSet, Health));
 
 	return FGameplayAttribute(Property);
 }
 
-FGameplayAttribute UCLCharacterAttributeSet::ManaAttribute()
+FGameplayAttribute UCLCharacterAttributeSet::GetManaAttribute()
 {
 	static FProperty* Property = FindFieldChecked<FProperty>(UCLCharacterAttributeSet::StaticClass(), GET_MEMBER_NAME_CHECKED(UCLCharacterAttributeSet, Mana));
 
@@ -41,4 +43,29 @@ float UCLCharacterAttributeSet::GetMana() const
 void UCLCharacterAttributeSet::SetMana(float NewMana)
 {
 	Mana.SetCurrentValue(NewMana);
+}
+
+void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+    Super::PostGameplayEffectExecute(Data);
+
+    if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+    {
+        Health.SetCurrentValue(Health.GetCurrentValue() - Damage.GetCurrentValue());
+    }
+
+    //체력 직접 업데이트
+    if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+    {
+        //Do Something..
+    }
+
+    ACLBaseCharacter* Character = Cast<ACLBaseCharacter>(GetOwningActor());
+    if (Character)
+    {
+        Character->UpdateHealthEvent();
+
+        if(Health.GetCurrentValue() <= 0.0f)
+            Character->DeathEvent(); // 캐릭터의 죽음 처리 함수 호출
+    }
 }
