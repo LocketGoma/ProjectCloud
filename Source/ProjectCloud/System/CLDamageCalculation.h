@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "ProjectCloud/System/CLEnemyAttributeSet.h"
-#include "ProjectCloud/System/CLWeaponAttributeSet.h"
+#include "ProjectCloud/System/CLCombatAttributeSet.h"
 #include "CLDamageCalculation.generated.h"
 
 //여기는 플레이어 -> 몬스터 상대인것만 제작하기
@@ -18,7 +17,7 @@ struct PROJECTCLOUD_API FPlayerDamageStatics
 
 	FPlayerDamageStatics()
 	{
-		DamageDef = FGameplayEffectAttributeCaptureDefinition(UCLEnemyAttributeSet::GetDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+		DamageDef = FGameplayEffectAttributeCaptureDefinition(UCLCombatAttributeSet::GetDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
 	FGameplayEffectAttributeCaptureDefinition DamageDef;
 

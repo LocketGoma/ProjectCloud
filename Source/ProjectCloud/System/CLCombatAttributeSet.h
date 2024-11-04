@@ -5,29 +5,33 @@
 #include "CoreMinimal.h"
 #include "ProjectCloud/System/CLBaseAttributeSet.h"
 #include "AbilitySystemComponent.h"
-#include "CLEnemyAttributeSet.generated.h"
+#include "CLCombatAttributeSet.generated.h"
 
 /**
  * 
  */
+
 UCLASS()
-class PROJECTCLOUD_API UCLEnemyAttributeSet : public UCLBaseAttributeSet
+class PROJECTCLOUD_API UCLCombatAttributeSet : public UCLBaseAttributeSet
 {
 	GENERATED_BODY()
+	
+public:
+	ATTRIBUTE_ACCESSORS(UCLCombatAttributeSet, Mana)
+	ATTRIBUTE_ACCESSORS(UCLCombatAttributeSet, Damage)
+	ATTRIBUTE_ACCESSORS(UCLCombatAttributeSet, Health)
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
-	FGameplayAttributeData Health;
+	FGameplayAttributeData Mana;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	FGameplayAttributeData Damage;
 
-	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
+	FGameplayAttributeData Health;
+
 
 	friend class UCLDamageCalculation;
 	friend struct FPlayerDamageStatics;
-
-public:
-	ATTRIBUTE_ACCESSORS(UCLEnemyAttributeSet, Health)
-	ATTRIBUTE_ACCESSORS(UCLEnemyAttributeSet, Damage)
 };

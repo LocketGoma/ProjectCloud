@@ -16,17 +16,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnGameplayAttributeValueChanged,
 UCLASS()
 class PROJECTCLOUD_API UCLCharacterAttributeSet : public UCLBaseAttributeSet
 {
-	GENERATED_BODY()
-	
-public:	
-	FGameplayAttribute GetHealthAttribute();
-	FGameplayAttribute GetManaAttribute();
+	GENERATED_BODY()	
 
-	float GetHealth() const;
-	void SetHealth(float NewHealth);
-
-	float GetMana() const;
-	void SetMana(float NewMana);
+public:
+	ATTRIBUTE_ACCESSORS(UCLCharacterAttributeSet, Health)
+	ATTRIBUTE_ACCESSORS(UCLCharacterAttributeSet, Mana)
+	ATTRIBUTE_ACCESSORS(UCLCharacterAttributeSet, Damage)
 
 protected:
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
@@ -38,12 +33,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	FGameplayAttributeData Mana;
-	//피격 대미지 처리용
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
+
+	//피격 대미지 처리용 변수. 에디터상에서 수정 X
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	FGameplayAttributeData Damage;
 
 	friend class UCLHittedDamageCalculation;
-
-public:
-	ATTRIBUTE_ACCESSORS(UCLCharacterAttributeSet, Damage)
 };

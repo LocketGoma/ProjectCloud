@@ -7,41 +7,6 @@
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
-
-FGameplayAttribute UCLCharacterAttributeSet::GetHealthAttribute()
-{
-	static FProperty* Property = FindFieldChecked<FProperty>(UCLCharacterAttributeSet::StaticClass(), GET_MEMBER_NAME_CHECKED(UCLCharacterAttributeSet, Health));
-
-	return FGameplayAttribute(Property);
-}
-
-FGameplayAttribute UCLCharacterAttributeSet::GetManaAttribute()
-{
-	static FProperty* Property = FindFieldChecked<FProperty>(UCLCharacterAttributeSet::StaticClass(), GET_MEMBER_NAME_CHECKED(UCLCharacterAttributeSet, Mana));
-
-	return FGameplayAttribute(Property);
-}
-
-float UCLCharacterAttributeSet::GetHealth() const
-{
-	return Health.GetCurrentValue();
-}
-
-void UCLCharacterAttributeSet::SetHealth(float NewHealth)
-{
-	Health.SetCurrentValue(NewHealth);
-}
-
-float UCLCharacterAttributeSet::GetMana() const
-{
-	return Mana.GetCurrentValue();
-}
-
-void UCLCharacterAttributeSet::SetMana(float NewMana)
-{
-	Mana.SetCurrentValue(NewMana);
-}
-
 bool UCLCharacterAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
     if (!Super::PreGameplayEffectExecute(Data))
@@ -91,8 +56,10 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
     Health.SetCurrentValue(Health.GetCurrentValue() + ChangedHealth);
     Character->UpdateHealthEvent(ChangedHealth);
 
-    //if(Health.GetCurrentValue() <= 0.0f)
-    //    Character->DeathEvent(); // 캐릭터의 죽음 처리 함수 호출
+    if (Health.GetCurrentValue() <= 0.0f)
+    {
+        Character->DeathEvent(); // 캐릭터의 죽음 처리 함수 호출
+    }
 
 
 }

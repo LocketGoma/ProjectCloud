@@ -71,9 +71,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
-
-	UPROPERTY()
-	UCLWeaponAttributeSet* AttributeSet;
 		
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UPROPERTY()

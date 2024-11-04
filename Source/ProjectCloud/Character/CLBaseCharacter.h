@@ -58,7 +58,7 @@ protected:
 	TSubclassOf<UGameplayEffect> AttributeGameplayEffect;
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Config", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Config", meta = (AllowPrivateAccess = "true", UIMin = "0", ClampMin = "0"))
 	float ImmmuneTime;
 
 	FTimerHandle ImmuneTimerHandle;

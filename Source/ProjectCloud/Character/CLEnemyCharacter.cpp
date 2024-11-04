@@ -6,7 +6,8 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "AIController.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
-#include "ProjectCloud/System/CLEnemyAttributeSet.h"
+#include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/System/CLCombatAttributeSet.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "GameplayAbilitySet.h"
 
@@ -43,7 +44,7 @@ void ACLEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 float ACLEnemyCharacter::GetHealth()
 {
 	//const UCLEnemyAttributeSet* AttributeSet = Cast<UCLEnemyAttributeSet>(GetAbilitySystemComponent()->GetAttributeSet(UCLEnemyAttributeSet::StaticClass()));
-	const UCLEnemyAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLEnemyAttributeSet>();
+	const UCLCharacterAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLCharacterAttributeSet>();
 
 	return AttributeSet->GetHealth();
 }
@@ -85,8 +86,12 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 		{
 			FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
 
-			UCLEnemyAttributeSet* NewAttributeSet = NewObject<UCLEnemyAttributeSet>(this);
-			GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
+			//어트리뷰트셋 추가
+			//Lyra의 ALyraPlayerState에 보면 AbilitySystemComponent::InitializeComponent 호출될때 자동으로 추가된다는 코멘트가 있긴한데..
+			UCLCombatAttributeSet* NewCombatAttributeSet = NewObject<UCLCombatAttributeSet>(this);
+			UCLCharacterAttributeSet* NewCharacterAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
+			GetAbilitySystemComponent()->AddAttributeSetSubobject(NewCombatAttributeSet);
+			GetAbilitySystemComponent()->AddAttributeSetSubobject(NewCharacterAttributeSet);
 
 			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);			
 		}

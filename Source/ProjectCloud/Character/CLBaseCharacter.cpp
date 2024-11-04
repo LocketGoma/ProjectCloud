@@ -28,6 +28,8 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 
+	ImmmuneTime = 0.1f;
+
 	bImmune = false;
 }
 
@@ -58,15 +60,17 @@ void ACLBaseCharacter::UpdateHealthEvent_Implementation(float ChangedHealth)
 
 void ACLBaseCharacter::SetImmunity(bool NewImmunity)
 {
-	if (NewImmunity == true)
+	if (IsValid(GetAbilitySystemComponent()))
 	{
-		GetAbilitySystemComponent()->AddLooseGameplayTag(TAG_Event_Status_DamageImmunity);
+		if (NewImmunity == true)
+		{
+			GetAbilitySystemComponent()->AddLooseGameplayTag(TAG_Event_Status_DamageImmunity);
+		}
+		else
+		{
+			GetAbilitySystemComponent()->SetLooseGameplayTagCount(TAG_Event_Status_DamageImmunity, 0);
+		}
 	}
-	else
-	{
-		GetAbilitySystemComponent()->SetLooseGameplayTagCount(TAG_Event_Status_DamageImmunity, 0);
-	}
-
 	bImmune = NewImmunity;
 
 }
