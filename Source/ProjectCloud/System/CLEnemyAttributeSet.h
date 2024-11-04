@@ -15,7 +15,6 @@ class PROJECTCLOUD_API UCLEnemyAttributeSet : public UCLBaseAttributeSet
 {
 	GENERATED_BODY()
 
-
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	FGameplayAttributeData Health;

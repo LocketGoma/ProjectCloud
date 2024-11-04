@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "CLEnemyCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BlackboardData.h"
@@ -15,6 +16,8 @@ ACLEnemyCharacter::ACLEnemyCharacter(const FObjectInitializer& ObjectInitializer
 {
 	AbilityComponent = CreateDefaultSubobject<UCLAbilitySystemComponent>("AbilitySystemComponent");	
 	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);	
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACLEnemyCharacter::OnHit);
 }
 
 void ACLEnemyCharacter::BeginPlay()
@@ -73,10 +76,10 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 	}
 	AbilityComponent->InitAbilityActorInfo(this, this);
 
-	if (IsValid(HealthGE))
+	if (IsValid(AttributeGameplayEffect))
 	{
 		FGameplayEffectContextHandle EffectContext = GetAbilitySystemComponent()->MakeEffectContext();
-		FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(HealthGE, 1.0f, EffectContext);
+		FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(AttributeGameplayEffect, 1.0f, EffectContext);
 
 		if (SpecHandle.IsValid())
 		{
@@ -88,7 +91,6 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);			
 		}
 	}
-
 }
 
 void ACLEnemyCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

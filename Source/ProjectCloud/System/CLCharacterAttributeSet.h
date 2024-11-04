@@ -10,14 +10,15 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnGameplayAttributeValueChanged, const FGameplayAttribute&, Attribute, float, OldValue, float, NewValue);
+
+
 UCLASS()
 class PROJECTCLOUD_API UCLCharacterAttributeSet : public UCLBaseAttributeSet
 {
 	GENERATED_BODY()
 	
-public:
-	UCLCharacterAttributeSet();
-	
+public:	
 	FGameplayAttribute GetHealthAttribute();
 	FGameplayAttribute GetManaAttribute();
 
@@ -27,7 +28,8 @@ public:
 	float GetMana() const;
 	void SetMana(float NewMana);
 
-private:
+protected:
+	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 private:

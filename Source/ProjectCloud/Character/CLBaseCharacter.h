@@ -30,19 +30,39 @@ public:
 	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent();
 
 	//Health Update 발생시 호출되는 Event
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void UpdateHealthEvent();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void UpdateHealthEvent(float ChangedHealth);
 
 //--Getters
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual float GetHealth() { return 0; }
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsImmunity() { return bImmune; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetImmunity(bool NewImmunity);
 
 	UFUNCTION()
 	virtual void DeathEvent();
 
+private:
+	void ClearImmunityState();
+
+protected:
 	//적용시킬 AbilitySet
-	UPROPERTY(EditDefaultsOnly, meta=(Category="Settings"))
+	UPROPERTY(EditDefaultsOnly, meta = (Category = "Settings"))
 	TObjectPtr<UGameplayAbilitySet> AbilitySet;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
-	TSubclassOf<UGameplayEffect> HealthGE;
+	TSubclassOf<UGameplayEffect> AttributeGameplayEffect;
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Config", meta = (AllowPrivateAccess = "true"))
+	float ImmmuneTime;
+
+	FTimerHandle ImmuneTimerHandle;
+
+	bool bImmune;
+
 };

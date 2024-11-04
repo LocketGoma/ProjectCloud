@@ -45,8 +45,6 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
-
-	AttributeSet = CreateDefaultSubobject<UCLCharacterAttributeSet>(TEXT("AttributeSet"));
 }
 
 void ACLHeroCharacter::BeginPlay()
@@ -68,40 +66,12 @@ void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-//Duplicated?
-//void InitializeDefaultPawnInputBindings()
-//{
-//	static bool bBindingsAdded = false;
-//	if (!bBindingsAdded)
-//	{
-//		bBindingsAdded = true;
-//
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::W, 1.f));
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::S, -1.f));
-//		
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::A, -1.f));
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::D, 1.f));
-//
-//		// HACK: Android controller bindings in ini files seem to not work
-//		//  Direct overrides here some to work
-//#if !PLATFORM_ANDROID
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveUp", EKeys::Gamepad_LeftThumbstick, 1.f));
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveUp", EKeys::Gamepad_RightThumbstick, -1.f));
-//#else
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveRight", EKeys::Gamepad_LeftX, 1.f));
-//		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("DefaultPawn_MoveForward", EKeys::Gamepad_LeftY, 1.f));		;
-//#endif
-//	}
-//}
-
 void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
 
 	if (bAddDefaultMovementBindings)
 	{
-		//InitializeDefaultPawnInputBindings();
-
 		PlayerInputComponent->BindAxis("DefaultPawn_MoveForward", this, &ACLHeroCharacter::MoveForward);
 		PlayerInputComponent->BindAxis("DefaultPawn_MoveRight", this, &ACLHeroCharacter::MoveRight);
 	}
@@ -182,10 +152,10 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 		PS->GetAbilitySystemComponent()->BindInputActions(InputConfig, EnhancedInputComponent);
 
 		//특정 GameplayEffect에서 데이터 가져오는 방법
-		if (IsValid(HealthGE))
+		if (IsValid(AttributeGameplayEffect))
 		{
 			FGameplayEffectContextHandle EffectContext = PS->GetAbilitySystemComponent()->MakeEffectContext();
-			FGameplayEffectSpecHandle SpecHandle = PS->GetAbilitySystemComponent()->MakeOutgoingSpec(HealthGE, 1.0f, EffectContext);
+			FGameplayEffectSpecHandle SpecHandle = PS->GetAbilitySystemComponent()->MakeOutgoingSpec(AttributeGameplayEffect, 1.0f, EffectContext);
 
 			if (SpecHandle.IsValid())
 			{
@@ -196,23 +166,7 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 
 				GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);
 			}
-
-			const UGameplayEffect* GameplayEffect = HealthGE.GetDefaultObject();
-
-
-			for (const FGameplayModifierInfo& Modifier : GameplayEffect->Modifiers)
-			{
-				if (Modifier.Attribute == AttributeSet->GetHealthAttribute())
-				{
-					float Health;
-					Modifier.ModifierMagnitude.GetStaticMagnitudeIfPossible(0, Health);
-
-					AttributeSet->SetHealth(Health);
-				}
-			}
-
 		}
-		PS->GetAbilitySystemComponent()->AddAttributeSetSubobject(AttributeSet);
 	}
 }
 
@@ -248,7 +202,9 @@ ACLWeapon* ACLHeroCharacter::GetWeaponActor()
 
 float ACLHeroCharacter::GetHealth()
 {
-	return 0.0f;
+	const UCLCharacterAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLCharacterAttributeSet>();
+
+	return AttributeSet->GetHealth();
 }
 
 APlayerController* ACLHeroCharacter::GetPlayerController() const

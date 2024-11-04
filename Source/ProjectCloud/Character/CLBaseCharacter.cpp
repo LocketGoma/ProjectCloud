@@ -6,7 +6,9 @@
 #include "Engine/CollisionProfile.h"
 #include "GameplayAbilitySet.h"
 #include "Components/CapsuleComponent.h"
+#include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 
 ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -25,6 +27,8 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	GetCapsuleComponent()->SetCapsuleRadius(16.f);
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
+
+	bImmune = false;
 }
 
 void ACLBaseCharacter::BeginPlay()
@@ -43,10 +47,42 @@ UCLAbilitySystemComponent* ACLBaseCharacter::GetAbilitySystemComponent()
 	return nullptr;
 }
 
+void ACLBaseCharacter::UpdateHealthEvent_Implementation(float ChangedHealth)
+{
+	if (!ImmuneTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().SetTimer(ImmuneTimerHandle, this, &ACLBaseCharacter::ClearImmunityState, ImmmuneTime, false);
+		SetImmunity(true);
+	}
+}
+
+void ACLBaseCharacter::SetImmunity(bool NewImmunity)
+{
+	if (NewImmunity == true)
+	{
+		GetAbilitySystemComponent()->AddLooseGameplayTag(TAG_Event_Status_DamageImmunity);
+	}
+	else
+	{
+		GetAbilitySystemComponent()->SetLooseGameplayTagCount(TAG_Event_Status_DamageImmunity, 0);
+	}
+
+	bImmune = NewImmunity;
+
+}
+
 void ACLBaseCharacter::DeathEvent()
 {
 	//Do Something
 
 	Destroy();
+}
+
+void ACLBaseCharacter::ClearImmunityState()
+{
+	GetWorld()->GetTimerManager().ClearTimer(ImmuneTimerHandle);
+	ImmuneTimerHandle.Invalidate();
+
+	SetImmunity(false);
 }
 

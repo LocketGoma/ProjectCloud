@@ -8,3 +8,4 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_Health, "Attribute.Data.Health");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Weapon_MagazineAmmo, "Weapon.Data.MagazineAmmo");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Weapon_MagazineSize, "Weapon.Data.MagazineSize");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Weapon_SpareAmmo, "Weapon.Data.SpareAmmo");
+UE_DEFINE_GAMEPLAY_TAG(TAG_Event_Status_DamageImmunity, "Event.Status.DamageImmunity");

@@ -137,14 +137,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
 	UCLAbilityInputConfig* InputConfig;
-
-	UPROPERTY()
-	UCLCharacterAttributeSet* AttributeSet;
-
+	
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character")
 	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
-
 
 private:
 	//nothappa : 디버그 모드
