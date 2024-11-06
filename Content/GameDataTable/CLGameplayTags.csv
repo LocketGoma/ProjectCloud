@@ -1,5 +1,11 @@
 Name,Tag,DevComment
-Input.Action.Attack,Input.Action.Attack,
+Input.Action.Move,Input.Action.Move,
+Input.Action.Attack.Main,Input.Action.Attack.Main,
+Input.Action.Attack.Sub,Input.Action.Attack.Sub,
+Input.Action.Reload,Input.Action.Reload,
+Input.Action.Spell.Action,Input.Action.Spell.Action,
+Input.Action.Spell.Command,Input.Action.Spell.Command,
+Input.Action.Dodge,Input.Action.Dodge,
 Attribute.Data.Damage,Attribute.Data.Damage,
 Attribute.Data.Health,Attribute.Data.Health,
 Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Max MagineAmmo

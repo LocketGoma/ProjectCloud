@@ -6,7 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
-#include "ProjectCloud/System/CLAbilityinputconfig.h"
+#include "ProjectCloud/Input/CLAbilityInputConfig.h"
 
 bool UCLAbilitySystemComponent::BindInputActions(const UCLAbilityInputConfig* InputConfig, UEnhancedInputComponent* EnhancedInputComponent)
 {
@@ -16,7 +16,7 @@ bool UCLAbilitySystemComponent::BindInputActions(const UCLAbilityInputConfig* In
 		return false;
 	}
 
-	for (const FCLInputAction Action : InputConfig->AbilityInputActions)
+	for (const FCloudInputAction Action : InputConfig->AbilityInputActions)
 	{
 		InputactionList.Add(Action.InputAction, Action.InputTag);
 

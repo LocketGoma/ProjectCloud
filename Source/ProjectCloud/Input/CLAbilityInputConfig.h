@@ -1,13 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "Engine/DataAsset.h"
 #include "GameplayTagContainer.h"
 #include "CLAbilityInputConfig.generated.h"
 
+/**
+ * InputAction과 Tag (Trigger Tag)를 매핑시키는 데이터에셋
+ */
+
 USTRUCT(BlueprintType)
-struct FCLInputAction
+struct FCloudInputAction
 {
 	GENERATED_BODY()
 
@@ -30,21 +32,22 @@ class PROJECTCLOUD_API UCLAbilityInputConfig : public UDataAsset
 	
 
 public:
-
 	UCLAbilityInputConfig(const FObjectInitializer& ObjectInitializer);
 
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
+	//태그를 찾아주는것도 필요할까...?
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
+	const UInputAction* FindNativeInputActionFromTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	const UInputAction* FindAbilityInputActionFromTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
 
 public:
 	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and must be manually bound.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
-	TArray<FCLInputAction> NativeInputActions;
+	TArray<FCloudInputAction> NativeInputActions;
 
 	// List of input actions used by the owner.  These input actions are mapped to a gameplay tag and are automatically bound to abilities with matching input tags.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
-	TArray<FCLInputAction> AbilityInputActions;
+	TArray<FCloudInputAction> AbilityInputActions;
 };

@@ -4,7 +4,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
-#include "ProjectCloud/System/CLAbilityInputConfig.h"
 #include "CLAbilitySystemComponent.generated.h"
 
 class UInputAction;
