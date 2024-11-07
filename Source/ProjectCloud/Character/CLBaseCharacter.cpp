@@ -1,10 +1,9 @@
-// CopyLight : LocketGoma
-
+// Copyright @Locketgoma. All Rights Reserved.
 
 #include "CLBaseCharacter.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Engine/CollisionProfile.h"
-#include "GameplayAbilitySet.h"
+#include "ProjectCloud/System/CLAbilitySet.h"
 #include "Components/CapsuleComponent.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/System/CLCharacterAttributeSet.h"

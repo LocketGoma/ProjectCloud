@@ -48,26 +48,6 @@ public:
 	virtual void UpdateNavigationRelevance() override;
 	// End Pawn overrides
 
-	//--Copy From DefaultPawn
-	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void MoveForward(float Val);
-
-	/**
-	 * Input callback to strafe right in local space (or left if Val is negative).
-	 * @param Val Amount of movement in the right direction (or left if negative).
-	 * @see APawn::AddMovementInput()
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void MoveRight(float Val);
-
-	/**
-	 * Input callback to move up in world space (or down if Val is negative).
-	 * @param Val Amount of movement in the world up direction (or down if negative).
-	 * @see APawn::AddMovementInput()
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void MoveUp_World(float Val);
-
 //--Get/Set
 
 	UFUNCTION(BlueprintCallable)
@@ -85,21 +65,18 @@ public:
 
 	virtual float GetHealth() override;
 
+//Native Actions
 protected:
-
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-
-	//디버그용
-	void BaseAttack(const FInputActionValue& Value);
 
 private:
 	void RotateAttackPoint(float Val);
 
+	void Input_LookMouse(const FInputActionValue& InputActionValue);
+
 	void TrackingMousePosition(FVector Position);
+	void TrackingMousePosition(FVector2D Position);
 
 public:
 
@@ -123,17 +100,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> InputContext;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
-
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
-
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* AttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
 	UCLAbilityInputConfig* InputConfig;

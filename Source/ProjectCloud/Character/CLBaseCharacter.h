@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright @Locketgoma. All Rights Reserved.
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,7 +9,7 @@
 class UInputComponent;
 class UPawnMovementComponent;
 class UCLAbilitySystemComponent;
-class UGameplayAbilitySet;
+class UCLAbilitySet;
 class UGameplayEffect;
 
 UCLASS(config = Game, Blueprintable, BlueprintType)
@@ -51,10 +51,10 @@ private:
 
 protected:
 	//적용시킬 AbilitySet
-	UPROPERTY(EditDefaultsOnly, meta = (Category = "Settings"))
-	TObjectPtr<UGameplayAbilitySet> AbilitySet;
+	UPROPERTY(EditDefaultsOnly, meta = (Category = "Character|Settings"))
+	TObjectPtr<UCLAbilitySet> AbilitySet;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, Category = "Character|Attributes")
 	TSubclassOf<UGameplayEffect> AttributeGameplayEffect;
 
 private:

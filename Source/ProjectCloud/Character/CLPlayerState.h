@@ -10,7 +10,7 @@
  * 
  */
 class UCLAbilitySystemComponent;
-class UGameplayAbilitySet;
+class UCLAbilitySet;
 
 UCLASS()
 class PROJECTCLOUD_API ACLPlayerState : public APlayerState
@@ -21,10 +21,7 @@ class PROJECTCLOUD_API ACLPlayerState : public APlayerState
 
 public:
 	UCLAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
-	void SetAbilitiesFromActionSet(UGameplayAbilitySet* AbilitySet);
-
-private:
-	void CopyAbilitesToPawn();
+	void SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet);
 
 private:
 	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;

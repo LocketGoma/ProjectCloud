@@ -2,6 +2,7 @@ Name,Tag,DevComment
 Input.Action.Move,Input.Action.Move,
 Input.Action.Attack.Main,Input.Action.Attack.Main,
 Input.Action.Attack.Sub,Input.Action.Attack.Sub,
+Input.Action.Look.Mouse,Input.Action.Look.Mouse,
 Input.Action.Reload,Input.Action.Reload,
 Input.Action.Spell.Action,Input.Action.Spell.Action,
 Input.Action.Spell.Command,Input.Action.Spell.Command,

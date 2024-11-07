@@ -6,21 +6,20 @@
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
-#include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "CLPlayerState.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/InputComponent.h"
-#include "ProjectCloud/Components/CLAttackerNodeComponent.h"
-#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
+#include "ProjectCloud/Components/CLAbilitySystemComponent.h"
+#include "ProjectCloud/Components/CLAttackerNodeComponent.h"
 #include "ProjectCloud/System/CLCharacterAttributeSet.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
+#include "ProjectCloud/Input/CLInputComponent.h"
+#include "ProjectCloud/ProjectCloudLogChannels.h"
 
-//UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Attack, "Input.Action.Attack");
-//UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Health, "Attribute.Data.Health");
 
 ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -69,31 +68,19 @@ void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
-
-	if (bAddDefaultMovementBindings)
-	{
-		PlayerInputComponent->BindAxis("DefaultPawn_MoveForward", this, &ACLHeroCharacter::MoveForward);
-		PlayerInputComponent->BindAxis("DefaultPawn_MoveRight", this, &ACLHeroCharacter::MoveRight);
-	}
-
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	if (UCLInputComponent* CLInputComponent = Cast<UCLInputComponent>(PlayerInputComponent)) {
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Move);
-
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACLHeroCharacter::BaseAttack);
-
+		//InputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Move);
+		CLInputComponent->BindNativeAction(InputConfig, TAG_Input_Move, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Move, false);
+		CLInputComponent->BindNativeAction(InputConfig, TAG_Input_Look_Mouse, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Input_LookMouse, false);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		UE_LOG(LogCloud, Error, TEXT("'%s' Failed to find an Cloud Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-	PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
+	//PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
 
 }
 
@@ -102,42 +89,6 @@ void ACLHeroCharacter::UpdateNavigationRelevance()
 	if (RootComponent)
 	{
 		RootComponent->SetCanEverAffectNavigation(bCanAffectNavigationGeneration);
-	}
-}
-
-void ACLHeroCharacter::MoveForward(float Val)
-{
-	if (Val != 0.f)
-	{
-		if (Controller)
-		{
-			FRotator const ControlSpaceRot = Controller->GetControlRotation();
-
-			// transform to world space and add it
-			AddMovementInput(FRotationMatrix(ControlSpaceRot).GetScaledAxis(EAxis::X), Val);
-		}
-	}
-}
-
-void ACLHeroCharacter::MoveRight(float Val)
-{
-	if (Val != 0.f)
-	{
-		if (Controller)
-		{
-			FRotator const ControlSpaceRot = Controller->GetControlRotation();
-
-			// transform to world space and add it
-			AddMovementInput(FRotationMatrix(ControlSpaceRot).GetScaledAxis(EAxis::Y), Val);
-		}
-	}
-}
-
-void ACLHeroCharacter::MoveUp_World(float Val)
-{
-	if (Val != 0.f)
-	{
-		AddMovementInput(FVector::UpVector, Val);
 	}
 }
 
@@ -186,7 +137,6 @@ UCAttackerNodeComponent* ACLHeroCharacter::GetAttackerNode()
 	{
 		return nullptr;
 	}
-
 	return AttackerComponent;
 }
 
@@ -239,30 +189,6 @@ void ACLHeroCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-//TO DO : 어빌리티로 변경
-void ACLHeroCharacter::Look(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
-}
-
-void ACLHeroCharacter::BaseAttack(const FInputActionValue& Value)
-{
-	if (ACLPlayerState* PS = Cast<ACLPlayerState>(GetPlayerState()))
-	{
-		FGameplayEventData TempPayload;
-		TempPayload.EventTag = TAG_Attack;
-		PS->GetAbilitySystemComponent()->HandleGameplayEvent(TAG_Attack, &TempPayload);		
-	}
-}
-
 void ACLHeroCharacter::RotateAttackPoint(float Val)
 {	
 	if (AttackerComponent && Val != 0.f)
@@ -271,10 +197,24 @@ void ACLHeroCharacter::RotateAttackPoint(float Val)
 	}
 }
 
+//얘 왜 클릭해야 작동하냐? <- 일단 나중에 수정하기
+void ACLHeroCharacter::Input_LookMouse(const FInputActionValue& InputActionValue)
+{
+	const FVector2D Value = InputActionValue.Get<FVector2D>();
+
+	TrackingMousePosition(Value);
+}
+
 void ACLHeroCharacter::TrackingMousePosition(FVector Position)
 {
-	FHitResult HitResult;
-	FVector2D MousePosition = FVector2D(Position.X, Position.Y);
+	const FVector2D Value = FVector2D(Position.X, Position.Y);
+
+	TrackingMousePosition(Value);
+}
+
+void ACLHeroCharacter::TrackingMousePosition(FVector2D MousePosition)
+{
+	FHitResult HitResult;	
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);		
