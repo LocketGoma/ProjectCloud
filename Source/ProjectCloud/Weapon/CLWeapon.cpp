@@ -8,6 +8,7 @@
 #include "ProjectCloud/Weapon/CLWeaponInstance.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/Weapon/CLProjectileActor.h"
+#include "ProjectCloud/ProjectCloudLogChannels.h"
 
 FName ACLWeapon::SpriteComponentName(TEXT("Sprite0"));
 ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
@@ -80,8 +81,36 @@ void ACLWeapon::SetWeaponFromInstance()
 
 }
 
+bool ACLWeapon::CanReload()
+{
+	if (!ensure(WeaponInstance))
+	{
+		UE_LOG(LogCloud, Error, TEXT("정상적인 무기를 사용하고 있지 않습니다!"));
+		return false;
+	}
+
+	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
+	{
+		//탄약 없음!
+		return false;
+	}	
+	if ((GetMagazineAmmo() == 0 && GetSpareAmmo() == 0))
+	{
+		UpdateWeaponEventType(EWeaponEventType::Event_AmmoEmpty);
+		return false;
+	}
+
+	return true;
+}
+
 void ACLWeapon::Attack_Implementation()
 {
+	//재장전중에는 탄 못쏘게
+	if (WeaponEventType == EWeaponEventType::Event_Reloading)
+	{
+		return;
+	}
+
 	if (GetMagazineAmmo() > 0)
 	{
 		UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
@@ -93,8 +122,11 @@ void ACLWeapon::Attack_Implementation()
 
 		ASC->RemoveLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, 1);
 
+		FActorSpawnParameters SpawnParameter;
+		SpawnParameter.Owner = GetOwner();
+
 		FRotator Rotation = GetRootComponent()->GetRelativeRotation();
-		ACLProjectileActor* Projectile = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation);
+		ACLProjectileActor* Projectile = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation, SpawnParameter);
 		Projectile->LaunchVector = GetActorForwardVector();
 		Projectile->LaunchProjectile();
 
@@ -102,9 +134,6 @@ void ACLWeapon::Attack_Implementation()
 	else if (WeaponEventType == EWeaponEventType::Event_MagaineEmpty)
 	{
 		ReloadEvent();
-
-		FTimerHandle TempHandle;
-		GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::Reload, ReloadTime, false);
 	}
 	
 	if (WeaponUtilites::IsWeaponActivate(WeaponEventType) && GetMagazineAmmo() == 0)
@@ -123,17 +152,6 @@ void ACLWeapon::Attack_Implementation()
 
 void ACLWeapon::Reload_Implementation()
 {
-	if (!ensure(WeaponInstance))
-	{
-		return;
-	}
-
-	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
-	{
-		//탄약 없음!
-		return;
-	}
-
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
 	if (!ensure(ASC))
@@ -163,21 +181,16 @@ void ACLWeapon::Reload_Implementation()
 	UpdateWeaponEventType(EWeaponEventType::Event_Default);
 }
 
-bool ACLWeapon::ReloadEvent_Implementation()
+void ACLWeapon::ReloadEvent_Implementation()
 {
-	//탄약 비었으면 "Empty!" 이벤트 UI 띄우게 하기 위한 처리
-	if ((GetMagazineAmmo() == 0 && GetSpareAmmo() == 0))
+	if (!CanReload())
 	{
-		UpdateWeaponEventType(EWeaponEventType::Event_AmmoEmpty);
-		return false;
+		return;
 	}
-	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
-	{
-		return false;
-	}
+	UpdateWeaponEventType(EWeaponEventType::Event_Reloading);	
 
-	UpdateWeaponEventType(EWeaponEventType::Event_Reloading);
-	return true;
+	FTimerHandle TempHandle;
+	GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::Reload, ReloadTime, false);
 }
 
 AController* ACLWeapon::GetOwnerController()
@@ -200,9 +213,14 @@ const EWeaponType ACLWeapon::GetWeaponType() const
 {
 	if (!ensureAlways(WeaponType == EWeaponType::Weapon_None))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("잘못된 무기 타입을 사용하고 있습니다."));
+		UE_LOG(LogCloud, Warning, TEXT("잘못된 무기 타입을 사용하고 있습니다."));
 	}
 	return WeaponType;
+}
+
+const EWeaponEventType ACLWeapon::GetWeaponEventType() const
+{
+	return WeaponEventType;
 }
 
 const int ACLWeapon::GetMagazineSize()
@@ -241,6 +259,11 @@ const int ACLWeapon::GetSpareAmmo()
 const bool ACLWeapon::GetIsInfinite()
 {	
 	return WeaponInstance.GetDefaultObject()->bInfinity;
+}
+
+const float ACLWeapon::GetBaseWeaponDamage()
+{
+	return WeaponInstance.GetDefaultObject()->BaseDamage;
 }
 
 void ACLWeapon::UpdateWeaponEventType(EWeaponEventType NewEvent)

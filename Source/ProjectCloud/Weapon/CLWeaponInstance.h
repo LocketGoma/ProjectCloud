@@ -33,15 +33,22 @@ public:
 	UCLWeaponInstance(const FObjectInitializer& ObjectInitializer);
 
 public:
+	UPROPERTY(EditDefaultsOnly, meta=(UIMin="0",ClampMin = "0"))
+	float BaseDamage;
+
+	//탄창 용량
 	UPROPERTY(EditDefaultsOnly)
 	FWeaponInstance MagazineSize;
 
+	//즉응탄 (탄창에 남은 탄)
 	UPROPERTY(EditDefaultsOnly)
 	FWeaponInstance MagazineAmmo;
 
+	//예비탄
 	UPROPERTY(EditDefaultsOnly)
 	FWeaponInstance SpareAmmo;
 
+	//예비탄 개념을 가지고 있을지 여부
 	UPROPERTY(EditDefaultsOnly)
 	bool bInfinity = false;
 };

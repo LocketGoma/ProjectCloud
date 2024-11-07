@@ -24,6 +24,7 @@ class UInputAction;
 class UCLAbilityInputConfig;
 class UCLCharacterAttributeSet;
 class ACLWeapon;
+struct FGameplayTag;
 struct FInputActionValue;
 
 //구조
@@ -68,13 +69,12 @@ public:
 //Native Actions
 protected:
 	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
-
-private:
-	void RotateAttackPoint(float Val);
-
+	void Input_Move(const FInputActionValue& Value);
+	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
+	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 	void Input_LookMouse(const FInputActionValue& InputActionValue);
 
+	void RotateAttackPoint(float Val);
 	void TrackingMousePosition(FVector Position);
 	void TrackingMousePosition(FVector2D Position);
 
@@ -110,11 +110,4 @@ private:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character")
 	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
-
-private:
-	//nothappa : 디버그 모드
-	UPROPERTY(EditDefaultsOnly, Category = "Debug", meta=(AllowPrivateAccess = true))
-	bool bDebugMove = false;
-
-
 };

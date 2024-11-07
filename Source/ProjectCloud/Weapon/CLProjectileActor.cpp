@@ -8,9 +8,11 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectTypes.h"
+#include "AbilitySystemGlobals.h"
+#include "ProjectCloud/Components/CLAbilitySystemComponent.h"
+#include "ProjectCloud/Character/CLBaseCharacter.h"
 
 // Sets default values
 ACLProjectileActor::ACLProjectileActor()
@@ -78,7 +80,6 @@ void ACLProjectileActor::BeginPlay()
 #endif // WITH_EDITORONLY_DATA
 		
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACLProjectileActor::ActiveDestroyEvent, MaximimLifetime, false);
-
 }
 
 void ACLProjectileActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -106,18 +107,26 @@ void ACLProjectileActor::LaunchProjectile()
 
 void ACLProjectileActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor && OtherActor != this && OtherComp)
+	if ((OtherActor && (OtherActor != this) && OtherComp) && GetOwner())
 	{
-		UAbilitySystemComponent* ASC = OtherActor->FindComponentByClass<UAbilitySystemComponent>();
-		if (ASC)
-		{
-			FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
-			EffectContext.AddSourceObject(this);
+		ACLBaseCharacter* SourceOwner = Cast<ACLBaseCharacter>(GetOwner());
 
-			FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DamageGE, 1, EffectContext);
+		UCLAbilitySystemComponent* SourceASC = SourceOwner->GetAbilitySystemComponent();
+		UCLAbilitySystemComponent* TargetASC = OtherActor->FindComponentByClass<UCLAbilitySystemComponent>();
+		if (SourceASC && TargetASC)
+		{
+			//인스티게이터 = Source / 타겟 = Target
+			FGameplayEffectContextHandle EffectContext = FGameplayEffectContextHandle(UAbilitySystemGlobals::Get().AllocGameplayEffectContext());
+			//FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+			EffectContext.AddHitResult(Hit);
+			EffectContext.AddInstigator(TargetASC->GetOwnerActor(), SourceASC->GetOwnerActor());
+
+			FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageGE, 1, EffectContext);
+
 			if (SpecHandle.IsValid())
 			{
-				ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+				SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 			}
 		}
 		Destroy();

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright @Locketgoma. All Rights Reserved.
 
 #pragma once
 
@@ -29,7 +29,21 @@ public:
 	
 	void TryActiveAbilityFromInputAction(const FInputActionInstance& Value);
 
+public:
+	//어빌리티 트리거 관련
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+
 private:
+	// Handles to abilities that had their input pressed this frame.
+	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
+
+	// Handles to abilities that had their input released this frame.
+	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
+
+	// Handles to abilities that have their input held.
+	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
+
 	//인풋 액션 리스트
 	TMap<TObjectPtr<const UInputAction>, FGameplayTag> InputactionList;
 };

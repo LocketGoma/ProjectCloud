@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "GameplayEffect.h"
 
 UCLHittedDamageCalculation::UCLHittedDamageCalculation()
@@ -17,6 +18,11 @@ void UCLHittedDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 {
     float Damage = 0.0f;
     ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FEnemyDamageStatics::Get().DamageDef, FAggregatorEvaluateParameters(), Damage);
+
+    UCLAbilitySystemComponent* SourceASC = Cast<UCLAbilitySystemComponent>(ExecutionParams.GetSourceAbilitySystemComponent());
+    UCLAbilitySystemComponent* TargetASC = Cast<UCLAbilitySystemComponent>(ExecutionParams.GetTargetAbilitySystemComponent());
+
+
 
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UCLCharacterAttributeSet::GetDamageAttribute(), EGameplayModOp::Override, Damage));
 

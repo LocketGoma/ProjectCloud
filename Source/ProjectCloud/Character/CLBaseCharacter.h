@@ -57,6 +57,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Character|Attributes")
 	TSubclassOf<UGameplayEffect> AttributeGameplayEffect;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Debug")
+	bool bDebug;
+
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Config", meta = (AllowPrivateAccess = "true", UIMin = "0", ClampMin = "0"))
 	float ImmmuneTime;

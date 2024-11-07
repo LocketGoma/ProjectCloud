@@ -35,11 +35,13 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Attack();
 
+	bool CanReload();
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Reload();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	bool ReloadEvent();
+	void ReloadEvent();
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void UpdateAmmoEvent();
@@ -50,9 +52,11 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	AController* GetOwnerController();
 
-
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const EWeaponEventType GetWeaponEventType() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const int GetMagazineSize();
@@ -65,6 +69,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const bool GetIsInfinite();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const float GetBaseWeaponDamage();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -89,7 +96,6 @@ private:
 
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EWeaponType WeaponType;
-
 
 	UPROPERTY()
 	USphereComponent* CoreComponent;

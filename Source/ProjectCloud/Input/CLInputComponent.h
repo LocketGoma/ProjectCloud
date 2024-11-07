@@ -49,7 +49,7 @@ void UCLInputComponent::BindAbilityActions(const UCLAbilityInputConfig* InputCon
 {
 	check(InputConfig);
 
-	for (const UCLAbilityInputConfig& Action : InputConfig->AbilityInputActions)
+	for (const FCloudInputAction& Action : InputConfig->AbilityInputActions)
 	{
 		if (Action.InputAction && Action.InputTag.IsValid())
 		{

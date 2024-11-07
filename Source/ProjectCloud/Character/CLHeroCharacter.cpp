@@ -71,16 +71,19 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Set up action bindings
 	if (UCLInputComponent* CLInputComponent = Cast<UCLInputComponent>(PlayerInputComponent)) {
 
-		// Moving
-		//InputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Move);
-		CLInputComponent->BindNativeAction(InputConfig, TAG_Input_Move, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Move, false);
-		CLInputComponent->BindNativeAction(InputConfig, TAG_Input_Look_Mouse, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Input_LookMouse, false);
+		// Native		
+		CLInputComponent->BindNativeAction(InputConfig, TAG_Input_Move, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Input_Move, false);
+		//CLInputComponent->BindNativeAction(InputConfig, TAG_Input_Look_Mouse, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Input_LookMouse, false);
+
+		TArray<uint32> BindHandles;
+		CLInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ BindHandles);
 	}
 	else
 	{
 		UE_LOG(LogCloud, Error, TEXT("'%s' Failed to find an Cloud Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-	//PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
+	//To do : Enhanced로 전부 교체해야됨!
+	PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
 
 }
 
@@ -114,7 +117,6 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 
 				UCLCharacterAttributeSet* NewAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
 				GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
-
 				GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);
 			}
 		}
@@ -166,7 +168,7 @@ APlayerController* ACLHeroCharacter::GetPlayerController() const
 }
 
 //TO DO : 어빌리티로 변경
-void ACLHeroCharacter::Move(const FInputActionValue& Value)
+void ACLHeroCharacter::Input_Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -195,6 +197,18 @@ void ACLHeroCharacter::RotateAttackPoint(float Val)
 	{
 		AttackerComponent->AddRotation(Val);
 	}
+}
+
+void ACLHeroCharacter::Input_AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	UCLAbilitySystemComponent* CloudASC = GetAbilitySystemComponent();
+	CloudASC->AbilityInputTagPressed(InputTag);
+}
+
+void ACLHeroCharacter::Input_AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	UCLAbilitySystemComponent* CloudASC = GetAbilitySystemComponent();
+	CloudASC->AbilityInputTagReleased(InputTag);
 }
 
 //얘 왜 클릭해야 작동하냐? <- 일단 나중에 수정하기
@@ -229,7 +243,7 @@ void ACLHeroCharacter::TrackingMousePosition(FVector2D MousePosition)
 				AttackerComponent->UpdateRotation(TargetRotation.Yaw);
 			}
 
-			if (bDebugMove)
+			if (bDebug)
 			{
 				//UE_LOG(LogTemp, Log, TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw);
 				GEngine->AddOnScreenDebugMessage(-1, 0.016f, FColor::Blue, FString::Printf(TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw));

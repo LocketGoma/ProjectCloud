@@ -14,7 +14,6 @@ struct FCloudInputAction
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<const UInputAction> InputAction = nullptr;
 
@@ -28,8 +27,7 @@ public:
 UCLASS()
 class PROJECTCLOUD_API UCLAbilityInputConfig : public UDataAsset
 {
-	GENERATED_BODY()
-	
+	GENERATED_BODY()	
 
 public:
 	UCLAbilityInputConfig(const FObjectInitializer& ObjectInitializer);
