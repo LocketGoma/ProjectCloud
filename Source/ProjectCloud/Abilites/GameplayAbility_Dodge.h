@@ -12,5 +12,4 @@ UCLASS()
 class PROJECTCLOUD_API UGameplayAbility_Dodge : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
 };

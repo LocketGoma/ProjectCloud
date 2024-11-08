@@ -3,7 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/ObjectMacros.h"
-#include "PaperCharacter.h"
+#include "PaperZDCharacter.h"
 #include "CLBaseCharacter.generated.h"
 
 class UInputComponent;
@@ -13,7 +13,7 @@ class UCLAbilitySet;
 class UGameplayEffect;
 
 UCLASS(config = Game, Blueprintable, BlueprintType)
-class PROJECTCLOUD_API ACLBaseCharacter : public APaperCharacter
+class PROJECTCLOUD_API ACLBaseCharacter : public APaperZDCharacter
 {
 	GENERATED_BODY()
 

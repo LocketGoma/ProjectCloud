@@ -13,3 +13,5 @@ Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Max MagineAmmo
 Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,
 Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Max Ammo
 Event.Status.DamageImmunity,Event.Status.DamageImmunity,Immunity
+Ability.Action.Dodge,Ability.Action.Dodge,Ability-Dodge
+Event.Action.Active.Dodge,Event.Action.Active.Dodge,Dodge Event
