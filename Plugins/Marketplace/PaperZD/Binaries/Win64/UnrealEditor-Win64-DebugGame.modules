@@ -1,0 +1,8 @@
+{
+	"BuildId": "25f5b513-e065-4897-8cff-0221b6013e08",
+	"Modules": 
+	{
+		"PaperZD": "UnrealEditor-PaperZD-Win64-DebugGame.dll",
+		"PaperZDEditor": "UnrealEditor-PaperZDEditor-Win64-DebugGame.dll"
+	}
+}

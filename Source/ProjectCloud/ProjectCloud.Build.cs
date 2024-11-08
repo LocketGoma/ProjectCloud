@@ -8,7 +8,7 @@ public class ProjectCloud : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "EnhancedInput", "GameplayAbilities", "GameplayTags", "GameplayTasks", "UMG", "Niagara" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "EnhancedInput", "GameplayAbilities", "GameplayTags", "GameplayTasks", "UMG", "Niagara", "PaperZD" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
