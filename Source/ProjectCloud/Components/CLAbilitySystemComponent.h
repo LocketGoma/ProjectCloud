@@ -34,6 +34,24 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
+//BP 함수들
+public:
+	//태그를 임의로 붙이기 시도
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	bool AddGameplayTag(const FGameplayTag& InputTag, int Count = 1);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	bool RemoveGameplayTag(const FGameplayTag& InputTag, int Count = 1);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	bool UpdateGameplayTag(const FGameplayTag& InputTag, int Count = 1);
+		UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	bool AddGameplayEffect(const TSubclassOf<UGameplayEffect> GameplayEffect);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	bool RemoveGameplayEffect(const TSubclassOf<UGameplayEffect> GameplayEffect);
+
+
 private:
 	// Handles to abilities that had their input pressed this frame.
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
@@ -46,4 +64,6 @@ private:
 
 	//인풋 액션 리스트
 	TMap<TObjectPtr<const UInputAction>, FGameplayTag> InputactionList;
+
+	TArray<FActiveGameplayEffectHandle> ActiveGameplayEffectHandle;
 };

@@ -105,21 +105,13 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 		PS->SetAbilitiesFromActionSet(AbilitySet);
 		PS->GetAbilitySystemComponent()->BindInputActions(InputConfig, EnhancedInputComponent);
 
-		//특정 GameplayEffect에서 데이터 가져오는 방법
+		UCLCharacterAttributeSet* NewAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
+		GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
+
 		if (IsValid(AttributeGameplayEffect))
 		{
-			FGameplayEffectContextHandle EffectContext = PS->GetAbilitySystemComponent()->MakeEffectContext();
-			FGameplayEffectSpecHandle SpecHandle = PS->GetAbilitySystemComponent()->MakeOutgoingSpec(AttributeGameplayEffect, 1.0f, EffectContext);
-
-			if (SpecHandle.IsValid())
-			{
-				FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
-
-				UCLCharacterAttributeSet* NewAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
-				GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
-				GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);
-			}
-		}
+			GetAbilitySystemComponent()->AddGameplayEffect(AttributeGameplayEffect);
+		}		
 	}
 }
 

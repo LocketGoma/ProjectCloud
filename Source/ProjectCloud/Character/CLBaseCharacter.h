@@ -27,6 +27,7 @@ public:
 //--End Actor Override
 	virtual void SetAbilitySystemComponent() PURE_VIRTUAL(ACLBaseCharacter::SetAbilitySystemComponent, );
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent();
 
 	//Health Update 발생시 호출되는 Event

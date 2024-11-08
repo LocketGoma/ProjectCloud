@@ -117,7 +117,6 @@ void ACLProjectileActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		{
 			//인스티게이터 = Source / 타겟 = Target
 			FGameplayEffectContextHandle EffectContext = FGameplayEffectContextHandle(UAbilitySystemGlobals::Get().AllocGameplayEffectContext());
-			//FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
 			EffectContext.AddSourceObject(this);
 			EffectContext.AddHitResult(Hit);
 			EffectContext.AddInstigator(TargetASC->GetOwnerActor(), SourceASC->GetOwnerActor());

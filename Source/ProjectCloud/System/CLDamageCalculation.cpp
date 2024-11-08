@@ -16,6 +16,8 @@ UCLDamageCalculation::UCLDamageCalculation()
 	RelevantAttributesToCapture.Add(FPlayerDamageStatics::Get().DamageDef);
 }
 
+//CLProjectileActor 참고
+
 void UCLDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
     FGameplayEffectContext* TypedContext = ExecutionParams.GetOwningSpec().GetContext().Get();
