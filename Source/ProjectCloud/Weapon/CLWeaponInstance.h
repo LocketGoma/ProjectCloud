@@ -32,6 +32,19 @@ class PROJECTCLOUD_API UCLWeaponInstance : public UObject
 public:
 	UCLWeaponInstance(const FObjectInitializer& ObjectInitializer);
 
+	static const bool CanAutoReload(UCLWeaponInstance& Instance);
+	static const bool CanAutoReload(TSubclassOf<UCLWeaponInstance> Instance);
+	static const bool HasInfinityAmmo(UCLWeaponInstance& Instance);
+	static const bool HasInfinityAmmo(TSubclassOf<UCLWeaponInstance> Instance);
+	static const float GetBaseDamage(UCLWeaponInstance& Instance);
+	static const float GetBaseDamage(TSubclassOf<UCLWeaponInstance> Instance);
+	static const FWeaponInstance GetMagazineSizeData(UCLWeaponInstance& Instance);
+	static const FWeaponInstance GetMagazineSizeData(TSubclassOf<UCLWeaponInstance> Instance);
+	static const FWeaponInstance GetMagazineAmmoData(UCLWeaponInstance& Instance);
+	static const FWeaponInstance GetMagazineAmmoData(TSubclassOf<UCLWeaponInstance> Instance);
+	static const FWeaponInstance GetSpareAmmoData(UCLWeaponInstance& Instance);
+	static const FWeaponInstance GetSpareAmmoData(TSubclassOf<UCLWeaponInstance> Instance);
+
 public:
 	UPROPERTY(EditDefaultsOnly, meta=(UIMin="0",ClampMin = "0"))
 	float BaseDamage;
@@ -47,6 +60,10 @@ public:
 	//예비탄
 	UPROPERTY(EditDefaultsOnly)
 	FWeaponInstance SpareAmmo;
+
+	//자동 재장전 가능 여부
+	UPROPERTY(EditDefaultsOnly)
+	bool bAutoReload = true;
 
 	//예비탄 개념을 가지고 있을지 여부
 	UPROPERTY(EditDefaultsOnly)

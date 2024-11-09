@@ -32,13 +32,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponFromInstance();
 
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Attack();
-
-	bool CanReload();
+	bool CanAttack();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Reload();
+	bool CanReload();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ReloadEvent();
@@ -77,13 +78,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateWeaponEventType(EWeaponEventType NewEvent);
 
-	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Category = "Weapon", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EWeaponEventType WeaponEventType;
 
 private:	
 	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", UIMin = "0.1", UIMax="10", ClampMin = "0.1"))
 	float ReloadTime;
-
 
 	UPROPERTY(Category = "Weapon", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UPaperFlipbookComponent> Sprite;

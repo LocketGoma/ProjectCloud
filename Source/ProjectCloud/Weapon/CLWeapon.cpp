@@ -10,7 +10,7 @@
 #include "ProjectCloud/Weapon/CLProjectileActor.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
-FName ACLWeapon::SpriteComponentName(TEXT("Sprite0"));
+FName ACLWeapon::SpriteComponentName(TEXT("MainSprite"));
 ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -73,12 +73,36 @@ void ACLWeapon::SetWeaponFromInstance()
 		return;
 	}
 
-	ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, WeaponInstance.GetDefaultObject()->MagazineAmmo.Value);
-	ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineSize.KeyTag, WeaponInstance.GetDefaultObject()->MagazineSize.Value);
-	ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag, WeaponInstance.GetDefaultObject()->SpareAmmo.Value);	
+	ASC->AddLooseGameplayTag(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag, UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).Value);
+	ASC->AddLooseGameplayTag(UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).KeyTag, UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).Value);
+	ASC->AddLooseGameplayTag(UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).KeyTag, UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).Value);
 
 	UpdateAmmoEvent();
+}
 
+bool ACLWeapon::CanAttack()
+{
+	if (!ensure(WeaponInstance))
+	{
+		UE_LOG(LogCloud, Error, TEXT("정상적인 무기를 사용하고 있지 않습니다!"));
+		return false;
+	}
+
+	//재장전중에는 탄 못쏘게
+	if (WeaponEventType == EWeaponEventType::Event_Reloading)
+	{
+		return false;
+	}
+	
+	if ((WeaponEventType == EWeaponEventType::Event_MagaineEmpty))
+	{
+		if(UCLWeaponInstance::CanAutoReload(WeaponInstance))
+			ReloadEvent();
+
+		return false;
+	}
+
+	return true;
 }
 
 bool ACLWeapon::CanReload()
@@ -89,14 +113,26 @@ bool ACLWeapon::CanReload()
 		return false;
 	}
 
-	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
+	if (UCLWeaponInstance::HasInfinityAmmo(WeaponInstance))
 	{
-		//탄약 없음!
+		return true;
+	}
+
+	//남은 예비탄 없음!
+	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
+	{		
 		return false;
 	}	
+
 	if ((GetMagazineAmmo() == 0 && GetSpareAmmo() == 0))
 	{
 		UpdateWeaponEventType(EWeaponEventType::Event_AmmoEmpty);
+		return false;
+	}
+
+	//탄 가득차면 굳이 재장전 안함
+	if (GetMagazineAmmo() == GetMagazineSize())
+	{
 		return false;
 	}
 
@@ -105,12 +141,6 @@ bool ACLWeapon::CanReload()
 
 void ACLWeapon::Attack_Implementation()
 {
-	//재장전중에는 탄 못쏘게
-	if (WeaponEventType == EWeaponEventType::Event_Reloading)
-	{
-		return;
-	}
-
 	if (GetMagazineAmmo() > 0)
 	{
 		UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
@@ -129,12 +159,7 @@ void ACLWeapon::Attack_Implementation()
 		ACLProjectileActor* Projectile = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation, SpawnParameter);
 		Projectile->LaunchVector = GetActorForwardVector();
 		Projectile->LaunchProjectile();
-
-	}
-	else if (WeaponEventType == EWeaponEventType::Event_MagaineEmpty)
-	{
-		ReloadEvent();
-	}
+	}	
 	
 	if (WeaponUtilites::IsWeaponActivate(WeaponEventType) && GetMagazineAmmo() == 0)
 	{
@@ -160,10 +185,10 @@ void ACLWeapon::Reload_Implementation()
 	}
 
 	//1. 무한일때 - 풀 장전
-	if (WeaponInstance.GetDefaultObject()->bInfinity == true)
+	if (UCLWeaponInstance::HasInfinityAmmo(WeaponInstance))
 	{
 		//Mag Size만큼 Mag Ammo 채움
-		ASC->SetLooseGameplayTagCount(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, WeaponInstance.GetDefaultObject()->MagazineSize.Value);	
+		ASC->SetLooseGameplayTagCount(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag, UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).Value);
 	}	
 	else
 	{
@@ -174,8 +199,8 @@ void ACLWeapon::Reload_Implementation()
 		{
 			RequestedAmmo = GetSpareAmmo();
 		}
-		ASC->AddLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, RequestedAmmo);
-		ASC->RemoveLooseGameplayTag(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag, RequestedAmmo);
+		ASC->AddLooseGameplayTag(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag, RequestedAmmo);
+		ASC->RemoveLooseGameplayTag(UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).KeyTag, RequestedAmmo);
 	}
 	UpdateAmmoEvent();
 	UpdateWeaponEventType(EWeaponEventType::Event_Default);
@@ -231,7 +256,7 @@ const int ACLWeapon::GetMagazineSize()
 	{
 		return -1;
 	}
-	return ASC->GetGameplayTagCount(WeaponInstance.GetDefaultObject()->MagazineSize.KeyTag);	
+	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).KeyTag);
 }
 
 const int ACLWeapon::GetMagazineAmmo()
@@ -242,7 +267,7 @@ const int ACLWeapon::GetMagazineAmmo()
 	{
 		return -1;
 	}
-	return ASC->GetGameplayTagCount(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag);
+	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag);
 }
 
 const int ACLWeapon::GetSpareAmmo()
@@ -253,25 +278,26 @@ const int ACLWeapon::GetSpareAmmo()
 	{
 		return -1;
 	}
-	return ASC->GetGameplayTagCount(WeaponInstance.GetDefaultObject()->SpareAmmo.KeyTag);
+	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).KeyTag);
 }
 
 const bool ACLWeapon::GetIsInfinite()
 {	
-	return WeaponInstance.GetDefaultObject()->bInfinity;
+	return UCLWeaponInstance::HasInfinityAmmo(WeaponInstance);
 }
 
 const float ACLWeapon::GetBaseWeaponDamage()
 {
-	return WeaponInstance.GetDefaultObject()->BaseDamage;
+	return UCLWeaponInstance::GetBaseDamage(WeaponInstance);
 }
 
 void ACLWeapon::UpdateWeaponEventType(EWeaponEventType NewEvent)
 {
+#if !UE_BUILD_SHIPPING
 	UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponEventType"), true);
 	if (EnumPtr)
 		UE_LOG(LogTemp, Log, TEXT("기존 무기 이벤트 타입 : [%s], 신규 무기 이벤트 타입 : [%s]"), *(EnumPtr->GetNameStringByValue((int64)WeaponEventType)), *(EnumPtr->GetNameStringByValue((int64)NewEvent)));
-
+#endif
 	WeaponEventType = NewEvent;
 }
 

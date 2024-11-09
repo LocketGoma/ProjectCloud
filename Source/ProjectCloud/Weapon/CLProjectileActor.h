@@ -46,13 +46,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DamageGE;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VisualSettings")
 	TObjectPtr<UNiagaraSystem> MainVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VisualSettings")
 	TObjectPtr<UNiagaraSystem> SubVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VisualSettings")
 	TObjectPtr<UNiagaraSystem> TrailVFX;
 
 	//나아가는 방향
@@ -62,9 +62,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes", meta = (UIMin = 0, ClampMin = 0))
 	float LaunchSpeed;
 
+	static FName SpriteComponentName;
+
 private:
 	void SetNiagaraEffect();
-
 
 	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
@@ -75,6 +76,9 @@ private:
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UPROPERTY()
 	TObjectPtr<UProjectileMovementComponent> MovementComponent;
+		
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisualSettings", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UPaperFlipbookComponent> Sprite;
 
 #if WITH_EDITORONLY_DATA
 	/** Component shown in the editor only to indicate character facing */
@@ -88,6 +92,9 @@ private:
 	float MaximimLifetime;
 
 	FTimerHandle DestroyTimerHandle;
-	
+
+public:
+	/** Returns Sprite subobject **/
+	FORCEINLINE class UPaperFlipbookComponent* GetSprite() const { return Sprite; }
 
 };

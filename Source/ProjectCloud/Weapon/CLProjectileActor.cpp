@@ -11,9 +11,11 @@
 #include "GameplayEffect.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemGlobals.h"
+#include "PaperFlipbookComponent.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 
+FName ACLProjectileActor::SpriteComponentName(TEXT("MainSprite"));
 // Sets default values
 ACLProjectileActor::ACLProjectileActor()
 {
@@ -45,6 +47,21 @@ ACLProjectileActor::ACLProjectileActor()
 		//XY평면에서만 움직이게 처리
 		MovementComponent->bConstrainToPlane = true;
 		MovementComponent->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Z);
+	}
+
+	// Try to create the sprite component
+	Sprite = CreateOptionalDefaultSubobject<UPaperFlipbookComponent>(ACLProjectileActor::SpriteComponentName);
+	if (Sprite)
+	{
+		Sprite->AlwaysLoadOnClient = true;
+		Sprite->AlwaysLoadOnServer = true;
+		Sprite->bOwnerNoSee = false;
+		Sprite->bAffectDynamicIndirectLighting = true;
+		Sprite->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+		Sprite->SetupAttachment(RootComponent);
+		static FName CollisionProfileName(TEXT("ObjectMesh"));
+		Sprite->SetCollisionProfileName(CollisionProfileName);
+		Sprite->SetGenerateOverlapEvents(false);
 	}
 
 #if WITH_EDITORONLY_DATA
