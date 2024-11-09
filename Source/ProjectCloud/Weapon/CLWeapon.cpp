@@ -113,6 +113,13 @@ bool ACLWeapon::CanReload()
 		return false;
 	}
 
+	//탄 가득차면 굳이 재장전 안함
+	if (GetMagazineAmmo() == GetMagazineSize())
+	{
+		return false;
+	}
+
+	//무제한 사격 가능시 재장전 가능하도록 처리
 	if (UCLWeaponInstance::HasInfinityAmmo(WeaponInstance))
 	{
 		return true;
@@ -122,17 +129,10 @@ bool ACLWeapon::CanReload()
 	if (WeaponEventType == EWeaponEventType::Event_AmmoEmpty)
 	{		
 		return false;
-	}	
-
+	}
 	if ((GetMagazineAmmo() == 0 && GetSpareAmmo() == 0))
 	{
 		UpdateWeaponEventType(EWeaponEventType::Event_AmmoEmpty);
-		return false;
-	}
-
-	//탄 가득차면 굳이 재장전 안함
-	if (GetMagazineAmmo() == GetMagazineSize())
-	{
 		return false;
 	}
 
