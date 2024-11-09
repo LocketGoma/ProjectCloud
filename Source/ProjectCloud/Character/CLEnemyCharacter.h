@@ -38,7 +38,7 @@ public:
 
 	virtual void SetAbilitySystemComponent() override;
 
-	UCLAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
+	UCLAbilitySystemComponent* GetAbilitySystemComponent() { return AbilityComponent; }
 
 	TWeakObjectPtr<APawn> GetTargetPlayer() { return TargetPlayer; }
 

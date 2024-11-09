@@ -8,7 +8,7 @@
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/System/CLCharacterAttributeSet.h"
 #include "ProjectCloud/System/CLCombatAttributeSet.h"
-#include "ProjectCloud/Character/CLBaseCharacter.h"
+#include "ProjectCloud/Character/CLHeroCharacter.h"
 #include "GameplayAbilitySet.h"
 
 
@@ -102,7 +102,7 @@ void ACLEnemyCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 {
 	if (OtherActor && OtherActor != this && OtherComp)
 	{
-		ACLBaseCharacter* TargetCharacter = Cast<ACLBaseCharacter>(OtherActor);
+		ACLHeroCharacter* TargetCharacter = Cast<ACLHeroCharacter>(OtherActor);
 		if (TargetCharacter)
 		{
 			UAbilitySystemComponent* ASC = TargetCharacter->GetAbilitySystemComponent();

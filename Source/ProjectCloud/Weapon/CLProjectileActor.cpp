@@ -156,12 +156,16 @@ void ACLProjectileActor::ActiveDestroyEvent()
 
 void ACLProjectileActor::SetNiagaraEffect()
 {
-	if (!ensure(MainVFX))
+	if (!(MainVFX) && !(Sprite->GetFlipbook()))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Some of ACLProjectileActor(%s) are Not Have MainVFX. That Actor must have MainVFX. Fix It."), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("ACLProjectileActor[ %s ] are Not Have MainVFX & Sprite. That Actor must have MainVFX or Sprite. Fix It."), *GetName());
 		return;
 	}
-	NiagaraComponent->SetAsset(MainVFX);	
+
+	if (MainVFX)
+	{
+		NiagaraComponent->SetAsset(MainVFX);
+	
 	//그냥 나이아가라컴포넌트 여러개 만들래요
 	//UNiagaraFunctionLibrary::SpawnSystemAttached(MainVFX, NiagaraComponent, FName(), FVector::ZeroVector, GetActorRotation(), EAttachLocation::SnapToTarget, true, true);
 
@@ -174,8 +178,8 @@ void ACLProjectileActor::SetNiagaraEffect()
 	//{
 	//	UNiagaraFunctionLibrary::SpawnSystemAttached(TrailVFX, NiagaraComponent, FName(), FVector::ZeroVector, GetActorRotation(), EAttachLocation::SnapToTarget, true, true);
 	//}
-	NiagaraComponent->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
-	NiagaraComponent->SetFloatParameter("SpriteSize", EffectSize);
-
-	NiagaraComponent->Activate();	
+		NiagaraComponent->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
+		NiagaraComponent->SetFloatParameter("SpriteSize", EffectSize);
+		NiagaraComponent->Activate();	
+	}
 }
