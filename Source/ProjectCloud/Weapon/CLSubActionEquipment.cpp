@@ -22,7 +22,7 @@ void ACLSubActionEquipment::BeginPlay()
 void ACLSubActionEquipment::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-		
+	
 	if (GetOwner()->IsActorBeingDestroyed())
 	{
 		return;
@@ -94,6 +94,9 @@ void ACLSubActionEquipment::SetEquipmentFromInstance()
 			break;
 		}
 	}
+
+	Super::SetEquipmentFromInstance();
+
 }
 void ACLSubActionEquipment::SetEquipmentFromWeaponInstance(UCLAbilitySystemComponent* ASC)
 {
@@ -188,6 +191,9 @@ void ACLSubActionEquipment::ActiveEquipment()
 			break;
 		}
 	}	
+
+	Super::ActiveEquipment();
+
 }
 
 bool ACLSubActionEquipment::CanActiveEquipment()
@@ -218,6 +224,8 @@ bool ACLSubActionEquipment::CanActiveEquipment()
 void ACLSubActionEquipment::Reload()
 {
 	//To do : 리로드 기능 필요해지면 추가하기
+
+	Super::Reload();
 }
 
 bool ACLSubActionEquipment::CanReload()
@@ -225,7 +233,51 @@ bool ACLSubActionEquipment::CanReload()
 	return false;
 }
 
-float ACLSubActionEquipment::GetEquipmentDurationValue()
+const int ACLSubActionEquipment::GetMagazineSize() const
+{
+	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
+
+	if (!ensure(ASC))
+	{
+		return 0;
+	}
+	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).KeyTag);
+}
+
+const int ACLSubActionEquipment::GetMagazineAmmo() const
+{
+	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
+
+	if (!ensure(ASC))
+	{
+		return 0;
+	}
+	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag);
+}
+
+const int ACLSubActionEquipment::GetSpareAmmo() const
+{
+	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
+
+	if (!ensure(ASC))
+	{
+		return 0;
+	}
+	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).KeyTag);
+}
+
+const bool ACLSubActionEquipment::GetIsInfinite() const
+{
+	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
+
+	if (!ensure(ASC))
+	{
+		return 0;
+	}
+	return UCLWeaponInstance::HasInfinityAmmo(WeaponInstance);
+}
+
+const float ACLSubActionEquipment::GetBaseEquipmentValue() const
 {
 	switch (SubEquipmentType)
 	{

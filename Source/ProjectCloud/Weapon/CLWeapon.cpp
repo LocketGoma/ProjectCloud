@@ -51,7 +51,8 @@ void ACLWeapon::SetEquipmentFromInstance()
 	ASC->AddLooseGameplayTag(UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).KeyTag, UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).Value);
 	ASC->AddLooseGameplayTag(UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).KeyTag, UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).Value);
 
-	UpdateAmmoEvent();
+	//다 끝나고 업데이트 해야됨.
+	Super::SetEquipmentFromInstance();
 }
 
 void ACLWeapon::ActiveEquipment()
@@ -86,7 +87,7 @@ void ACLWeapon::ActiveEquipment()
 		UpdateWeaponEventType(EWeaponEventType::Event_MagaineEmpty);
 	}
 
-	UpdateAmmoEvent();
+	Super::ActiveEquipment();
 
 	/*
 	* 1. 탄 쏠때 탄환 남았는지 체크
@@ -180,8 +181,9 @@ void ACLWeapon::Reload()
 		ASC->AddLooseGameplayTag(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag, RequestedAmmo);
 		ASC->RemoveLooseGameplayTag(UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).KeyTag, RequestedAmmo);
 	}
-	UpdateAmmoEvent();
 	UpdateWeaponEventType(EWeaponEventType::Event_Default);
+
+	Super::Reload();
 }
 
 void ACLWeapon::ReloadEvent_Implementation()
@@ -211,7 +213,7 @@ const EWeaponEventType ACLWeapon::GetWeaponEventType() const
 	return WeaponEventType;
 }
 
-const int ACLWeapon::GetMagazineSize()
+const int ACLWeapon::GetMagazineSize() const
 {
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
@@ -222,7 +224,7 @@ const int ACLWeapon::GetMagazineSize()
 	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetMagazineSizeData(WeaponInstance).KeyTag);
 }
 
-const int ACLWeapon::GetMagazineAmmo()
+const int ACLWeapon::GetMagazineAmmo() const
 {
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
@@ -233,7 +235,7 @@ const int ACLWeapon::GetMagazineAmmo()
 	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag);
 }
 
-const int ACLWeapon::GetSpareAmmo()
+const int ACLWeapon::GetSpareAmmo() const
 {
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
@@ -244,12 +246,12 @@ const int ACLWeapon::GetSpareAmmo()
 	return ASC->GetGameplayTagCount(UCLWeaponInstance::GetSpareAmmoData(WeaponInstance).KeyTag);
 }
 
-const bool ACLWeapon::GetIsInfinite()
+const bool ACLWeapon::GetIsInfinite() const
 {	
 	return UCLWeaponInstance::HasInfinityAmmo(WeaponInstance);
 }
 
-const float ACLWeapon::GetBaseWeaponDamage()
+const float ACLWeapon::GetBaseEquipmentValue() const
 {
 	return UCLWeaponInstance::GetBaseDamage(WeaponInstance);
 }

@@ -40,9 +40,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ReloadEvent();
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void UpdateAmmoEvent();
-
 
 //Getter
 public:
@@ -51,21 +48,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponEventType GetWeaponEventType() const;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const int GetMagazineSize();
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const int GetMagazineAmmo();
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const int GetSpareAmmo();
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const bool GetIsInfinite();
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const float GetBaseWeaponDamage();
+			
+	virtual const int GetMagazineSize() const override;
+	virtual const int GetMagazineAmmo() const override;
+	virtual const int GetSpareAmmo() const override;
+	virtual const bool GetIsInfinite() const override;
+	virtual const float GetBaseEquipmentValue() const override;
 
 public:
 	UFUNCTION(BlueprintCallable)

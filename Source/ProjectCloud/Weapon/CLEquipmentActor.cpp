@@ -56,11 +56,13 @@ void ACLEquipmentActor::Tick(float DeltaTime)
 
 void ACLEquipmentActor::SetEquipmentFromInstance()
 {
+	UpdateEquipmentEvent();
 	//Do Something
 }
 
 void ACLEquipmentActor::ActiveEquipment()
 {
+	UpdateEquipmentEvent();
 	//Do Something
 }
 
@@ -72,6 +74,7 @@ bool ACLEquipmentActor::CanActiveEquipment()
 
 void ACLEquipmentActor::Reload()
 {
+	UpdateEquipmentEvent();
 	//Do Something
 }
 
@@ -119,4 +122,35 @@ UCLAbilitySystemComponent* ACLEquipmentActor::GetOwnerAbilitySystemComponent() c
 
 	return ASC;
 }
+
+//Do Something...
+
+#pragma region Virtual Functions
+
+const int ACLEquipmentActor::GetMagazineSize() const
+{
+	return 0;
+}
+
+const int ACLEquipmentActor::GetMagazineAmmo() const
+{
+	return 0;
+}
+
+const int ACLEquipmentActor::GetSpareAmmo() const
+{
+	return 0;
+}
+
+const bool ACLEquipmentActor::GetIsInfinite() const
+{
+	return false;
+}
+
+const float ACLEquipmentActor::GetBaseEquipmentValue() const
+{
+	return 0.0f;
+}
+
+#pragma endregion
 

@@ -86,11 +86,12 @@ void UCAttackerNodeComponent::EquipSubEquipmentActor(TSubclassOf<ACLSubActionEqu
 {
 	if (IsValid(SubEquipmentActor))
 	{
-		if (SubEquipmentActor->GetSubEquipmentType() == EquipmentActorClass.GetDefaultObject()->GetSubEquipmentType())
-		{
-			SubEquipmentActor->Reload();
-			return;
-		}
+		//무조건 교체라고...
+		//if (SubEquipmentActor->GetSubEquipmentType() == EquipmentActorClass.GetDefaultObject()->GetSubEquipmentType())
+		//{
+		//	SubEquipmentActor->Reload();
+		//	return;
+		//}
 
 		SubEquipmentActor->Destroy();
 	}

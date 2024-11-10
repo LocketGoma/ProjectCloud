@@ -11,7 +11,7 @@ class UCLAbilitySystemComponent;
  * 서브장비 클래스.
  * 나중에 필요하면 타입별로 분리할것.
  */
-UCLASS()
+UCLASS(BlueprintType)
 class PROJECTCLOUD_API ACLSubActionEquipment : public ACLEquipmentActor
 {
 	GENERATED_BODY()
@@ -31,8 +31,12 @@ public:
 	virtual void Reload() override;
 	virtual bool CanReload() override;
 
-	//대미지가 되었던, 회복량이 되었던 수치 리턴해주는 함수.
-	float GetEquipmentDurationValue();
+public:	
+	virtual const int GetMagazineSize() const override;	
+	virtual const int GetMagazineAmmo() const override;
+	virtual const int GetSpareAmmo() const override;	
+	virtual const bool GetIsInfinite() const override;	
+	virtual const float GetBaseEquipmentValue() const override;	
 
 	ESubEquipmentType GetSubEquipmentType() { return SubEquipmentType; }
 
