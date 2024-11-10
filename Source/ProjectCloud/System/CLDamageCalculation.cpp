@@ -30,36 +30,18 @@ void UCLDamageCalculation::Execute_Implementation(const FGameplayEffectCustomExe
     float DamageDone = Damage;
 
      APlayerState* PS = Cast<APlayerState>(TypedContext->GetEffectCauser());
-
-     //와 If문 떡칠 실화...?
-
+     
      if (PS)
      {
          ACLHeroCharacter* HeroCharacter = Cast<ACLHeroCharacter>(PS->GetPawn());
          if (HeroCharacter)
          {
+             //To do. 필요시 주무기에서 나온건지 보조무기에서 나온건지 알아야 할 필요 있음. 3d64bff (11월 10일자) 커밋 참고.
              ACLProjectileActor* ProjectileActor = Cast<ACLProjectileActor>(TypedContext->GetSourceObject());
              if (ProjectileActor)
              {
-                 if (ProjectileActor->GetEquipmentType() == EEquipmentType::Equipment_MainWeapon)
-                 {
-                     ACLWeapon* Weapon = HeroCharacter->GetWeaponActor();
-                     if (Weapon)
-                     {
-                         DamageDone *= Weapon->GetBaseWeaponDamage();
-                     }
-                 }
-                 if (ProjectileActor->GetEquipmentType() == EEquipmentType::Equipment_SubEquipment)
-                 {
-                     //To do : SubEquipment가 변경되는 경우 대응 필요.
-                    ACLSubActionEquipment* SubEquipment =  HeroCharacter->GetSubEquipmentActor();
-                    if (SubEquipment)
-                    {
-                        DamageDone *= SubEquipment->GetEquipmentDurationValue();
-                    }
-                 }
+                 DamageDone *= ProjectileActor->GetBaseDamageFromWeapon();                 
              }
-
          }
      }
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UCLCharacterAttributeSet::GetDamageAttribute(), EGameplayModOp::Override, DamageDone));

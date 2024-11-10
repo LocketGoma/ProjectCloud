@@ -141,8 +141,7 @@ void ACLSubActionEquipment::ActiveWeaponEquipment()
 		{
 			return;
 		}
-
-		ProjectileActor->SetEquipmentType(EquipmentType);
+		ProjectileActor->SetBaseDamageFromWeapon(UCLWeaponInstance::GetBaseDamage(WeaponInstance));
 		ProjectileActor->LaunchVector = GetActorForwardVector();
 		ProjectileActor->LaunchProjectile();
 	}

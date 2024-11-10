@@ -38,16 +38,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UProjectileMovementComponent* GetMovementComponent() { return MovementComponent; }
 
-	UFUNCTION()
-	//void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	float GetBaseDamageFromWeapon() { return BaseDamageFromWeapon; }
+	void SetBaseDamageFromWeapon(float NewDamage) { BaseDamageFromWeapon = NewDamage; }
 
 //충돌 처리
+	UFUNCTION()
 	void OnComponentBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void ActiveDestroyEvent();
-
-	const EEquipmentType GetEquipmentType() const { return EquipmentType; }
-	void SetEquipmentType(EEquipmentType NewType) { EquipmentType = NewType; }
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
@@ -71,11 +69,11 @@ public:
 
 	static FName SpriteComponentName;
 
-protected:	
-	EEquipmentType EquipmentType;
-
 private:
 	void SetNiagaraEffect();
+
+private:
+	float BaseDamageFromWeapon;
 
 	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;

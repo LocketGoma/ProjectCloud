@@ -77,12 +77,12 @@ ACLProjectileActor::ACLProjectileActor()
 #endif // WITH_EDITORONLY_DATA
 	
 	//변수 초기화
+	BaseDamageFromWeapon = 1.f;
 	EffectSize = 100.f;	
 	MaximimLifetime = 30.f;
 	bDestroyWhenHit = true;
 	LaunchSpeed = MovementComponent->InitialSpeed;
-
-	//CapsuleComponent->OnComponentHit.AddDynamic(this, &ACLProjectileActor::OnHit);
+	
 	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ACLProjectileActor::OnComponentBeginOverlap);
 }
 
@@ -146,7 +146,6 @@ void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 			{
 				SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 			}
-
 		}
 		if (bDestroyWhenHit)
 			Destroy();
