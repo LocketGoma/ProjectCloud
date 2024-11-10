@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "GameplayTagContainer.h"
+#include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLWeaponInstance.generated.h"
 
 //Weaponinstance 클래스 / 구조체
@@ -45,7 +46,16 @@ public:
 	static const FWeaponInstance GetSpareAmmoData(UCLWeaponInstance& Instance);
 	static const FWeaponInstance GetSpareAmmoData(TSubclassOf<UCLWeaponInstance> Instance);
 
+
+	UFUNCTION() 
+	void OnEquipmentTypeChanged();
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
 public:
+	UPROPERTY(EditDefaultsOnly)
+	EEquipmentType EquipmentType;
+
+
 	UPROPERTY(EditDefaultsOnly, meta=(UIMin="0",ClampMin = "0"))
 	float BaseDamage;
 

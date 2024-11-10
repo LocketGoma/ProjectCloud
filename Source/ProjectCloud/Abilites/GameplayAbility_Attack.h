@@ -2,13 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "GameplayAbility_Attack.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class PROJECTCLOUD_API UGameplayAbility_Attack : public UGameplayAbility
 {
@@ -21,4 +18,8 @@ public:
 	//어빌리티 실행
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData);
 	
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+	EEquipmentType EquipmentType;
 };

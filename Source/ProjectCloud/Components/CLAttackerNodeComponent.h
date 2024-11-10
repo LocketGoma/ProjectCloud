@@ -8,6 +8,7 @@
 #include "CLAttackerNodeComponent.generated.h"
 
 class ACLWeapon;
+class ACLSubActionEquipment;
 class USphereComponent;
 
 //구조
@@ -44,6 +45,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_UpdateAttactPointLength(float NewLength);
 
+	//아이템획득으로 장착시킬때를 위해
+	UFUNCTION(BlueprintCallable)
+	void EquipSubEquipmentActor(TSubclassOf<ACLSubActionEquipment> EquipmentActorClass);
+
 //유틸함수 리스트
 public:
 	UFUNCTION(BlueprintCallable)
@@ -56,6 +61,9 @@ public:
 	ACLWeapon* GetWeaponActor();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ACLSubActionEquipment* GetSubEquipmentActor();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;
 
 public:
@@ -65,6 +73,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<ACLWeapon> WeaponActorClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<ACLSubActionEquipment> SubEquipmentActorClass;
 
 	//무기가 바라보는 방향을 그대로 볼지
 	UPROPERTY(EditDefaultsOnly)
@@ -81,6 +92,9 @@ private:
 
 	UPROPERTY()
 	ACLWeapon* WeaponActor;
+
+	UPROPERTY()
+	ACLSubActionEquipment* SubEquipmentActor;
 
 		
 };

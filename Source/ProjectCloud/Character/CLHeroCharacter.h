@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "CLBaseCharacter.h"
+#include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLHeroCharacter.generated.h"
 
 /**
@@ -23,7 +23,9 @@ class UInputMappingContext;
 class UInputAction;
 class UCLAbilityInputConfig;
 class UCLCharacterAttributeSet;
+class ACLEquipmentActor;
 class ACLWeapon;
+class ACLSubActionEquipment;
 struct FGameplayTag;
 struct FInputActionValue;
 
@@ -58,11 +60,18 @@ public:
 
 	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent() override;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Equipment|Weapon")
 	UCAttackerNodeComponent* GetAttackerNode();
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon")
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Equipment")
+	ACLEquipmentActor* GetEquipmentActor(EEquipmentType EquipmentType);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Equipment")
 	ACLWeapon* GetWeaponActor();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Equipment")
+	ACLSubActionEquipment* GetSubEquipmentActor();
 
 	virtual float GetHealth() override;
 

@@ -92,6 +92,18 @@ bool UCLAbilitySystemComponent::RemoveGameplayTag(const FGameplayTag& InputTag, 
 	return true;
 }
 
+bool UCLAbilitySystemComponent::ClearGameplayTag(const FGameplayTag& InputTag)
+{
+	if (!GetOwner() || GetOwner()->IsActorBeingDestroyed())
+	{
+		return false;
+	}
+
+	RemoveLooseGameplayTag(InputTag,GetGameplayTagCount(InputTag));
+
+	return true;
+}
+
 bool UCLAbilitySystemComponent::UpdateGameplayTag(const FGameplayTag& InputTag, int Count)
 {
 	if (!GetOwner() || GetOwner()->IsActorBeingDestroyed())

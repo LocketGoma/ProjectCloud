@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProjectCloud/Weapon/CLEquipmentActor.h"
 #include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLWeapon.generated.h"
 
@@ -14,32 +15,27 @@ class UCLWeaponInstance;
 class UCLAbilitySystemComponent;
 
 UCLASS()
-class PROJECTCLOUD_API ACLWeapon : public AActor
+class PROJECTCLOUD_API ACLWeapon : public ACLEquipmentActor
 {	
-	GENERATED_UCLASS_BODY()
-	
-	// Name of the Sprite component
-	static FName SpriteComponentName;
+	GENERATED_BODY()
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
+	ACLWeapon(const FObjectInitializer& ObjectInitializer);
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponFromInstance();
+	virtual void SetEquipmentFromInstance() override;
 
+	virtual void ActiveEquipment() override;
+	virtual bool CanActiveEquipment() override;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void Attack();
-	bool CanAttack();
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void Reload();
-	bool CanReload();
+	virtual void Reload() override;
+	virtual bool CanReload() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ReloadEvent();
@@ -50,9 +46,6 @@ public:
 
 //Getter
 public:
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	AController* GetOwnerController();
-
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const EWeaponType GetWeaponType() const;
 
@@ -78,32 +71,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateWeaponEventType(EWeaponEventType NewEvent);
 
-	UPROPERTY(Category = "Weapon", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Category = "Config|Equipment|Weapon", VisibleAnywhere, BlueprintReadOnly)
 	EWeaponEventType WeaponEventType;
 
 private:	
-	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", UIMin = "0.1", UIMax="10", ClampMin = "0.1"))
+	UPROPERTY(Category = "Config|Equipment|Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", UIMin = "0.1", UIMax="10", ClampMin = "0.1"))
 	float ReloadTime;
 
-	UPROPERTY(Category = "Weapon", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UPaperFlipbookComponent> Sprite;
-
-	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ACLProjectileActor> ProjectileClass;
-
-	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UCLWeaponInstance> WeaponInstance;
-
-	UPROPERTY(Category = "Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Category = "Config|Equipment|Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EWeaponType WeaponType;
 
-	UPROPERTY()
-	USphereComponent* CoreComponent;
+	UPROPERTY(Category = "Config|Equipment|Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ACLProjectileActor> ProjectileClass;
 
-	UCLAbilitySystemComponent* GetOwnerAbilitySystemComponent() const;
-
-public:
-	/** Returns Sprite subobject **/
-	FORCEINLINE class UPaperFlipbookComponent* GetSprite() const { return Sprite; }
+	UPROPERTY(Category = "Config|Equipment|Weapon", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCLWeaponInstance> WeaponInstance;
 
 };

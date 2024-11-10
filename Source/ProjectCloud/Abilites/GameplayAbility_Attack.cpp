@@ -5,7 +5,7 @@
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Character/CLEnemyCharacter.h"
 #include "ProjectCloud/Character/CLHeroCharacter.h"
-#include "ProjectCloud/Weapon/CLWeapon.h"
+#include "ProjectCloud/Weapon/CLEquipmentActor.h"
 
 bool UGameplayAbility_Attack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
@@ -15,10 +15,10 @@ bool UGameplayAbility_Attack::CanActivateAbility(const FGameplayAbilitySpecHandl
     ACLHeroCharacter* HeroCharacter = Cast<ACLHeroCharacter>(ActorInfo->AvatarActor);
     if (HeroCharacter)
     {
-        ACLWeapon* Weapon = HeroCharacter->GetWeaponActor();
-        if (Weapon)
+        ACLEquipmentActor* Equipment = HeroCharacter->GetEquipmentActor(EquipmentType);
+        if (Equipment)
         {
-            return Weapon->CanAttack();
+            return Equipment->CanActiveEquipment();
         }
     }
 
@@ -38,10 +38,10 @@ void UGameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle H
     ACLHeroCharacter* HeroCharacter = Cast<ACLHeroCharacter>(ActorInfo->AvatarActor);
     if (HeroCharacter)
     {
-        ACLWeapon* Weapon = HeroCharacter->GetWeaponActor();
-        if (Weapon)
+        ACLEquipmentActor* Equipment = HeroCharacter->GetEquipmentActor(EquipmentType);
+        if (Equipment)
         {
-            Weapon->Attack();
+            return Equipment->ActiveEquipment();
         }
     }
 

@@ -10,40 +10,15 @@
 #include "ProjectCloud/Weapon/CLProjectileActor.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
-FName ACLWeapon::SpriteComponentName(TEXT("MainSprite"));
 ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	CoreComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CoreComponent"));
-	CoreComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CoreComponent->SetCollisionResponseToAllChannels(ECR_Ignore);	
-	CoreComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	RootComponent = CoreComponent;
-
-	// Try to create the sprite component
-	Sprite = CreateOptionalDefaultSubobject<UPaperFlipbookComponent>(ACLWeapon::SpriteComponentName);
-	if (Sprite)
-	{
-		Sprite->AlwaysLoadOnClient = true;
-		Sprite->AlwaysLoadOnServer = true;
-		Sprite->bOwnerNoSee = false;
-		Sprite->bAffectDynamicIndirectLighting = true;
-		Sprite->PrimaryComponentTick.TickGroup = TG_PrePhysics;
-		Sprite->SetupAttachment(CoreComponent);
-		static FName CollisionProfileName(TEXT("ObjectMesh"));
-		Sprite->SetCollisionProfileName(CollisionProfileName);
-		Sprite->SetGenerateOverlapEvents(false);
-	}
-
-	CoreComponent->BodyInstance.bLockZRotation = true;	
-
 	WeaponType = EWeaponType::Weapon_None;
 
 	ReloadTime = 1.5f;
-
 }
 
 // Called when the game starts or when spawned
@@ -56,10 +31,9 @@ void ACLWeapon::BeginPlay()
 void ACLWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-void ACLWeapon::SetWeaponFromInstance()
+void ACLWeapon::SetEquipmentFromInstance()
 {
 	if (!(ensure(WeaponInstance)) || !(ensure(GetOwner())))
 	{
@@ -80,7 +54,48 @@ void ACLWeapon::SetWeaponFromInstance()
 	UpdateAmmoEvent();
 }
 
-bool ACLWeapon::CanAttack()
+void ACLWeapon::ActiveEquipment()
+{
+	if (GetMagazineAmmo() > 0)
+	{
+		UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
+
+		if (!ensure(ASC))
+		{
+			return;
+		}
+
+		ASC->RemoveGameplayTag(UCLWeaponInstance::GetMagazineAmmoData(WeaponInstance).KeyTag, 1);
+		FActorSpawnParameters SpawnParameter;
+		SpawnParameter.Owner = GetOwner();
+
+		FRotator Rotation = GetRootComponent()->GetRelativeRotation();
+		ACLProjectileActor* ProjectileActor = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation, SpawnParameter);
+
+		if (!ensureAlways(ProjectileActor))
+		{
+			return;
+		}
+		ProjectileActor->SetEquipmentType(EquipmentType);
+		ProjectileActor->LaunchVector = GetActorForwardVector();
+		ProjectileActor->LaunchProjectile();
+	}
+
+	if (WeaponUtilites::IsWeaponActivate(WeaponEventType) && GetMagazineAmmo() == 0)
+	{
+		UpdateWeaponEventType(EWeaponEventType::Event_MagaineEmpty);
+	}
+
+	UpdateAmmoEvent();
+
+	/*
+	* 1. 탄 쏠때 탄환 남았는지 체크
+	* 2. 남아있으면 1발 줄이고 발사
+	* 3. 없으면 자동 재장전
+	*/
+}
+
+bool ACLWeapon::CanActiveEquipment()
 {
 	if (!ensure(WeaponInstance))
 	{
@@ -93,15 +108,14 @@ bool ACLWeapon::CanAttack()
 	{
 		return false;
 	}
-	
+
 	if ((WeaponEventType == EWeaponEventType::Event_MagaineEmpty))
 	{
-		if(UCLWeaponInstance::CanAutoReload(WeaponInstance))
+		if (UCLWeaponInstance::CanAutoReload(WeaponInstance))
 			ReloadEvent();
 
 		return false;
 	}
-
 	return true;
 }
 
@@ -139,43 +153,7 @@ bool ACLWeapon::CanReload()
 	return true;
 }
 
-void ACLWeapon::Attack_Implementation()
-{
-	if (GetMagazineAmmo() > 0)
-	{
-		UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
-
-		if (!ensure(ASC))
-		{
-			return;
-		}
-
-		ASC->RemoveLooseGameplayTag(WeaponInstance.GetDefaultObject()->MagazineAmmo.KeyTag, 1);
-
-		FActorSpawnParameters SpawnParameter;
-		SpawnParameter.Owner = GetOwner();
-
-		FRotator Rotation = GetRootComponent()->GetRelativeRotation();
-		ACLProjectileActor* Projectile = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation, SpawnParameter);
-		Projectile->LaunchVector = GetActorForwardVector();
-		Projectile->LaunchProjectile();
-	}	
-	
-	if (WeaponUtilites::IsWeaponActivate(WeaponEventType) && GetMagazineAmmo() == 0)
-	{
-		UpdateWeaponEventType(EWeaponEventType::Event_MagaineEmpty);		
-	}
-
-	UpdateAmmoEvent();
-
-	/*
-	* 1. 탄 쏠때 탄환 남았는지 체크	
-	* 2. 남아있으면 1발 줄이고 발사
-	* 3. 없으면 자동 재장전
-	*/
-}
-
-void ACLWeapon::Reload_Implementation()
+void ACLWeapon::Reload()
 {
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
@@ -218,21 +196,6 @@ void ACLWeapon::ReloadEvent_Implementation()
 	GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::Reload, ReloadTime, false);
 }
 
-AController* ACLWeapon::GetOwnerController()
-{
-	if (!GetOwner())
-	{
-		return nullptr;
-	}
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-
-	if (IsValid(OwnerPawn))
-	{
-		return OwnerPawn->GetController();
-	}
-
-	return nullptr;
-}
 
 const EWeaponType ACLWeapon::GetWeaponType() const
 {
@@ -299,29 +262,5 @@ void ACLWeapon::UpdateWeaponEventType(EWeaponEventType NewEvent)
 		UE_LOG(LogTemp, Log, TEXT("기존 무기 이벤트 타입 : [%s], 신규 무기 이벤트 타입 : [%s]"), *(EnumPtr->GetNameStringByValue((int64)WeaponEventType)), *(EnumPtr->GetNameStringByValue((int64)NewEvent)));
 #endif
 	WeaponEventType = NewEvent;
-}
-
-UCLAbilitySystemComponent* ACLWeapon::GetOwnerAbilitySystemComponent() const
-{
-	if (!ensure(GetOwner()))
-	{
-		return nullptr;
-	}
-
-	ACLBaseCharacter* OwnerCharacter = Cast<ACLBaseCharacter>(GetOwner());
-
-	if (!ensure(OwnerCharacter))
-	{
-		return nullptr;
-	}
-
-	UCLAbilitySystemComponent* ASC = OwnerCharacter->GetAbilitySystemComponent();
-
-	if (!ensure(ASC))
-	{
-		return nullptr;
-	}
-
-	return ASC;
 }
 

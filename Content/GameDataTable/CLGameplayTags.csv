@@ -9,9 +9,14 @@ Input.Action.Spell.Command,Input.Action.Spell.Command,
 Input.Action.Dodge,Input.Action.Dodge,
 Attribute.Data.Damage,Attribute.Data.Damage,
 Attribute.Data.Health,Attribute.Data.Health,
-Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Max MagineAmmo
-Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,
-Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Max Ammo
+Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Main Weapon Max MagineAmmo
+Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,Main Weapon Now MagineAmmo
+Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Main Weapon Max Ammo
+Equipment.Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Sub Weapon Max MagineAmmo
+Equipment.Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,Sub Weapon Now MagineAmmo
+Equipment.Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Sub Weapon Max Ammo
 Event.Status.DamageImmunity,Event.Status.DamageImmunity,Immunity
 Ability.Action.Dodge,Ability.Action.Dodge,Ability-Dodge
+Ability.Action.Attack.Main,Ability.Action.Attack.Main,Ability-MainAttack
+Ability.Action.Attack.Sub,Ability.Action.Attack.Sub,Ability-SubAttack
 Event.Action.Active.Dodge,Event.Action.Active.Dodge,Dodge Event

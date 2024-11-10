@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLProjectileActor.generated.h"
 
 class UNiagaraComponent;
@@ -38,9 +39,15 @@ public:
 	UProjectileMovementComponent* GetMovementComponent() { return MovementComponent; }
 
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	//void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+//충돌 처리
+	void OnComponentBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void ActiveDestroyEvent();
+
+	const EEquipmentType GetEquipmentType() const { return EquipmentType; }
+	void SetEquipmentType(EEquipmentType NewType) { EquipmentType = NewType; }
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
@@ -63,6 +70,9 @@ public:
 	float LaunchSpeed;
 
 	static FName SpriteComponentName;
+
+protected:	
+	EEquipmentType EquipmentType;
 
 private:
 	void SetNiagaraEffect();
@@ -88,7 +98,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float EffectSize;
 
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
+	bool bDestroyWhenHit;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	float MaximimLifetime;
 
 	FTimerHandle DestroyTimerHandle;

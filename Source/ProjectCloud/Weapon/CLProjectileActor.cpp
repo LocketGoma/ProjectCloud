@@ -79,9 +79,11 @@ ACLProjectileActor::ACLProjectileActor()
 	//변수 초기화
 	EffectSize = 100.f;	
 	MaximimLifetime = 30.f;
+	bDestroyWhenHit = true;
 	LaunchSpeed = MovementComponent->InitialSpeed;
 
-	CapsuleComponent->OnComponentHit.AddDynamic(this, &ACLProjectileActor::OnHit);
+	//CapsuleComponent->OnComponentHit.AddDynamic(this, &ACLProjectileActor::OnHit);
+	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ACLProjectileActor::OnComponentBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -122,9 +124,9 @@ void ACLProjectileActor::LaunchProjectile()
 	MovementComponent->Velocity = LaunchVector * LaunchSpeed;
 }
 
-void ACLProjectileActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if ((OtherActor && (OtherActor != this) && OtherComp) && GetOwner())
+	if ((OtherActor && (OtherActor != this) && OtherComp) && (GetOwner() && (GetOwner() != OtherActor)))
 	{
 		ACLBaseCharacter* SourceOwner = Cast<ACLBaseCharacter>(GetOwner());
 
@@ -135,17 +137,19 @@ void ACLProjectileActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			//인스티게이터 = Source / 타겟 = Target
 			FGameplayEffectContextHandle EffectContext = FGameplayEffectContextHandle(UAbilitySystemGlobals::Get().AllocGameplayEffectContext());
 			EffectContext.AddSourceObject(this);
-			EffectContext.AddHitResult(Hit);
-			EffectContext.AddInstigator(TargetASC->GetOwnerActor(), SourceASC->GetOwnerActor());
+			EffectContext.AddHitResult(SweepResult);
+			EffectContext.AddInstigator(TargetASC->GetOwnerActor(), SourceASC->GetOwnerActor());			
 
-			FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageGE, 1, EffectContext);
+			FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageGE, 1, EffectContext);			
 
 			if (SpecHandle.IsValid())
 			{
 				SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 			}
+
 		}
-		Destroy();
+		if (bDestroyWhenHit)
+			Destroy();
 	}
 }
 

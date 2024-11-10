@@ -44,6 +44,9 @@ public:
 	bool RemoveGameplayTag(const FGameplayTag& InputTag, int Count = 1);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	bool ClearGameplayTag(const FGameplayTag& InputTag);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	bool UpdateGameplayTag(const FGameplayTag& InputTag, int Count = 1);
 		UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	bool AddGameplayEffect(const TSubclassOf<UGameplayEffect> GameplayEffect);

@@ -2,6 +2,7 @@
 #include "CLAttackerNodeComponent.h"
 #include "Components/SphereComponent.h"
 #include "ProjectCloud/Weapon/CLWeapon.h"
+#include "ProjectCloud/Weapon/CLSubActionEquipment.h"
 
 // Sets default values for this component's properties
 UCAttackerNodeComponent::UCAttackerNodeComponent()	
@@ -36,8 +37,9 @@ void UCAttackerNodeComponent::BeginPlay()
 		WeaponActor = GetWorld()->SpawnActor<ACLWeapon>(WeaponActorClass);
 		WeaponActor->SetOwner(GetOwner());
 		WeaponActor->AttachToComponent(AttackPoint, FAttachmentTransformRules::KeepRelativeTransform);
-		WeaponActor->SetWeaponFromInstance();
+		WeaponActor->SetEquipmentFromInstance();
 	}
+	EquipSubEquipmentActor(SubEquipmentActorClass);
 }
 
 void UCAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
@@ -56,8 +58,11 @@ void UCAttackerNodeComponent::UpdateRotation(float Val)
 	
 	if (!bWeaponRelativeSpin)
 	{
-		WeaponActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
+		if (WeaponActor)
+			WeaponActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
 	}
+	if (SubEquipmentActor)
+		SubEquipmentActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
 
 	K2_UpdateRotation(GetRelativeRotation());
 }
@@ -68,10 +73,35 @@ void UCAttackerNodeComponent::AddRotation(float Val)
 
 	if (!bWeaponRelativeSpin)
 	{		
-		WeaponActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
+		if (WeaponActor)
+			WeaponActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
 	}
+	if (SubEquipmentActor)
+		SubEquipmentActor->SetActorRelativeRotation(-1 * GetRelativeRotation());
 
 	K2_UpdateRotation(GetRelativeRotation());
+}
+
+void UCAttackerNodeComponent::EquipSubEquipmentActor(TSubclassOf<ACLSubActionEquipment> EquipmentActorClass)
+{
+	if (IsValid(SubEquipmentActor))
+	{
+		if (SubEquipmentActor->GetSubEquipmentType() == EquipmentActorClass.GetDefaultObject()->GetSubEquipmentType())
+		{
+			SubEquipmentActor->Reload();
+			return;
+		}
+
+		SubEquipmentActor->Destroy();
+	}
+
+	if (EquipmentActorClass)
+	{
+		SubEquipmentActor = GetWorld()->SpawnActor<ACLSubActionEquipment>(EquipmentActorClass);
+		SubEquipmentActor->SetOwner(GetOwner());
+		SubEquipmentActor->AttachToComponent(CorePoint, FAttachmentTransformRules::KeepRelativeTransform);
+		SubEquipmentActor->SetEquipmentFromInstance();	
+	}
 }
 
 const USceneComponent* UCAttackerNodeComponent::GetAttackPoint()
@@ -89,6 +119,11 @@ const FTransform UCAttackerNodeComponent::GetAttackPointTransform()
 ACLWeapon* UCAttackerNodeComponent::GetWeaponActor()
 {
 	return WeaponActor;
+}
+
+ACLSubActionEquipment* UCAttackerNodeComponent::GetSubEquipmentActor()
+{
+	return SubEquipmentActor;
 }
 
 const EWeaponType UCAttackerNodeComponent::GetWeaponType() const

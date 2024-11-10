@@ -13,6 +13,9 @@
 #include "InputMappingContext.h"
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
+#include "ProjectCloud/Weapon/CLEquipmentActor.h"
+#include "ProjectCloud/Weapon/CLWeapon.h"
+#include "ProjectCloud/Weapon/CLSubActionEquipment.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Components/CLAttackerNodeComponent.h"
 #include "ProjectCloud/System/CLCharacterAttributeSet.h"
@@ -134,6 +137,17 @@ UCAttackerNodeComponent* ACLHeroCharacter::GetAttackerNode()
 	return AttackerComponent;
 }
 
+ACLEquipmentActor* ACLHeroCharacter::GetEquipmentActor(EEquipmentType EquipmentType)
+{
+	if (EquipmentType == EEquipmentType::Equipment_MainWeapon)
+		return Cast<ACLEquipmentActor>(GetWeaponActor());
+
+	if (EquipmentType == EEquipmentType::Equipment_SubEquipment)
+		return Cast<ACLEquipmentActor>(GetSubEquipmentActor());
+
+	return nullptr;
+}
+
 ACLWeapon* ACLHeroCharacter::GetWeaponActor()
 {
 	if (!ensure(AttackerComponent))
@@ -142,6 +156,16 @@ ACLWeapon* ACLHeroCharacter::GetWeaponActor()
 	}
 
 	return AttackerComponent->GetWeaponActor();
+}
+
+ACLSubActionEquipment* ACLHeroCharacter::GetSubEquipmentActor()
+{
+	if (!ensure(AttackerComponent))
+	{
+		return nullptr;
+	}
+	return AttackerComponent->GetSubEquipmentActor();
+	
 }
 
 float ACLHeroCharacter::GetHealth()

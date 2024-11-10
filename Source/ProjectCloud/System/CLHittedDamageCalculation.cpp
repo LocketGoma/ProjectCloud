@@ -18,12 +18,7 @@ void UCLHittedDamageCalculation::Execute_Implementation(const FGameplayEffectCus
 {
     float Damage = 0.0f;
     ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FEnemyDamageStatics::Get().DamageDef, FAggregatorEvaluateParameters(), Damage);
-
-    UCLAbilitySystemComponent* SourceASC = Cast<UCLAbilitySystemComponent>(ExecutionParams.GetSourceAbilitySystemComponent());
-    UCLAbilitySystemComponent* TargetASC = Cast<UCLAbilitySystemComponent>(ExecutionParams.GetTargetAbilitySystemComponent());
-
-
-
+        
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UCLCharacterAttributeSet::GetDamageAttribute(), EGameplayModOp::Override, Damage));
 
     //캡쳐된 어트리뷰트에 바로 수치넣을때 ->
