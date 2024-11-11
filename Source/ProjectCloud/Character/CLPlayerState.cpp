@@ -27,4 +27,6 @@ void ACLPlayerState::SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet)
 
 		bAbilitySet = true;;
 	}
+
+	//AbilityComponent->AddGameplayEventTagContainerDelegate()
 }

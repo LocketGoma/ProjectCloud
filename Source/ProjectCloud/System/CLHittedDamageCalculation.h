@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "CLHittedDamageCalculation.generated.h"
 
 /// <summary>

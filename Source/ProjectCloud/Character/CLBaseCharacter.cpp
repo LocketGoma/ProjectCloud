@@ -6,7 +6,7 @@
 #include "ProjectCloud/System/CLAbilitySet.h"
 #include "Components/CapsuleComponent.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
-#include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 
 ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -40,6 +40,8 @@ void ACLBaseCharacter::BeginPlay()
 void ACLBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+
+	UnInitializeAbilitySystemComponent();
 }
 
 //반드시 오버라이드 할것
@@ -48,13 +50,51 @@ UCLAbilitySystemComponent* ACLBaseCharacter::GetAbilitySystemComponent()
 	return nullptr;
 }
 
-void ACLBaseCharacter::UpdateHealthEvent_Implementation(float ChangedHealth)
+void ACLBaseCharacter::InitializeAbilitySystemComponent(UCLAbilitySystemComponent* ASC)
 {
-	if (!ImmuneTimerHandle.IsValid())
+	if (ASC)
 	{
-		GetWorld()->GetTimerManager().SetTimer(ImmuneTimerHandle, this, &ACLBaseCharacter::ClearImmunityState, ImmmuneTime, false);
-		SetImmunity(true);
+		AttributeSet = ASC->GetSet<UCLCharacterAttributeSet>();
+		AttributeSet->OnHealthChanged.AddUObject(this, &ThisClass::HandleHealthChanged);
+		AttributeSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChanged);
+		AttributeSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 	}
+}
+
+void ACLBaseCharacter::UnInitializeAbilitySystemComponent()
+{
+	//ClearGameplayTags();
+
+	if (AttributeSet)
+	{
+		AttributeSet->OnHealthChanged.RemoveAll(this);
+		AttributeSet->OnMaxHealthChanged.RemoveAll(this);
+		AttributeSet->OnOutOfHealth.RemoveAll(this);
+	}
+
+	AttributeSet = nullptr;
+
+	//AbilitySystemComponent = nullptr;
+}
+
+void ACLBaseCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
+	if (OldValue > NewValue)
+	{
+		if (!ImmuneTimerHandle.IsValid())
+		{
+			GetWorld()->GetTimerManager().SetTimer(ImmuneTimerHandle, this, &ACLBaseCharacter::ClearImmunityState, ImmmuneTime, false);
+			SetImmunity(true);
+		}
+	}
+}
+
+void ACLBaseCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
+}
+
+void ACLBaseCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
 }
 
 void ACLBaseCharacter::SetImmunity(bool NewImmunity)

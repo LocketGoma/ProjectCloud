@@ -6,9 +6,10 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "AIController.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
-#include "ProjectCloud/System/CLCharacterAttributeSet.h"
-#include "ProjectCloud/System/CLCombatAttributeSet.h"
+#include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
+#include "ProjectCloud/AttributeSet/CLCombatAttributeSet.h"
 #include "ProjectCloud/Character/CLHeroCharacter.h"
+#include "ProjectCloud/ProjectCloudLogChannels.h"
 #include "GameplayAbilitySet.h"
 
 
@@ -43,15 +44,17 @@ void ACLEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 float ACLEnemyCharacter::GetHealth()
 {
-	//const UCLEnemyAttributeSet* AttributeSet = Cast<UCLEnemyAttributeSet>(GetAbilitySystemComponent()->GetAttributeSet(UCLEnemyAttributeSet::StaticClass()));
-	const UCLCharacterAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLCharacterAttributeSet>();
+	//const UCLEnemyAttributeSet* AttributeSet = Cast<UCLEnemyAttributeSet>(GetAbilitySystemComponent()->GetAttributeSet(UCLEnemyAttributeSet::StaticClass()));	
 
 	return AttributeSet->GetHealth();
 }
 
 void ACLEnemyCharacter::SetTargetPlayer(APawn* NewTarget)
 {
-	check(NewTarget);
+	if (IsValid(NewTarget))
+	{
+		UE_LOG(LogCloud, Error, TEXT("Player Character is Dead!"));
+	}
 
 	TargetPlayer = NewTarget;
 }
@@ -72,7 +75,7 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 {
 	if (!ensure(AbilityComponent))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Some EnmeyCharacter's ASC is not Set! Must be Check this Error. Name : [%s]"), *GetName());
+		UE_LOG(LogCloud, Error, TEXT("Some EnmeyCharacter's ASC is not Set! Must be Check this Error. Name : [%s]"), *GetName());
 		return;
 	}
 	AbilityComponent->InitAbilityActorInfo(this, this);
@@ -96,6 +99,9 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 			GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);			
 		}
 	}
+
+	InitializeAbilitySystemComponent(AbilityComponent);
+
 }
 
 void ACLEnemyCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

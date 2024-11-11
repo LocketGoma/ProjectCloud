@@ -10,7 +10,7 @@
 #include "ProjectCloud/Weapon/CLProjectileActor.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Character/CLHeroCharacter.h"
-#include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "GameplayEffect.h"
 

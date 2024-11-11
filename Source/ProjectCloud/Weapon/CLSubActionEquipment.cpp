@@ -151,6 +151,10 @@ void ACLSubActionEquipment::ActiveWeaponEquipment()
 
 	//잔탄 부족해지면 Destroy 해주기
 
+	if (GetMagazineAmmo() == 0)
+	{
+		Destroy();
+	}
 }
 
 bool ACLSubActionEquipment::CanActiveWeaponEquipment()

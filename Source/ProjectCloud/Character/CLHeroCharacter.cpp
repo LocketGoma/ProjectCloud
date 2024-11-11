@@ -18,7 +18,7 @@
 #include "ProjectCloud/Weapon/CLSubActionEquipment.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Components/CLAttackerNodeComponent.h"
-#include "ProjectCloud/System/CLCharacterAttributeSet.h"
+#include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/Input/CLInputComponent.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
@@ -98,6 +98,22 @@ void ACLHeroCharacter::UpdateNavigationRelevance()
 	}
 }
 
+void ACLHeroCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
+	Super::HandleHealthChanged(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);
+	OnHealthChanged.Broadcast(OldValue, NewValue);
+}
+
+void ACLHeroCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
+	Super::HandleMaxHealthChanged(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);
+}
+
+void ACLHeroCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
+{
+	Super::HandleOutOfHealth(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);
+}
+
 void ACLHeroCharacter::SetAbilitySystemComponent()
 {
 	UEnhancedInputComponent* EnhancedInputComponent = GetComponentByClass<UEnhancedInputComponent>();
@@ -114,7 +130,8 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 		if (IsValid(AttributeGameplayEffect))
 		{
 			GetAbilitySystemComponent()->AddGameplayEffect(AttributeGameplayEffect);
-		}		
+		}
+		InitializeAbilitySystemComponent(PS->GetAbilitySystemComponent());
 	}
 }
 
@@ -170,8 +187,6 @@ ACLSubActionEquipment* ACLHeroCharacter::GetSubEquipmentActor()
 
 float ACLHeroCharacter::GetHealth()
 {
-	const UCLCharacterAttributeSet* AttributeSet = GetAbilitySystemComponent()->GetSet<UCLCharacterAttributeSet>();
-
 	return AttributeSet->GetHealth();
 }
 

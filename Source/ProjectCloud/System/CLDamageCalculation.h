@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "ProjectCloud/System/CLCombatAttributeSet.h"
+#include "ProjectCloud/AttributeSet/CLCombatAttributeSet.h"
 #include "CLDamageCalculation.generated.h"
 
 //여기는 플레이어 -> 몬스터 상대인것만 제작하기

@@ -6,6 +6,7 @@
 #include "PaperZDCharacter.h"
 #include "CLBaseCharacter.generated.h"
 
+struct FGameplayEffectSpec;
 class UInputComponent;
 class UPawnMovementComponent;
 class UCLAbilitySystemComponent;
@@ -30,9 +31,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent();
 
-	//Health Update 발생시 호출되는 Event
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void UpdateHealthEvent(float ChangedHealth);
+	virtual void InitializeAbilitySystemComponent(UCLAbilitySystemComponent* ASC);
+	virtual void UnInitializeAbilitySystemComponent();
+
+	virtual void HandleHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
+	virtual void HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
+	virtual void HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
 
 //--Getters
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -40,15 +44,14 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsImmunity() { return bImmune; }
-
-	UFUNCTION(BlueprintCallable)
-	void SetImmunity(bool NewImmunity);
+		
 
 	UFUNCTION()
 	virtual void DeathEvent();
 
 private:
 	void ClearImmunityState();
+	void SetImmunity(bool NewImmunity);
 
 protected:
 	//적용시킬 AbilitySet
@@ -61,13 +64,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bDebug;
 
+	TObjectPtr<const class UCLCharacterAttributeSet> AttributeSet;
 
+//무적 처리 관련
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Config", meta = (AllowPrivateAccess = "true", UIMin = "0", ClampMin = "0"))
 	float ImmmuneTime;
-
-	FTimerHandle ImmuneTimerHandle;
-
 	bool bImmune;
+	FTimerHandle ImmuneTimerHandle;
 
 };

@@ -12,6 +12,9 @@
 class UCLAbilitySystemComponent;
 class UCLAbilitySet;
 
+//델리게이트 추가
+
+
 UCLASS()
 class PROJECTCLOUD_API ACLPlayerState : public APlayerState
 {
