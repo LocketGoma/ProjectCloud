@@ -59,6 +59,8 @@ void ACLBaseCharacter::InitializeAbilitySystemComponent(UCLAbilitySystemComponen
 		AttributeSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChanged);
 		AttributeSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 	}
+
+	//OnCharacterInitialized.Broadcast();
 }
 
 void ACLBaseCharacter::UnInitializeAbilitySystemComponent()

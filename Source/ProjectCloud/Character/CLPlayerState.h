@@ -28,12 +28,17 @@ public:
 	void SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet);
 	void InitializePlayerState(UCLAbilitySet* AbilitySet = nullptr);
 
+public:
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void PlayerOutOfHealthEvent();
+
 private:
 	void InitializeDelegates();
 	void UnInitializeDelegates();
 
 	UFUNCTION()
 	void HandlePlayerOutOfHealth();
+
 
 private:
 	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;

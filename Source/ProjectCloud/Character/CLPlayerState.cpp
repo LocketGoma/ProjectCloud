@@ -72,10 +72,11 @@ void ACLPlayerState::UnInitializeDelegates()
 
 void ACLPlayerState::HandlePlayerOutOfHealth()
 {
-	ACLGameState* GameState = Cast<ACLGameState>(GetWorld()->GetGameState());
+	PlayerOutOfHealthEvent();
 
+	ACLGameState* GameState = Cast<ACLGameState>(GetWorld()->GetGameState());	
 	if (GameState)
 	{
-		GameState->HandleGameOverEvent();
+		GameState->HandleGameOverEvent();		
 	}
 }

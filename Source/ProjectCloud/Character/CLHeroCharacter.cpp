@@ -61,6 +61,8 @@ void ACLHeroCharacter::BeginPlay()
 			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetPlayerController()->GetLocalPlayer()))
 			SubSystem->AddMappingContext(InputContext, 0);
 	}
+
+	OnCharacterInitialized.Broadcast();
 }
 
 void ACLHeroCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -180,13 +182,15 @@ ACLSubActionEquipment* ACLHeroCharacter::GetSubEquipmentActor()
 	{
 		return nullptr;
 	}
-	return AttackerComponent->GetSubEquipmentActor();
-	
+	return AttackerComponent->GetSubEquipmentActor();	
 }
 
 float ACLHeroCharacter::GetHealth()
 {
-	return AttributeSet->GetHealth();
+	if (AttributeSet)
+		return AttributeSet->GetHealth();
+
+	return 0.0f;
 }
 
 APlayerController* ACLHeroCharacter::GetPlayerController() const

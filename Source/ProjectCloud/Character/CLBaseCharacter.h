@@ -17,6 +17,7 @@ class UGameplayEffect;
 //일반 델리게이트 - 컴파일, 성능상 이점, BP 호출 불가, AddUObject로 사용
 
 DECLARE_MULTICAST_DELEGATE(FCLCharacterStateChangeEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCLCharacterInializeEvent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCLCharacterAttributeChanged, float, OldValue, float, NewValue);
 
 UCLASS(config = Game, Blueprintable, BlueprintType)
@@ -48,6 +49,9 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Character")
 	FCLCharacterAttributeChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character")
+	FCLCharacterInializeEvent OnCharacterInitialized;
 		
 	FCLCharacterStateChangeEvent OnOutOfHealth;
 
