@@ -33,8 +33,6 @@ struct FInputActionValue;
 //어태커 노드에서 무기를 가지고 있음
 //무기 정보는 캐릭터 -> 어태커 노드를 통해 획득 (플레이어가 직접 무기 정보를 가지고 있진 않음)
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCLCharacterAttributeChanged, float, OldValue, float, NewValue);
-
 UCLASS()
 class PROJECTCLOUD_API ACLHeroCharacter : public ACLBaseCharacter
 {
@@ -94,9 +92,7 @@ protected:
 	void TrackingMousePosition(FVector Position);
 	void TrackingMousePosition(FVector2D Position);
 
-public:
-	UPROPERTY(BlueprintAssignable, Category = "Character")
-	FCLCharacterAttributeChanged OnHealthChanged;
+
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */

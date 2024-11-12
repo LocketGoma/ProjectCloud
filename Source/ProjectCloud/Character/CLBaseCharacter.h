@@ -13,6 +13,12 @@ class UCLAbilitySystemComponent;
 class UCLAbilitySet;
 class UGameplayEffect;
 
+//다이나믹 델리게이트 - 런타임, BP에서 호출가능, AddDynamic으로 사용
+//일반 델리게이트 - 컴파일, 성능상 이점, BP 호출 불가, AddUObject로 사용
+
+DECLARE_MULTICAST_DELEGATE(FCLCharacterStateChangeEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCLCharacterAttributeChanged, float, OldValue, float, NewValue);
+
 UCLASS(config = Game, Blueprintable, BlueprintType)
 class PROJECTCLOUD_API ACLBaseCharacter : public APaperZDCharacter
 {
@@ -37,6 +43,13 @@ public:
 	virtual void HandleHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
 	virtual void HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
 	virtual void HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue);
+
+//이벤트 델리게이트
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Character")
+	FCLCharacterAttributeChanged OnHealthChanged;
+		
+	FCLCharacterStateChangeEvent OnOutOfHealth;
 
 //--Getters
 	UFUNCTION(BlueprintCallable, BlueprintPure)

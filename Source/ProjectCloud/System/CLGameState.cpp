@@ -48,3 +48,12 @@ void ACLGameState::SpawnMonstersAtCount(int32 Count)
 {
 	SpawnManagerComponent->SpawnMonsters(10);
 }
+
+void ACLGameState::HandleGameOverEvent_Implementation()
+{
+	
+}
+
+void ACLGameState::HandleGameClearEvent_Implementation()
+{
+}

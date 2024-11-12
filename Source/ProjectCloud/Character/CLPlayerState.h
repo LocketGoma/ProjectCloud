@@ -6,9 +6,6 @@
 #include "GameFramework/PlayerState.h"
 #include "CLPlayerState.generated.h"
 
-/**
- * 
- */
 class UCLAbilitySystemComponent;
 class UCLAbilitySet;
 
@@ -23,8 +20,20 @@ class PROJECTCLOUD_API ACLPlayerState : public APlayerState
 	ACLPlayerState(const FObjectInitializer& ObjectInitializer);
 
 public:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+public:
 	UCLAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
 	void SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet);
+	void InitializePlayerState(UCLAbilitySet* AbilitySet = nullptr);
+
+private:
+	void InitializeDelegates();
+	void UnInitializeDelegates();
+
+	UFUNCTION()
+	void HandlePlayerOutOfHealth();
 
 private:
 	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;

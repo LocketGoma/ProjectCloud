@@ -87,6 +87,7 @@ void ACLBaseCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* Dam
 			SetImmunity(true);
 		}
 	}
+	OnHealthChanged.Broadcast(OldValue, NewValue);
 }
 
 void ACLBaseCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
@@ -95,6 +96,7 @@ void ACLBaseCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* 
 
 void ACLBaseCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
+	OnOutOfHealth.Broadcast();
 }
 
 void ACLBaseCharacter::SetImmunity(bool NewImmunity)

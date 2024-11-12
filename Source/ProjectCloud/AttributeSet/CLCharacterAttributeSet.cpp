@@ -94,6 +94,6 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
 
     if (Health.GetCurrentValue() <= 0.0f)
     {
-        Character->DeathEvent(); // 캐릭터의 죽음 처리 함수 호출
+        OnOutOfHealth.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, HealthBeforeAttributeChange, GetHealth());
     }
 }

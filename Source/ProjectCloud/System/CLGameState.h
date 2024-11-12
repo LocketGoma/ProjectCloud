@@ -27,12 +27,22 @@ public:
 	const UCLSpawnManagerComponent* GetSpawnManagerComponent() const;
 
 	//1마리만 스폰
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void SpawnMonsterOnce();
 
 	//임의의 숫자 스폰
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void SpawnMonstersAtCount(int32 Count);
+
+//이벤트 핸들링
+public:
+	//게임 오버 이벤트
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, BlueprintNativeEvent)
+	void HandleGameOverEvent();
+
+	//게임 클리어 이벤트
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, BlueprintNativeEvent)
+	void HandleGameClearEvent();
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn", meta = (AllowPrivateAccess = "true"))

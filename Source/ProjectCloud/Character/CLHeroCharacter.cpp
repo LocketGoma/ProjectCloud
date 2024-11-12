@@ -100,8 +100,7 @@ void ACLHeroCharacter::UpdateNavigationRelevance()
 
 void ACLHeroCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
-	Super::HandleHealthChanged(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);
-	OnHealthChanged.Broadcast(OldValue, NewValue);
+	Super::HandleHealthChanged(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);	
 }
 
 void ACLHeroCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
@@ -121,7 +120,7 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 	if (ACLPlayerState * PS = Cast<ACLPlayerState>(GetPlayerState()))
 	{
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
-		PS->SetAbilitiesFromActionSet(AbilitySet);
+		PS->InitializePlayerState(AbilitySet);
 		PS->GetAbilitySystemComponent()->BindInputActions(InputConfig, EnhancedInputComponent);
 
 		UCLCharacterAttributeSet* NewAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
