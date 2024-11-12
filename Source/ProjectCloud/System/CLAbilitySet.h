@@ -39,6 +39,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	int32 AbilityLevel = 1;
 
+	//중복 호출 제한 여부 (기본 : True)
+	UPROPERTY(EditDefaultsOnly)
+	bool bIsActiveOnce = true;
+
 	// Tag used to process input for the ability.
 	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;

@@ -7,7 +7,7 @@
 #include "CLExperiencePointAttributeSet.generated.h"
 
 
-DECLARE_MULTICAST_DELEGATE_SixParams(FOnExprienceAttributeValueChanged, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/, const FGameplayEffectSpec* /*EffectSpec*/, float /*EffectMagnitude*/, float /*OldValue*/, float /*NewValue*/);
+DECLARE_MULTICAST_DELEGATE_FiveParams(FOnExprienceAttributeValueChanged, AActor* /*EffectInstigator*/, const FGameplayEffectSpec* /*EffectSpec*/, float /*EffectMagnitude*/, float /*OldValue*/, float /*NewValue*/);
 
 /**
  * 
@@ -24,8 +24,12 @@ public:
 	ATTRIBUTE_ACCESSORS(UCLExperiencePointAttributeSet, MaxEXP);
 	ATTRIBUTE_ACCESSORS(UCLExperiencePointAttributeSet, ExpAdding);
 
+	//XP를 얻은 경우
 	mutable FOnExprienceAttributeValueChanged OnEXPChanged;
+	//최대 XP가 바뀐 경우 (레벨업)
 	mutable FOnExprienceAttributeValueChanged OnMaxEXPChanged;
+	//XP가 가득찬 경우
+	mutable FOnExprienceAttributeValueChanged OnEXPCharged;
 
 protected:
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
@@ -33,8 +37,8 @@ protected:
 
 private:
 	// Store the EXP before any changes 
-	float MaxEXPBeforeAttributeChange;
 	float EXPBeforeAttributeChange;
+	float MaxEXPBeforeAttributeChange;
 
 	bool bMaxExperienceEarned;
 	

@@ -93,6 +93,7 @@ void UCLAbilitySet::GiveToAbilitySystem(UCLAbilitySystemComponent* CloudASC, FCL
 		FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilityToGrant.AbilityLevel);
 		AbilitySpec.SourceObject = SourceObject;
 		AbilitySpec.DynamicAbilityTags.AddTag(AbilityToGrant.InputTag);
+		AbilitySpec.bActivateOnce = AbilityToGrant.bIsActiveOnce;
 
 		const FGameplayAbilitySpecHandle AbilitySpecHandle = CloudASC->GiveAbility(AbilitySpec);
 

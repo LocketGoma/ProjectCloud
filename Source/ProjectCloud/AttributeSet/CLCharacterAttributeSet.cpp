@@ -59,14 +59,11 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
         return;
     }    
 
-    float ChangedHealth = 0.f;
-
     //체력 관련
 
     //대미지 입을때
     if (Data.EvaluatedData.Attribute == GetDamageAttribute())
-    {
-        ChangedHealth = GetDamage();
+    {        
         SetHealthCurrentValue(FMath::Clamp(GetHealth()- GetDamage(), MinimumValue, GetMaxHealth()));
         SetDamageToTarget(0.0f, Character);
     }
@@ -92,7 +89,7 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
         OnHealthChanged.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, HealthBeforeAttributeChange, GetHealth());
     }
 
-    if (Health.GetCurrentValue() <= 0.0f)
+    if (GetHealth() <= 0.0f)
     {
         OnOutOfHealth.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, HealthBeforeAttributeChange, GetHealth());
     }

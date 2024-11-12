@@ -2,6 +2,9 @@
 
 
 #include "CLExperiencePointAttributeSet.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayEffectExtension.h"
+#include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
 UCLExperiencePointAttributeSet::UCLExperiencePointAttributeSet()
 {
@@ -9,9 +12,26 @@ UCLExperiencePointAttributeSet::UCLExperiencePointAttributeSet()
 
 bool UCLExperiencePointAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
-	return false;
+	// Save the current health
+	EXPBeforeAttributeChange = GetEXP();
+	MaxEXPBeforeAttributeChange = GetMaxEXP();
+
+	return true;
 }
 
 void UCLExperiencePointAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
+	Super::PostGameplayEffectExecute(Data);
+	const FGameplayEffectContextHandle& EffectContext = Data.EffectSpec.GetEffectContext();
+	AActor* Instigator = EffectContext.GetOriginalInstigator();
+
+
+
+
+	OnEXPChanged.Broadcast(Instigator, &Data.EffectSpec, Data.EvaluatedData.Magnitude, EXPBeforeAttributeChange, GetEXP());
+	OnMaxEXPChanged.Broadcast(Instigator, &Data.EffectSpec, Data.EvaluatedData.Magnitude, MaxEXPBeforeAttributeChange, GetMaxEXP());
+
+	if (GetEXP()>=GetMaxEXP())
+		OnEXPCharged.Broadcast(Instigator, &Data.EffectSpec, Data.EvaluatedData.Magnitude, EXPBeforeAttributeChange, GetEXP());
+
 }
