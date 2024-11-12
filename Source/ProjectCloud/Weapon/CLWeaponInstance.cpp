@@ -119,6 +119,7 @@ void UCLWeaponInstance::OnEquipmentTypeChanged()
 	}
 }
 
+#if WITH_EDITOR
 void UCLWeaponInstance::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent); 
@@ -130,3 +131,5 @@ void UCLWeaponInstance::PostEditChangeProperty(FPropertyChangedEvent& PropertyCh
 		OnEquipmentTypeChanged();
 	}
 }
+#endif
+

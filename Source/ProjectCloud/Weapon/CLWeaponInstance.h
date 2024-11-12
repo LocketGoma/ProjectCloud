@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "UObject/Object.h"
 #include "GameplayTagContainer.h"
 #include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLWeaponInstance.generated.h"
@@ -21,7 +21,7 @@ public:
 	FGameplayTag KeyTag;
 
 	UPROPERTY(EditDefaultsOnly)
-	int Value;
+	int Value = 0;
 };
 
 
@@ -49,7 +49,11 @@ public:
 
 	UFUNCTION() 
 	void OnEquipmentTypeChanged();
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#if WITH_EDITOR
+
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+
+#endif
 
 public:
 	UPROPERTY(EditDefaultsOnly)
@@ -57,7 +61,7 @@ public:
 
 
 	UPROPERTY(EditDefaultsOnly, meta=(UIMin="0",ClampMin = "0"))
-	float BaseDamage;
+	float BaseDamage = 0.f;
 
 	//탄창 용량
 	UPROPERTY(EditDefaultsOnly)

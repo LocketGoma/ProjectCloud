@@ -259,7 +259,7 @@ const float ACLWeapon::GetBaseEquipmentValue() const
 void ACLWeapon::UpdateWeaponEventType(EWeaponEventType NewEvent)
 {
 #if !UE_BUILD_SHIPPING
-	UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponEventType"), true);
+	UEnum* EnumPtr = FindObject<UEnum>(GEngine->GetWorld(), TEXT("EWeaponEventType"), true);
 	if (EnumPtr)
 		UE_LOG(LogTemp, Log, TEXT("기존 무기 이벤트 타입 : [%s], 신규 무기 이벤트 타입 : [%s]"), *(EnumPtr->GetNameStringByValue((int64)WeaponEventType)), *(EnumPtr->GetNameStringByValue((int64)NewEvent)));
 #endif
