@@ -7,10 +7,13 @@
 #include "CLPlayerState.generated.h"
 
 class UCLAbilitySystemComponent;
+class UCLLevelAbilityComponent;
+class UCLExperienceComponent;
 class UCLAbilitySet;
 
 //델리게이트 추가
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLevelUpEventDelegate, int64, NowExp);
 
 UCLASS()
 class PROJECTCLOUD_API ACLPlayerState : public APlayerState
@@ -24,13 +27,26 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
-	UCLAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
-	void SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet);
 	void InitializePlayerState(UCLAbilitySet* AbilitySet = nullptr);
+	UCLExperienceComponent* GetExperienceComponent() const { return ExperienceComponent; }
+	UCLAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
+	UCLLevelAbilityComponent* GetLevelAbilityComponent() const { return LevelAbilityComponent; }
 
+//유틸 함수들
 public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void PlayerOutOfHealthEvent();
+
+//Getter/Setter
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const int GetPlayerLevel();
+
+	void SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet);
+	
+//Delegates
+public:
+	UPROPERTY(BlueprintAssignable)
+	FLevelUpEventDelegate OnLevelUpEvent;
 
 private:
 	void InitializeDelegates();
@@ -39,9 +55,27 @@ private:
 	UFUNCTION()
 	void HandlePlayerOutOfHealth();
 
+	UFUNCTION()
+	void HandlePlayerCanLevelUp();
+
+	UFUNCTION()
+	void HandlePlayerEarnExp();
+
+	UFUNCTION()
+	void HandleLevelUpEvent(int64 NowExp);
 
 private:
-	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ClampMin = "0"))
+	int PlayerLevel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCLExperienceComponent> ExperienceComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCLLevelAbilityComponent> LevelAbilityComponent;
 
 	bool bAbilitySet;	
 };

@@ -81,6 +81,7 @@ ACLProjectileActor::ACLProjectileActor()
 	EffectSize = 100.f;	
 	MaximimLifetime = 30.f;
 	bDestroyWhenHit = true;
+	bStartLaunch = false;
 	LaunchSpeed = MovementComponent->InitialSpeed;
 	
 	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ACLProjectileActor::OnComponentBeginOverlap);
@@ -122,10 +123,18 @@ void ACLProjectileActor::LaunchProjectile()
 	SetNiagaraEffect();
 	LaunchVector = FVector(GetActorForwardVector().X, -GetActorForwardVector().Y, GetActorForwardVector().Z);
 	MovementComponent->Velocity = LaunchVector * LaunchSpeed;
+
+	bStartLaunch = true;
 }
 
 void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//Launch 전에는 충돌 처리 X
+	if (!bStartLaunch)
+	{
+		return;
+	}
+
 	if ((OtherActor && (OtherActor != this) && OtherComp) && (GetOwner() && (GetOwner() != OtherActor)))
 	{
 		ACLBaseCharacter* SourceOwner = Cast<ACLBaseCharacter>(GetOwner());
@@ -140,7 +149,7 @@ void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 			EffectContext.AddHitResult(SweepResult);
 			EffectContext.AddInstigator(TargetASC->GetOwnerActor(), SourceASC->GetOwnerActor());			
 
-			FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageGE, 1, EffectContext);			
+			FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(GameplayEffect, 1, EffectContext);
 
 			if (SpecHandle.IsValid())
 			{

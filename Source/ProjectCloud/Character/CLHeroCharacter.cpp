@@ -16,9 +16,10 @@
 #include "ProjectCloud/Weapon/CLEquipmentActor.h"
 #include "ProjectCloud/Weapon/CLWeapon.h"
 #include "ProjectCloud/Weapon/CLSubActionEquipment.h"
+#include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Components/CLAttackerNodeComponent.h"
-#include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
+#include "ProjectCloud/Components/CLExperienceComponent.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/Input/CLInputComponent.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
@@ -39,8 +40,8 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 
-	AttackerComponent = CreateDefaultSubobject<UCAttackerNodeComponent>(TEXT("AttackerNodeComponent"));	
-	AttackerComponent->SetupAttachment(RootComponent);
+	AttackerComponent = CreateDefaultSubobject<UCAttackerNodeComponent>(TEXT("AttackerNodeComponent"));		
+	AttackerComponent->SetupAttachment(RootComponent);	
 
 	// This is the default pawn class, we want to have it be able to move out of the box.
 	bAddDefaultMovementBindings = true;
@@ -124,9 +125,6 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 		PS->InitializePlayerState(AbilitySet);
 		PS->GetAbilitySystemComponent()->BindInputActions(InputConfig, EnhancedInputComponent);
-
-		UCLCharacterAttributeSet* NewAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
-		GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAttributeSet);
 
 		if (IsValid(AttributeGameplayEffect))
 		{

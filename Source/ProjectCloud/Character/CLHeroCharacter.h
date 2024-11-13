@@ -19,6 +19,7 @@ enum class EControlMode : uint8
 };
 
 class UCAttackerNodeComponent;
+class UCLExperienceComponent;
 class UInputMappingContext;
 class UInputAction;
 class UCLAbilityInputConfig;
@@ -92,8 +93,6 @@ protected:
 	void TrackingMousePosition(FVector Position);
 	void TrackingMousePosition(FVector2D Position);
 
-
-
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character")
@@ -125,4 +124,6 @@ private:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character")
 	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
+
+
 };

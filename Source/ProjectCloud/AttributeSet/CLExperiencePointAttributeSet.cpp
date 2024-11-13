@@ -6,15 +6,17 @@
 #include "GameplayEffectExtension.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
+static const float MinimumValue = 0.f;
+
 UCLExperiencePointAttributeSet::UCLExperiencePointAttributeSet()
 {
 }
 
 bool UCLExperiencePointAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
-	// Save the current health
+	// Save the current Experience
 	EXPBeforeAttributeChange = GetEXP();
-	MaxEXPBeforeAttributeChange = GetMaxEXP();
+	//MaxEXPBeforeAttributeChange = GetMaxEXP();
 
 	return true;
 }
@@ -25,13 +27,20 @@ void UCLExperiencePointAttributeSet::PostGameplayEffectExecute(const FGameplayEf
 	const FGameplayEffectContextHandle& EffectContext = Data.EffectSpec.GetEffectContext();
 	AActor* Instigator = EffectContext.GetOriginalInstigator();
 
+	if (Data.EvaluatedData.Attribute == GetEarnEXPAttribute())
+	{
+		if (GetEarnEXP() >= 0)
+		{
+			SetEXPCurrentValue(GetEXP() + GetEarnEXP());
+		}
+		else
+		{
+			//(아직은) 경험치가 음수면 안됨...
+			checkNoEntry();
+		}
+	}
 
+	OnEXPChanged.Broadcast(Instigator, Data.EvaluatedData.Magnitude, EXPBeforeAttributeChange, GetEXP());
 
-
-	OnEXPChanged.Broadcast(Instigator, &Data.EffectSpec, Data.EvaluatedData.Magnitude, EXPBeforeAttributeChange, GetEXP());
-	OnMaxEXPChanged.Broadcast(Instigator, &Data.EffectSpec, Data.EvaluatedData.Magnitude, MaxEXPBeforeAttributeChange, GetMaxEXP());
-
-	if (GetEXP()>=GetMaxEXP())
-		OnEXPCharged.Broadcast(Instigator, &Data.EffectSpec, Data.EvaluatedData.Magnitude, EXPBeforeAttributeChange, GetEXP());
-
+	SetEarnEXPCurrentValue(0);
 }

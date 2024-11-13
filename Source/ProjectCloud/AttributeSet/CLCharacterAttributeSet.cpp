@@ -7,6 +7,8 @@
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
+static const float MinimumValue = 0.f;
+
 UCLCharacterAttributeSet::UCLCharacterAttributeSet()
     : Health(100.f)
     , MaxHealth(100.f)
@@ -50,7 +52,6 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
     AActor* Instigator = EffectContext.GetOriginalInstigator();
     AActor* Causer = EffectContext.GetEffectCauser();
 
-    const float MinimumValue = 0.f;
 
     ACLBaseCharacter* Character = Cast<ACLBaseCharacter>(GetOwningActor());
 

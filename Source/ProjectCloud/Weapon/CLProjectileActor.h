@@ -12,8 +12,8 @@ class UNiagaraSystem;
 class UCapsuleComponent;
 class UGameplayEffect;
 class UCLWeaponAttributeSet;
-class UGameplayEffect;
 class UArrowComponent;
+class ACLBaseCharacter;
 class UProjectileMovementComponent;
 
 UCLASS(BlueprintType)
@@ -43,13 +43,17 @@ public:
 
 //충돌 처리
 	UFUNCTION()
-	void OnComponentBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnComponentBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void ActiveDestroyEvent();
 
 public:
+	//추적할 타겟 캐릭터 여부
+	UPROPERTY()
+	TWeakObjectPtr<ACLBaseCharacter> TargetCharacter;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
-	TSubclassOf<UGameplayEffect> DamageGE;
+	TSubclassOf<UGameplayEffect> GameplayEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VisualSettings")
 	TObjectPtr<UNiagaraSystem> MainVFX;
@@ -103,6 +107,8 @@ private:
 	float MaximimLifetime;
 
 	FTimerHandle DestroyTimerHandle;
+
+	bool bStartLaunch;
 
 public:
 	/** Returns Sprite subobject **/

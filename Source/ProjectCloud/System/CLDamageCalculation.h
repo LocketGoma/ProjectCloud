@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
 #include "ProjectCloud/AttributeSet/CLCombatAttributeSet.h"
 #include "CLDamageCalculation.generated.h"
