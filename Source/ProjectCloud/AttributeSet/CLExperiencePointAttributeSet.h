@@ -20,12 +20,13 @@ class PROJECTCLOUD_API UCLExperiencePointAttributeSet : public UCLBaseAttributeS
 public:
 	UCLExperiencePointAttributeSet();
 
-	ATTRIBUTE_ACCESSORS(UCLExperiencePointAttributeSet, EXP);
-	//ATTRIBUTE_ACCESSORS(UCLExperiencePointAttributeSet, MaxEXP);
+	ATTRIBUTE_ACCESSORS(UCLExperiencePointAttributeSet, EXP);	
 	ATTRIBUTE_ACCESSORS(UCLExperiencePointAttributeSet, EarnEXP);
 
 	//XP를 얻은 경우
 	mutable FOnExprienceAttributeValueChanged OnEXPChanged;
+
+
 
 protected:
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
@@ -33,10 +34,7 @@ protected:
 
 private:
 	// Store the EXP before any changes 
-	int64 EXPBeforeAttributeChange;
-	int64 MaxEXPBeforeAttributeChange;
-
-	bool bMaxExperienceEarned;
+	int64 EXPBeforeAttributeChange;		
 	
 /*
 * Note : 만일 경험치 크기가 10억 이상이 되면 float 타입이 아닌 int32 혹은 int64로 값을 교체하는것을 권장함.
@@ -46,9 +44,6 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|EXP", meta = (AllowPrivateAccess = "true"))
 	FGameplayAttributeData EXP;
-
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|EXP", meta = (AllowPrivateAccess = "true"))
-	//FGameplayAttributeData MaxEXP;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|UpdateAttribute", Meta = (HideFromModifiers, AllowPrivateAccess = true))
 	FGameplayAttributeData EarnEXP;

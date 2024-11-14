@@ -75,6 +75,8 @@ void UCLExperienceComponent::HandleExphChanged(AActor* Instigator, float Magnitu
 		PS->OnLevelUpEvent.Broadcast(NewValue);
 	}
 	OnEarnExpEvent.Broadcast(OldValue, NewValue);
+
+	OnExpUpdated.Broadcast(GetPlayerLevel(), NewValue, GetRequiredExpForLevelUp(GetPlayerLevel()));
 }
 
 int64 UCLExperienceComponent::GetRequiredExpForLevelUp(int32 NowLevel)
@@ -96,6 +98,9 @@ void UCLExperienceComponent::UpdateRequireExperience(int32 NowLevel)
 	if (ASC)
 	{
 		ASC->SetNumericAttributeBase(UCLExperiencePointAttributeSet::GetEXPAttribute(), 0);
+				
+		OnExpUpdated.Broadcast(NowLevel, 0, GetRequiredExpForLevelUp(NowLevel));
+
 		//ASC->SetNumericAttributeBase(UCLExperiencePointAttributeSet::GetMaxEXPAttribute(), GetRequiredExpForLevelUp(NowLevel));
 	}
 }

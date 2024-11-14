@@ -6,17 +6,17 @@
 #include "GameplayEffectExtension.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
-static const float MinimumValue = 0.f;
+
 
 UCLExperiencePointAttributeSet::UCLExperiencePointAttributeSet()
+	: EXPBeforeAttributeChange(0)
 {
 }
 
 bool UCLExperiencePointAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
 	// Save the current Experience
-	EXPBeforeAttributeChange = GetEXP();
-	//MaxEXPBeforeAttributeChange = GetMaxEXP();
+	EXPBeforeAttributeChange = GetEXP();	
 
 	return true;
 }

@@ -31,6 +31,8 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 class UAbilitySystemComponent;
 
+#define ATTRIBUTE_MINVALUE 0
+
 UCLASS()
 class PROJECTCLOUD_API UCLBaseAttributeSet : public UAttributeSet
 {

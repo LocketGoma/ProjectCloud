@@ -16,6 +16,8 @@ class UDataTable;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEarnEXPEventDelegate, int64, OldExp, int64, NewExp);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnExprienceValueUpdated, int32, Level, float, NowValue, float, RequireValue);
+
 UCLASS(BlueprintType, meta=(BlueprintSpawnableComponent) )
 class PROJECTCLOUD_API UCLExperienceComponent : public UPlayerStateComponent
 {
@@ -46,6 +48,9 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FEarnEXPEventDelegate OnEarnExpEvent;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnExprienceValueUpdated OnExpUpdated;
 	
 private:
 	UFUNCTION()

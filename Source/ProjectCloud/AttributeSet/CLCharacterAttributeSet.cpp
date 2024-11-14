@@ -7,8 +7,6 @@
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
-static const float MinimumValue = 0.f;
-
 UCLCharacterAttributeSet::UCLCharacterAttributeSet()
     : Health(100.f)
     , MaxHealth(100.f)
@@ -65,18 +63,18 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
     //대미지 입을때
     if (Data.EvaluatedData.Attribute == GetDamageAttribute())
     {        
-        SetHealthCurrentValue(FMath::Clamp(GetHealth()- GetDamage(), MinimumValue, GetMaxHealth()));
+        SetHealthCurrentValue(FMath::Clamp(GetHealth()- GetDamage(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
         SetDamageToTarget(0.0f, Character);
     }
     //체력 직접 업데이트
     else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {   
-        SetHealthCurrentValue(FMath::Clamp(GetHealth(), MinimumValue, GetMaxHealth()));
+        SetHealthCurrentValue(FMath::Clamp(GetHealth(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
     }
     //체력 회복 업데이트
     else if (Data.EvaluatedData.Attribute == GetHealingAttribute())
     {
-        SetHealthCurrentValue(FMath::Clamp(GetHealth()+GetHealing(), MinimumValue, GetMaxHealth()));
+        SetHealthCurrentValue(FMath::Clamp(GetHealth()+GetHealing(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
         SetHealingToTarget(0.f, Character);
     }
     //최대 체력 업데이트
