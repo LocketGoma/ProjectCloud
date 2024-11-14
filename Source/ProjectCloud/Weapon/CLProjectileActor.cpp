@@ -14,6 +14,8 @@
 #include "PaperFlipbookComponent.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 FName ACLProjectileActor::SpriteComponentName(TEXT("MainSprite"));
 // Sets default values
@@ -124,6 +126,11 @@ void ACLProjectileActor::LaunchProjectile()
 	LaunchVector = FVector(GetActorForwardVector().X, -GetActorForwardVector().Y, GetActorForwardVector().Z);
 	MovementComponent->Velocity = LaunchVector * LaunchSpeed;
 
+	if (LaunchSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
+	}
+
 	bStartLaunch = true;
 }
 
@@ -156,13 +163,26 @@ void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 				SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 			}
 		}
+
+		if (ExplosionSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetActorLocation());
+		}
+
 		if (bDestroyWhenHit)
-			Destroy();
+		{
+			ActiveDestroyEvent();
+		}
 	}
 }
 
 void ACLProjectileActor::ActiveDestroyEvent()
 {
+	if (DestroySound)
+	{		
+		UGameplayStatics::PlaySoundAtLocation(this, DestroySound, GetActorLocation());
+	}
+
 	Destroy();
 }
 

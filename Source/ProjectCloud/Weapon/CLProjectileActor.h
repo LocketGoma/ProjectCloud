@@ -55,14 +55,24 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> GameplayEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VisualSettings")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlVFX")
 	TObjectPtr<UNiagaraSystem> MainVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VisualSettings")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlVFX")
 	TObjectPtr<UNiagaraSystem> SubVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VisualSettings")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlVFX")
 	TObjectPtr<UNiagaraSystem> TrailVFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlSFX")
+	TObjectPtr<USoundBase> LaunchSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlSFX")
+	TObjectPtr<USoundBase> ExplosionSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlSFX")
+	TObjectPtr<USoundBase> DestroySound;
+
 
 	//나아가는 방향
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attributes")
@@ -91,6 +101,8 @@ private:
 		
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisualSettings", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UPaperFlipbookComponent> Sprite;
+
+	
 
 #if WITH_EDITORONLY_DATA
 	/** Component shown in the editor only to indicate character facing */
