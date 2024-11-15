@@ -13,7 +13,8 @@ class UCLAbilitySet;
 
 //델리게이트 추가
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLevelUpEventDelegate, int64, NowExp);
+DECLARE_MULTICAST_DELEGATE_OneParam(FTryLevelUpDelegate, int64 /*NowExp*/);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLevelUpEventDelegate, int, Level);
 
 UCLASS()
 class PROJECTCLOUD_API ACLPlayerState : public APlayerState
@@ -37,6 +38,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void PlayerOutOfHealthEvent();
 
+	UFUNCTION(BlueprintCallable)
+	void StartLevelupEvent();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishLevelupEvent();
+
 //Getter/Setter
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const int GetPlayerLevel();
@@ -45,6 +52,8 @@ public:
 	
 //Delegates
 public:
+	FTryLevelUpDelegate OnTryLevelUpEvent;
+
 	UPROPERTY(BlueprintAssignable)
 	FLevelUpEventDelegate OnLevelUpEvent;
 

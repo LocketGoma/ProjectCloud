@@ -29,13 +29,31 @@ void ACLPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnLevelUpEvent.AddDynamic(this, &ThisClass::HandleLevelUpEvent);
+	OnTryLevelUpEvent.AddUObject(this, &ThisClass::HandleLevelUpEvent);
 }
 
 void ACLPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 	UnInitializeDelegates();
+}
+
+void ACLPlayerState::StartLevelupEvent()
+{
+	ACLGameState* GameState = Cast<ACLGameState>(GetWorld()->GetGameState());
+	if (GameState)
+	{
+		GameState->HandleStartLevelupEvent();
+	}
+}
+
+void ACLPlayerState::FinishLevelupEvent()
+{
+	ACLGameState* GameState = Cast<ACLGameState>(GetWorld()->GetGameState());
+	if (GameState)
+	{
+		GameState->HandleFinishLevelupEvent();
+	}
 }
 
 const int ACLPlayerState::GetPlayerLevel()
@@ -125,7 +143,10 @@ void ACLPlayerState::HandleLevelUpEvent(int64 NowExp)
 		{
 			++PlayerLevel;
 
-			ExperienceComponent->UpdateRequireExperience(PlayerLevel);			
+			ExperienceComponent->UpdateRequireExperience(PlayerLevel);
+
+			OnLevelUpEvent.Broadcast(PlayerLevel);
+			StartLevelupEvent();
 		}
 		else 
 		{

@@ -72,7 +72,7 @@ void UCLExperienceComponent::HandleExphChanged(AActor* Instigator, float Magnitu
 {
 	if (NewValue >= GetRequiredExpForLevelUp(GetPlayerLevel()))
 	{
-		PS->OnLevelUpEvent.Broadcast(NewValue);
+		PS->OnTryLevelUpEvent.Broadcast(NewValue);
 	}
 	OnEarnExpEvent.Broadcast(OldValue, NewValue);
 

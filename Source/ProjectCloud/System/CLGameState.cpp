@@ -2,6 +2,7 @@
 
 
 #include "CLGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "ProjectCloud/System/CLSpawnManagerComponent.h"
 
 ACLGameState::ACLGameState(const FObjectInitializer& ObjectInitializer)
@@ -47,6 +48,16 @@ void ACLGameState::SpawnMonsterOnce()
 void ACLGameState::SpawnMonstersAtCount(int32 Count)
 {
 	SpawnManagerComponent->SpawnMonsters(10);
+}
+
+void ACLGameState::HandleStartLevelupEvent()
+{
+	UGameplayStatics::SetGamePaused(this, true);
+}
+
+void ACLGameState::HandleFinishLevelupEvent()
+{
+	UGameplayStatics::SetGamePaused(this, false);
 }
 
 void ACLGameState::HandleGameOverEvent_Implementation()

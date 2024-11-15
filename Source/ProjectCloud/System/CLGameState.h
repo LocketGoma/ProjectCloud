@@ -44,6 +44,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, BlueprintNativeEvent)
 	void HandleGameClearEvent();
 
+	void HandleStartLevelupEvent();
+	void HandleFinishLevelupEvent();
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCLSpawnManagerComponent> SpawnManagerComponentClass;
