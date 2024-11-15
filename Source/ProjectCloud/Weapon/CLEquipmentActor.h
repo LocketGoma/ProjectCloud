@@ -31,19 +31,14 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetEquipmentFromInstance();
 
 	virtual void ActiveEquipment();
 	virtual bool CanActiveEquipment();
 	
 	virtual void Reload();
-	virtual bool CanReload();
-
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void UpdateEquipmentEvent();
+	virtual bool CanReload();	
+	virtual void UpdateEquipmentEvent();
 
 //Getter
 public:

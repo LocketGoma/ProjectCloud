@@ -33,7 +33,7 @@ void UGameplayAbility_Reload::ActivateAbility(const FGameplayAbilitySpecHandle H
        ACLWeapon* Weapon = HeroCharacter->GetWeaponActor();
        if (Weapon)
        {
-           Weapon->ReloadEvent();
+           Weapon->Reload();
        }
     }
 }

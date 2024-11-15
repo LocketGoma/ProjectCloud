@@ -4,9 +4,8 @@
 #include "CLHeroCharacter.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/PlayerInput.h"
-#include "GameFramework/Controller.h"
-#include "GameFramework/PlayerController.h"
 #include "CLPlayerState.h"
+#include "CLPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/InputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -21,6 +20,7 @@
 #include "ProjectCloud/Components/CLAttackerNodeComponent.h"
 #include "ProjectCloud/Components/CLExperienceComponent.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
+#include "ProjectCloud/Utilites/CLCommonUtilityFunction.h"
 #include "ProjectCloud/Input/CLInputComponent.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
@@ -54,14 +54,15 @@ void ACLHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetAbilitySystemComponent();
+	SetAbilitySystemComponent();	
 
-	if (GetPlayerController())
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* SubSystem =
-			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetPlayerController()->GetLocalPlayer()))
-			SubSystem->AddMappingContext(InputContext, 0);
-	}
+	//ACLPlayerController* CLController = Cast<ACLPlayerController>(Controller);
+	APlayerController* CLController = Cast<APlayerController>(Controller);
+
+	if (UEnhancedInputLocalPlayerSubsystem* SubSystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(CLController->GetLocalPlayer()))
+		SubSystem->AddMappingContext(InputContext, 0);
+	
 
 	OnCharacterInitialized.Broadcast();
 }
@@ -88,9 +89,8 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		UE_LOG(LogCloud, Error, TEXT("'%s' Failed to find an Cloud Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-	//To do : Enhanced로 전부 교체해야됨!
+	//To do : Enhanced로 전부 교체해야됨! 마우스쪽은 문제가 있어서 (클릭을 해야 반영이 됨) 아직 Enhanced가 아님...
 	PlayerInputComponent->BindVectorAxis(EKeys::Mouse2D, this, &ACLHeroCharacter::TrackingMousePosition);
-
 }
 
 void ACLHeroCharacter::UpdateNavigationRelevance()
@@ -185,18 +185,10 @@ ACLSubActionEquipment* ACLHeroCharacter::GetSubEquipmentActor()
 
 float ACLHeroCharacter::GetHealth()
 {
-	if (AttributeSet)
-		return AttributeSet->GetHealth();
+	if (HealthAttributeSet)
+		return HealthAttributeSet->GetHealth();
 
 	return 0.0f;
-}
-
-APlayerController* ACLHeroCharacter::GetPlayerController() const
-{
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-		return PlayerController;
-
-	return nullptr;
 }
 
 //TO DO : 어빌리티로 변경
@@ -276,8 +268,7 @@ void ACLHeroCharacter::TrackingMousePosition(FVector2D MousePosition)
 			}
 
 			if (bDebug)
-			{
-				//UE_LOG(LogTemp, Log, TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw);
+			{				
 				GEngine->AddOnScreenDebugMessage(-1, 0.016f, FColor::Blue, FString::Printf(TEXT("Mouse Pos :: (%f, %f), Rotation : (%f)"), MousePosition.X, MousePosition.Y, TargetRotation.Yaw));
 			}
 		}

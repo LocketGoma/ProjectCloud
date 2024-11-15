@@ -74,18 +74,15 @@ void ACLPlayerState::SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet)
 
 		bAbilitySet = true;;
 	}
-
-	//어차피 ASC가 PS에 있는데 그냥 PS에서 세팅하면 되는거 아님?
-	UCLCharacterAttributeSet* NewCharacterAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
-	UCLExperiencePointAttributeSet* NewAExpttributeSet = NewObject<UCLExperiencePointAttributeSet>(this);
+	
 	UCLManaAttributeSet* NewManaAttributeSet = NewObject<UCLManaAttributeSet>(this);
-	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewCharacterAttributeSet);
-	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewAExpttributeSet);
+	UCLCharacterAttributeSet* NewCharacterAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
+	UCLExperiencePointAttributeSet* NewExpAttributeSet = NewObject<UCLExperiencePointAttributeSet>(this);
 	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewManaAttributeSet);
+	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewExpAttributeSet);
+	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewCharacterAttributeSet);
 
-	InitializeDelegates();
-
-	//AbilityComponent->AddGameplayEventTagContainerDelegate()
+	InitializeDelegates();	
 }
 
 void ACLPlayerState::InitializePlayerState(UCLAbilitySet* AbilitySet)
@@ -124,14 +121,6 @@ void ACLPlayerState::HandlePlayerOutOfHealth()
 	{
 		GameState->HandleGameOverEvent();		
 	}
-}
-
-void ACLPlayerState::HandlePlayerCanLevelUp()
-{
-}
-
-void ACLPlayerState::HandlePlayerEarnExp()
-{
 }
 
 void ACLPlayerState::HandleLevelUpEvent(int64 NowExp)

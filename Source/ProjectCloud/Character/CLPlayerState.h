@@ -35,6 +35,7 @@ public:
 
 //유틸 함수들
 public:
+	//델리게이트로 바꾸기
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void PlayerOutOfHealthEvent();
 
@@ -63,12 +64,6 @@ private:
 
 	UFUNCTION()
 	void HandlePlayerOutOfHealth();
-
-	UFUNCTION()
-	void HandlePlayerCanLevelUp();
-
-	UFUNCTION()
-	void HandlePlayerEarnExp();
 
 	UFUNCTION()
 	void HandleLevelUpEvent(int64 NowExp);

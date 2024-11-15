@@ -47,42 +47,6 @@ void ACLEquipmentActor::BeginPlay()
 	
 }
 
-// Called every frame
-void ACLEquipmentActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void ACLEquipmentActor::SetEquipmentFromInstance()
-{
-	UpdateEquipmentEvent();
-	//Do Something
-}
-
-void ACLEquipmentActor::ActiveEquipment()
-{
-	UpdateEquipmentEvent();
-	//Do Something
-}
-
-bool ACLEquipmentActor::CanActiveEquipment()
-{
-	//Do Something
-	return false;
-}
-
-void ACLEquipmentActor::Reload()
-{
-	UpdateEquipmentEvent();
-	//Do Something
-}
-
-bool ACLEquipmentActor::CanReload()
-{
-	return false;
-}
-
 AController* ACLEquipmentActor::GetOwnerController()
 {
 	if (!GetOwner())
@@ -126,6 +90,40 @@ UCLAbilitySystemComponent* ACLEquipmentActor::GetOwnerAbilitySystemComponent() c
 //Do Something...
 
 #pragma region Virtual Functions
+
+void ACLEquipmentActor::SetEquipmentFromInstance()
+{
+	UpdateEquipmentEvent();
+	//Do Something
+}
+
+void ACLEquipmentActor::ActiveEquipment()
+{
+	UpdateEquipmentEvent();
+	//Do Something
+}
+
+bool ACLEquipmentActor::CanActiveEquipment()
+{
+	//Do Something
+	return false;
+}
+
+void ACLEquipmentActor::Reload()
+{
+	UpdateEquipmentEvent();
+	//Do Something
+}
+
+bool ACLEquipmentActor::CanReload()
+{
+	return false;
+}
+
+void ACLEquipmentActor::UpdateEquipmentEvent()
+{
+	//Do Something
+}
 
 const int ACLEquipmentActor::GetMagazineSize() const
 {

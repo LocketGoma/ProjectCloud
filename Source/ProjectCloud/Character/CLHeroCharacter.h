@@ -59,9 +59,6 @@ public:
 
 //--Get/Set
 
-	UFUNCTION(BlueprintCallable)
-	class APlayerController* GetPlayerController() const;
-
 	virtual void SetAbilitySystemComponent() override;
 
 	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent() override;

@@ -27,7 +27,6 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 
 	ImmmuneTime = 0.1f;
-
 	bImmune = false;
 }
 
@@ -54,29 +53,25 @@ void ACLBaseCharacter::InitializeAbilitySystemComponent(UCLAbilitySystemComponen
 	//체력 관련 델리게이트는 Character에 연결 (경험치는 PlayerState, 마나는...?)
 	if (ASC)
 	{
-		AttributeSet = ASC->GetSet<UCLCharacterAttributeSet>();
-		AttributeSet->OnHealthChanged.AddUObject(this, &ThisClass::HandleHealthChanged);
-		AttributeSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChanged);
-		AttributeSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
-	}
-
-	//OnCharacterInitialized.Broadcast();
+		HealthAttributeSet = ASC->GetSet<UCLCharacterAttributeSet>();
+		HealthAttributeSet->OnHealthChanged.AddUObject(this, &ThisClass::HandleHealthChanged);
+		HealthAttributeSet->OnMaxHealthChanged.AddUObject(this, &ThisClass::HandleMaxHealthChanged);
+		HealthAttributeSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
+	}	
 }
 
 void ACLBaseCharacter::UnInitializeAbilitySystemComponent()
 {
 	//ClearGameplayTags();
 
-	if (AttributeSet)
+	if (HealthAttributeSet)
 	{
-		AttributeSet->OnHealthChanged.RemoveAll(this);
-		AttributeSet->OnMaxHealthChanged.RemoveAll(this);
-		AttributeSet->OnOutOfHealth.RemoveAll(this);
+		HealthAttributeSet->OnHealthChanged.RemoveAll(this);
+		HealthAttributeSet->OnMaxHealthChanged.RemoveAll(this);
+		HealthAttributeSet->OnOutOfHealth.RemoveAll(this);
 	}
 
-	AttributeSet = nullptr;
-
-	//AbilitySystemComponent = nullptr;
+	HealthAttributeSet = nullptr;	
 }
 
 void ACLBaseCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
@@ -115,7 +110,6 @@ void ACLBaseCharacter::SetImmunity(bool NewImmunity)
 		}
 	}
 	bImmune = NewImmunity;
-
 }
 
 void ACLBaseCharacter::DeathEvent()

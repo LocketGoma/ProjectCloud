@@ -3,11 +3,13 @@
 #include "CLWeapon.h"
 #include "Components/SphereComponent.h"
 #include "PaperFlipbookComponent.h"
-#include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
+#include "ProjectCloud/Character/CLBaseCharacter.h"
+#include "ProjectCloud/Character/CLPlayerController.h"
 #include "ProjectCloud/Weapon/CLWeaponInstance.h"
-#include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/Weapon/CLProjectileActor.h"
+#include "ProjectCloud/Utilites/CLCommonTextTags.h"
+#include "ProjectCloud/Utilites/CLCommonUtilityFunction.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
 ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
@@ -25,12 +27,6 @@ ACLWeapon::ACLWeapon(const FObjectInitializer& ObjectInitializer)
 void ACLWeapon::BeginPlay()
 {
 	Super::BeginPlay();	
-}
-
-// Called every frame
-void ACLWeapon::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void ACLWeapon::SetEquipmentFromInstance()
@@ -113,7 +109,7 @@ bool ACLWeapon::CanActiveEquipment()
 	if ((WeaponEventType == EWeaponEventType::Event_MagaineEmpty))
 	{
 		if (UCLWeaponInstance::CanAutoReload(WeaponInstance))
-			ReloadEvent();
+			Reload();
 
 		return false;
 	}
@@ -130,6 +126,12 @@ bool ACLWeapon::CanReload()
 
 	//탄 가득차면 굳이 재장전 안함
 	if (GetMagazineAmmo() == GetMagazineSize())
+	{
+		return false;
+	}
+
+	//이미 재장전 이벤트 진행중이면 중복 X
+	if (WeaponEventType == EWeaponEventType::Event_Reloading)
 	{
 		return false;
 	}
@@ -154,7 +156,16 @@ bool ACLWeapon::CanReload()
 	return true;
 }
 
-void ACLWeapon::Reload()
+void ACLWeapon::UpdateEquipmentEvent()
+{
+	ACLPlayerController* Controller = CLCommonUtilites::GetPlayerControllerFromActor(GetOwner());
+	if (Controller)
+	{
+		Controller->OnWeaponAmmoStatusUIChanged.Broadcast(GetMagazineAmmo(), GetMagazineSize(), GetSpareAmmo(), GetIsInfinite());
+	}
+}
+
+void ACLWeapon::FinishReload()
 {
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
@@ -183,19 +194,28 @@ void ACLWeapon::Reload()
 	}
 	UpdateWeaponEventType(EWeaponEventType::Event_Default);
 
-	Super::Reload();
+	//To do : 재장전 스킬 만들때 여기에 델리게이트 호출 추가하고 ASC쪽에 델리게이트 바인드해서 발동시킬것
+	//ASC에서 델리게이트 만들고 여기서 호출하는게 맞을듯?
 }
 
-void ACLWeapon::ReloadEvent_Implementation()
+void ACLWeapon::Reload()
 {
+	Super::Reload();
+
 	if (!CanReload())
 	{
 		return;
 	}
 	UpdateWeaponEventType(EWeaponEventType::Event_Reloading);	
 
+	ACLPlayerController* Controller = CLCommonUtilites::GetPlayerControllerFromActor(GetOwner());
+	if (Controller)
+	{
+		Controller->OnWeaponReloadTriggered.Broadcast(ReloadTime);
+	}	
+
 	FTimerHandle TempHandle;
-	GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::Reload, ReloadTime, false);
+	GetWorld()->GetTimerManager().SetTimer(TempHandle, this, &ACLWeapon::FinishReload, ReloadTime, false);
 }
 
 
@@ -264,5 +284,6 @@ void ACLWeapon::UpdateWeaponEventType(EWeaponEventType NewEvent)
 		UE_LOG(LogTemp, Log, TEXT("기존 무기 이벤트 타입 : [%s], 신규 무기 이벤트 타입 : [%s]"), *(EnumPtr->GetNameStringByValue((int64)WeaponEventType)), *(EnumPtr->GetNameStringByValue((int64)NewEvent)));
 #endif
 	WeaponEventType = NewEvent;
-}
 
+	UpdateEquipmentEvent();
+}

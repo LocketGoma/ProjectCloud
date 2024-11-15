@@ -47,9 +47,10 @@ void ACLEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 float ACLEnemyCharacter::GetHealth()
 {
-	//const UCLEnemyAttributeSet* AttributeSet = Cast<UCLEnemyAttributeSet>(GetAbilitySystemComponent()->GetAttributeSet(UCLEnemyAttributeSet::StaticClass()));	
+	if (HealthAttributeSet)
+		return HealthAttributeSet->GetHealth();
 
-	return AttributeSet->GetHealth();
+	return 0.0f;
 }
 
 void ACLEnemyCharacter::SetTargetPlayer(APawn* NewTarget)
@@ -109,21 +110,25 @@ void ACLEnemyCharacter::SetAbilitySystemComponent()
 
 void ACLEnemyCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
+	Super::HandleHealthChanged(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);
 }
 
 void ACLEnemyCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
+	Super::HandleMaxHealthChanged(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);
 }
 
 void ACLEnemyCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
+	Super::HandleOutOfHealth(DamageInstigator, DamageCauser, DamageEffectSpec, DamageMagnitude, OldValue, NewValue);
+
 	//뭐 죽는 효과를 넣던지...
 	if (RewardDropComponent)
 	{
 		RewardDropComponent->TryDropItem();
 	}
 
-	Destroy();
+	DeathEvent();
 }
 
 void ACLEnemyCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

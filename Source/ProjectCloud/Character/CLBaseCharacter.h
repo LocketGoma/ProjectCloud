@@ -17,7 +17,7 @@ class UGameplayEffect;
 //일반 델리게이트 - 컴파일, 성능상 이점, BP 호출 불가, AddUObject로 사용
 
 DECLARE_MULTICAST_DELEGATE(FCLCharacterStateChangeEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCLCharacterInializeEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCLCharacterInitializeEvent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCLCharacterAttributeChanged, float, OldValue, float, NewValue);
 
 UCLASS(config = Game, Blueprintable, BlueprintType)
@@ -50,8 +50,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Character")
 	FCLCharacterAttributeChanged OnHealthChanged;
 
+	//각종 UI들 초기화할때 사용.
 	UPROPERTY(BlueprintAssignable, Category = "Character")
-	FCLCharacterInializeEvent OnCharacterInitialized;
+	FCLCharacterInitializeEvent OnCharacterInitialized;
 		
 	FCLCharacterStateChangeEvent OnOutOfHealth;
 
@@ -81,13 +82,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bDebug;
 
-	TObjectPtr<const class UCLCharacterAttributeSet> AttributeSet;
+	TObjectPtr<const class UCLCharacterAttributeSet> HealthAttributeSet;
 
 //무적 처리 관련
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Config", meta = (AllowPrivateAccess = "true", UIMin = "0", ClampMin = "0"))
 	float ImmmuneTime;
+
 	bool bImmune;
 	FTimerHandle ImmuneTimerHandle;
-
 };

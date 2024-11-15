@@ -26,20 +26,14 @@ protected:
 public:	
 	ACLWeapon(const FObjectInitializer& ObjectInitializer);
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetEquipmentFromInstance() override;
 
 	virtual void ActiveEquipment() override;
 	virtual bool CanActiveEquipment() override;
 
 	virtual void Reload() override;
-	virtual bool CanReload() override;
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void ReloadEvent();
-
+	virtual bool CanReload() override;	
+	virtual void UpdateEquipmentEvent() override;
 
 //Getter
 public:
@@ -54,6 +48,9 @@ public:
 	virtual const int GetSpareAmmo() const override;
 	virtual const bool GetIsInfinite() const override;
 	virtual const float GetBaseEquipmentValue() const override;
+
+private:
+	void FinishReload();
 
 public:
 	UFUNCTION(BlueprintCallable)

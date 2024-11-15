@@ -4,7 +4,9 @@
 #include "CLSubActionEquipment.h"
 #include "ProjectCloud/Weapon/CLProjectileActor.h"
 #include "ProjectCloud/Weapon/CLWeaponInstance.h"
+#include "ProjectCloud/Character/CLPlayerController.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
+#include "ProjectCloud/Utilites/CLCommonUtilityFunction.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
 
@@ -22,10 +24,16 @@ void ACLSubActionEquipment::BeginPlay()
 void ACLSubActionEquipment::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	
+
 	if (GetOwner()->IsActorBeingDestroyed())
 	{
 		return;
+	}
+
+	ACLPlayerController* Controller = CLCommonUtilites::GetPlayerControllerFromActor(GetOwner());
+	if (Controller)
+	{
+		Controller->OnSubEquipmentChanged.Broadcast(nullptr);
 	}
 
 	//임의 제거가 아닌 시스템상 제거 (게임 터진 경우)인 경우 바로 return
@@ -33,7 +41,6 @@ void ACLSubActionEquipment::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		return;
 	}
-
 
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
 
@@ -61,8 +68,7 @@ void ACLSubActionEquipment::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		{
 			break;
 		}
-	}
-	//GetOwner()->OnChildDestroyed();
+	}	
 }
 
 void ACLSubActionEquipment::SetEquipmentFromInstance()
@@ -93,6 +99,13 @@ void ACLSubActionEquipment::SetEquipmentFromInstance()
 		{
 			break;
 		}
+	}
+
+	ACLPlayerController* Controller = CLCommonUtilites::GetPlayerControllerFromActor(GetOwner());
+	if (Controller)
+	{
+		Controller->OnSubEquipmentChanged.Broadcast(this);
+		Controller->OnSubEquipmentStatusUIChanged.Broadcast(GetMagazineAmmo(), GetMagazineSize(), GetSpareAmmo(), GetIsInfinite());
 	}
 
 	Super::SetEquipmentFromInstance();
@@ -147,6 +160,12 @@ void ACLSubActionEquipment::ActiveWeaponEquipment()
 		ProjectileActor->SetBaseDamageFromWeapon(UCLWeaponInstance::GetBaseDamage(WeaponInstance));
 		ProjectileActor->LaunchVector = GetActorForwardVector();
 		ProjectileActor->LaunchProjectile();
+	}
+
+	ACLPlayerController* Controller = CLCommonUtilites::GetPlayerControllerFromActor(GetOwner());
+	if (Controller)
+	{
+		Controller->OnSubEquipmentStatusUIChanged.Broadcast(GetMagazineAmmo(), GetMagazineSize(), GetSpareAmmo(), GetIsInfinite());
 	}
 
 	//잔탄 부족해지면 Destroy 해주기
