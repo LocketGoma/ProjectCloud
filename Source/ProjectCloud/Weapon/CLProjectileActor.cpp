@@ -10,8 +10,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectTypes.h"
-#include "AbilitySystemGlobals.h"
 #include "PaperFlipbookComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "Sound/SoundCue.h"
@@ -28,7 +28,7 @@ ACLProjectileActor::ACLProjectileActor()
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 
-	CapsuleComponent->InitCapsuleSize(10.0f, 20.0f);
+	CapsuleComponent->InitCapsuleSize(16.0f, 8.f);
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);

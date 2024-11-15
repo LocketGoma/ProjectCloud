@@ -9,6 +9,7 @@
 class UBehaviorTree;
 class AAIController;
 class UCLAbilitySystemComponent;
+class UCLRewardDropComponent;
 class UCLEnemyAttributeSet;
 
 /**
@@ -71,4 +72,7 @@ private:
 	TWeakObjectPtr<APawn> TargetPlayer;
 
 	TObjectPtr<UCLAbilitySystemComponent> AbilityComponent;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCLRewardDropComponent> RewardDropComponent;
 };

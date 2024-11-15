@@ -53,7 +53,7 @@ void ACLPlayerState::FinishLevelupEvent()
 	if (GameState)
 	{
 		GameState->HandleFinishLevelupEvent();
-	}
+	}	
 }
 
 const int ACLPlayerState::GetPlayerLevel()

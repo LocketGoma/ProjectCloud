@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "AIController.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
+#include "ProjectCloud/Components/CLRewardDropComponent.h"
 #include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "ProjectCloud/AttributeSet/CLCombatAttributeSet.h"
 #include "ProjectCloud/Character/CLHeroCharacter.h"
@@ -18,6 +19,8 @@ ACLEnemyCharacter::ACLEnemyCharacter(const FObjectInitializer& ObjectInitializer
 {
 	AbilityComponent = CreateDefaultSubobject<UCLAbilitySystemComponent>("AbilitySystemComponent");	
 	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);	
+
+	RewardDropComponent = CreateDefaultSubobject<UCLRewardDropComponent>("RewardDropComponent");
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACLEnemyCharacter::OnHit);
 }
@@ -115,6 +118,11 @@ void ACLEnemyCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor*
 void ACLEnemyCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
 	//뭐 죽는 효과를 넣던지...
+	if (RewardDropComponent)
+	{
+		RewardDropComponent->TryDropItem();
+	}
+
 	Destroy();
 }
 

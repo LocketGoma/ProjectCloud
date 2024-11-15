@@ -4,6 +4,7 @@
 #include "CLCharacterAttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
+#include "ProjectCloud/Character/CLPlayerState.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
@@ -21,7 +22,18 @@ bool UCLCharacterAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallba
     if (!Super::PreGameplayEffectExecute(Data))
         return false;
 
-    ACLBaseCharacter* Character = Cast<ACLBaseCharacter>(GetOwningActor());
+    ACLBaseCharacter* Character = nullptr;
+    //1. 플레이어인 경우 (플레이어는 PS에 정보 있음)
+    if (ACLPlayerState* PS = Cast<ACLPlayerState>(GetOwningActor()))
+    {
+        Character = Cast<ACLBaseCharacter>(PS->GetPawn());
+    }
+    //2. 그 외 캐릭터인 경우 (캐릭터에 ASC 있음)
+    else
+    {
+        Character = Cast<ACLBaseCharacter>(GetOwningActor());
+    }
+
     if (!ensure(Character))
     {
         return false;
@@ -50,8 +62,17 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
     AActor* Instigator = EffectContext.GetOriginalInstigator();
     AActor* Causer = EffectContext.GetEffectCauser();
 
-
-    ACLBaseCharacter* Character = Cast<ACLBaseCharacter>(GetOwningActor());
+    ACLBaseCharacter* Character = nullptr;
+    //1. 플레이어인 경우 (플레이어는 PS에 정보 있음)
+    if (ACLPlayerState* PS = Cast<ACLPlayerState>(GetOwningActor()))
+    {
+        Character = Cast<ACLBaseCharacter>(PS->GetPawn());
+    }
+    //2. 그 외 캐릭터인 경우 (캐릭터에 ASC 있음)
+    else
+    {
+        Character = Cast<ACLBaseCharacter>(GetOwningActor());
+    }
 
     if (!ensure(Character))
     {

@@ -15,6 +15,7 @@
 #define DATA_NONE -1;
 
 
+
 USTRUCT()
 struct PROJECTCLOUD_API FLevelExperienceTableRow : public FTableRowBase
 {

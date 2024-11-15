@@ -22,8 +22,7 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	bCollideWhenPlacing = false;
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	GetCapsuleComponent()->SetCapsuleHalfHeight(8.f);
-	GetCapsuleComponent()->SetCapsuleRadius(16.f);
+	GetCapsuleComponent()->InitCapsuleSize(12.0f, 8.f);
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 

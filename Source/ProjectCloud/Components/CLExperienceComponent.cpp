@@ -70,13 +70,17 @@ const int UCLExperienceComponent::GetPlayerLevel()
 
 void UCLExperienceComponent::HandleExphChanged(AActor* Instigator, float Magnitude, float OldValue, float NewValue)
 {
+	float FinishExpValue = NewValue;
+
 	if (NewValue >= GetRequiredExpForLevelUp(GetPlayerLevel()))
 	{
+		FinishExpValue = NewValue - GetRequiredExpForLevelUp(GetPlayerLevel());
+
 		PS->OnTryLevelUpEvent.Broadcast(NewValue);
 	}
 	OnEarnExpEvent.Broadcast(OldValue, NewValue);
 
-	OnExpUpdated.Broadcast(GetPlayerLevel(), NewValue, GetRequiredExpForLevelUp(GetPlayerLevel()));
+	OnExpUpdated.Broadcast(GetPlayerLevel(), FinishExpValue, GetRequiredExpForLevelUp(GetPlayerLevel()));
 }
 
 int64 UCLExperienceComponent::GetRequiredExpForLevelUp(int32 NowLevel)
