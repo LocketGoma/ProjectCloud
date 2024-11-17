@@ -20,10 +20,6 @@ void ACLPlayStageGameMode::StartPlay()
 	Super::StartPlay();
 }
 
-void ACLPlayStageGameMode::HandleGameOverEvent()
-{
-	//GetWorld()->Setstate
-}
 
 void ACLPlayStageGameMode::ResetLevel()
 {

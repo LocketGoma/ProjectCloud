@@ -15,7 +15,6 @@ class UDataTable;
 //레벨은 PlayerState에 있습니다.
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEarnEXPEventDelegate, int64, OldExp, int64, NewExp);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnExprienceValueUpdated, int32, Level, float, NowValue, float, RequireValue);
 
 UCLASS(BlueprintType, meta=(BlueprintSpawnableComponent) )

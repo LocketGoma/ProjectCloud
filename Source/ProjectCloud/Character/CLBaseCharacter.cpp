@@ -8,6 +8,7 @@
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
+#include "ProjectCloud/Components/CLHitEffectComponent.h"
 
 ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -21,6 +22,9 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	BaseEyeHeight = 0.0f;
 	bCollideWhenPlacing = false;
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	HitEffectComponent = CreateDefaultSubobject<UCLHitEffectComponent>(TEXT("HitEffectComponent"));
+	HitEffectComponent->SetupAttachment(RootComponent);
 
 	GetCapsuleComponent()->InitCapsuleSize(12.0f, 8.f);
 
@@ -84,6 +88,8 @@ void ACLBaseCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* Dam
 			SetImmunity(true);
 		}
 	}
+	HitEffectComponent->PlayNiagaraEffect(NewValue - OldValue);
+
 	OnHealthChanged.Broadcast(OldValue, NewValue);
 }
 

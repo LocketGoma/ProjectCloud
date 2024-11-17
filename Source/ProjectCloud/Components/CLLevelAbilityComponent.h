@@ -7,7 +7,7 @@
 #include "CLLevelAbilityComponent.generated.h"
 
 //캐릭터 레벨업 발생시 "이벤트 카드"를 가지고 관리하는 클래스
-//경험치 컴포넌트와 ASC와 연관있음
+//경험치 컴포넌트, ASC와 연관있음
 
 //To do : 전용 Struct 만들고, 해당 Struct를 Array로(혹은 Map) 만들어서 관리하기.
 

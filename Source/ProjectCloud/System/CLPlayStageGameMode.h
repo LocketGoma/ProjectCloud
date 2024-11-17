@@ -20,7 +20,7 @@ public:
 	
 	virtual void StartPlay() override;	
 
-	void HandleGameOverEvent();
+	
 
 	//게임 재시작
 	virtual void ResetLevel() override;	

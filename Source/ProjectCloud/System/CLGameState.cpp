@@ -7,8 +7,8 @@
 
 ACLGameState::ACLGameState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-{	
-
+{
+	OnGameOverEvent.AddDynamic(this, &ThisClass::HandleGameOverEvent);
 }
 
 void ACLGameState::BeginPlay()
@@ -42,12 +42,16 @@ void ACLGameState::SpawnMonsterOnce()
 	{
 		SpawnManagerComponent->SpawnMonsters(1);
 	}
-
 }
 
 void ACLGameState::SpawnMonstersAtCount(int32 Count)
 {
 	SpawnManagerComponent->SpawnMonsters(10);
+}
+
+void ACLGameState::HandleGameOverEvent()
+{
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
 void ACLGameState::HandleStartLevelupEvent()
@@ -58,13 +62,4 @@ void ACLGameState::HandleStartLevelupEvent()
 void ACLGameState::HandleFinishLevelupEvent()
 {
 	UGameplayStatics::SetGamePaused(this, false);
-}
-
-void ACLGameState::HandleGameOverEvent_Implementation()
-{
-	
-}
-
-void ACLGameState::HandleGameClearEvent_Implementation()
-{
 }

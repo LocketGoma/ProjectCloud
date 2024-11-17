@@ -49,9 +49,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipSubEquipmentActor(TSubclassOf<ACLSubActionEquipment> EquipmentActorClass);
 
+	
 //유틸함수 리스트
-public:
-	UFUNCTION(BlueprintCallable)
+public:	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	const USceneComponent* GetAttackPoint();
 
 	UFUNCTION(BlueprintCallable)

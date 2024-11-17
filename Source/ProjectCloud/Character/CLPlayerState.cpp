@@ -119,7 +119,7 @@ void ACLPlayerState::HandlePlayerOutOfHealth()
 	ACLGameState* GameState = Cast<ACLGameState>(GetWorld()->GetGameState());	
 	if (GameState)
 	{
-		GameState->HandleGameOverEvent();		
+		GameState->OnGameOverEvent.Broadcast();
 	}
 }
 

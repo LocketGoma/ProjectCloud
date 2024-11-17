@@ -6,6 +6,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "CLGameState.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameplayEventDelegate);
+
 class UCLSpawnManagerComponent;
 
 /**
@@ -36,13 +38,20 @@ public:
 
 //이벤트 핸들링
 public:
-	//게임 오버 이벤트
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, BlueprintNativeEvent)
-	void HandleGameOverEvent();
-
 	//게임 클리어 이벤트
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, BlueprintNativeEvent)
-	void HandleGameClearEvent();
+	UPROPERTY(BlueprintAssignable)
+	FGameplayEventDelegate OnGameClearEvent;
+
+	//스테이지 클리어 이벤트
+	UPROPERTY(BlueprintAssignable)
+	FGameplayEventDelegate OnStageClearEvent;
+
+	//게임 오버 이벤트
+	UPROPERTY(BlueprintAssignable)
+	FGameplayEventDelegate OnGameOverEvent;
+
+	UFUNCTION()
+	void HandleGameOverEvent();
 
 	void HandleStartLevelupEvent();
 	void HandleFinishLevelupEvent();

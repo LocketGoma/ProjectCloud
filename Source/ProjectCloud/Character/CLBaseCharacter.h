@@ -8,6 +8,7 @@
 
 struct FGameplayEffectSpec;
 class UInputComponent;
+class UCLHitEffectComponent;
 class UPawnMovementComponent;
 class UCLAbilitySystemComponent;
 class UCLAbilitySet;
@@ -83,6 +84,9 @@ protected:
 	bool bDebug;
 
 	TObjectPtr<const class UCLCharacterAttributeSet> HealthAttributeSet;
+
+	UPROPERTY(VisibleAnywhere, Category = "Character")
+	TObjectPtr<UCLHitEffectComponent> HitEffectComponent;
 
 //무적 처리 관련
 private:

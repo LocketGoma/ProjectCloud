@@ -103,9 +103,7 @@ void UCLExperienceComponent::UpdateRequireExperience(int32 NowLevel)
 	{
 		ASC->SetNumericAttributeBase(UCLExperiencePointAttributeSet::GetEXPAttribute(), 0);
 				
-		OnExpUpdated.Broadcast(NowLevel, 0, GetRequiredExpForLevelUp(NowLevel));
-
-		//ASC->SetNumericAttributeBase(UCLExperiencePointAttributeSet::GetMaxEXPAttribute(), GetRequiredExpForLevelUp(NowLevel));
+		OnExpUpdated.Broadcast(NowLevel, 0, GetRequiredExpForLevelUp(NowLevel));		
 	}
 }
 
