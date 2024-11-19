@@ -88,7 +88,7 @@ void ACLBaseCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* Dam
 			SetImmunity(true);
 		}
 	}
-	HitEffectComponent->PlayNiagaraEffect(NewValue - OldValue);
+	HitEffectComponent->PlayHitEffect(NewValue - OldValue);
 
 	OnHealthChanged.Broadcast(OldValue, NewValue);
 }

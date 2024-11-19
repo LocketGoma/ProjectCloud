@@ -9,8 +9,6 @@
 #include "ProjectCloud/Utilites/CLCommonUtilityFunction.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
-
-
 ACLSubActionEquipment::ACLSubActionEquipment(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {

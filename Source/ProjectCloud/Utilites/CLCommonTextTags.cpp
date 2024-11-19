@@ -19,3 +19,4 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Reload, "Input.Action.Reload");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Dodge, "Input.Action.Dodge");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Spell_Action, "Input.Action.Spell.Action");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Spell_Command, "Input.Action.Spell.Command");
+UE_DEFINE_GAMEPLAY_TAG(TAG_Cue_HitEffect, "GameplayCue.Burst.HitEffect");

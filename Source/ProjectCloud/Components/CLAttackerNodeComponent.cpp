@@ -18,8 +18,11 @@ UCAttackerNodeComponent::UCAttackerNodeComponent()
 	AttackPoint = CreateDefaultSubobject<USphereComponent>(TEXT("AttackPoint"));
 	CorePoint->InitSphereRadius(10.0f);
 	AttackPoint->InitSphereRadius(10.0f);
-	CorePoint->SetCollisionProfileName(TEXT("None"));
-	AttackPoint->SetCollisionProfileName(TEXT("None"));
+	
+	CorePoint->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CorePoint->SetCollisionResponseToAllChannels(ECR_Ignore);
+	AttackPoint->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
+	AttackPoint->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
 // Called when the game starts

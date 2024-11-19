@@ -23,6 +23,7 @@ ACLEnemyCharacter::ACLEnemyCharacter(const FObjectInitializer& ObjectInitializer
 	RewardDropComponent = CreateDefaultSubobject<UCLRewardDropComponent>("RewardDropComponent");
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACLEnemyCharacter::OnHit);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACLEnemyCharacter::OnComponentBeginOverlap);
 }
 
 void ACLEnemyCharacter::BeginPlay()
@@ -132,6 +133,30 @@ void ACLEnemyCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dama
 }
 
 void ACLEnemyCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor && OtherActor != this && OtherComp)
+	{
+		ACLHeroCharacter* TargetCharacter = Cast<ACLHeroCharacter>(OtherActor);
+		if (TargetCharacter)
+		{
+			UAbilitySystemComponent* ASC = TargetCharacter->GetAbilitySystemComponent();
+
+			if (ASC)
+			{
+				FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+				EffectContext.AddSourceObject(this);
+
+				FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DamageGE, 1, EffectContext);
+				if (SpecHandle.IsValid())
+				{
+					ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+				}
+			}
+		}
+	}
+}
+
+void ACLEnemyCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherActor != this && OtherComp)
 	{

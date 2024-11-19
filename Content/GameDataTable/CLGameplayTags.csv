@@ -20,3 +20,4 @@ Ability.Action.Dodge,Ability.Action.Dodge,Ability-Dodge
 Ability.Action.Attack.Main,Ability.Action.Attack.Main,Ability-MainAttack
 Ability.Action.Attack.Sub,Ability.Action.Attack.Sub,Ability-SubAttack
 Event.Action.Active.Dodge,Event.Action.Active.Dodge,Dodge Event
+GameplayCue.Burst.HitEffect,GameplayCue.Burst.HitEffect,
