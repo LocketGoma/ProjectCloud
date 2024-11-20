@@ -8,6 +8,10 @@
 
 ACLGameplayCue_HitEffect::ACLGameplayCue_HitEffect()
 	: Super()
+	, EffectCount(1)
+	, RemainEffectCount(0)
+	, EffectPlayInterval(0)
+	, OriginalPlayInterval(0)
 	, OwnerCharacter(nullptr)
 	, HitEffectComponent(nullptr)
 {

@@ -7,6 +7,7 @@
 
 ACLGameState::ACLGameState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
+	, PlayTimeSecond(0)
 {
 	OnGameOverEvent.AddDynamic(this, &ThisClass::HandleGameOverEvent);
 }
@@ -21,7 +22,22 @@ void ACLGameState::BeginPlay()
 	check(SpawnManagerComponent);
 	//UE_LOG(LogTemp, Error, TEXT("Not set SpawnManaget in GameState. Please Set SapwnManagerClass in GameState."));
 
+	//GetWorld()->GetTimerManager().SetTimer(PlayTimeCountHandle, FTimerDelegate::CreateLambda([this]() {
+	//	++PlayTimeSecond;
+	//	OnPlayTimeUpdateEvent.Broadcast(PlayTimeSecond);
+	//	}), 1.0f, true, -1.0f);
+
+
 	Super::BeginPlay();
+}
+
+void ACLGameState::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	//if (PlayTimeCountHandle.IsValid())
+	//{
+	//	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	//	PlayTimeCountHandle.Invalidate();
+	//}
 }
 
 const UCLSpawnManagerComponent* ACLGameState::GetSpawnManagerComponent() const
@@ -46,7 +62,7 @@ void ACLGameState::SpawnMonsterOnce()
 
 void ACLGameState::SpawnMonstersAtCount(int32 Count)
 {
-	SpawnManagerComponent->SpawnMonsters(10);
+	SpawnManagerComponent->SpawnMonsters(Count);
 }
 
 void ACLGameState::HandleGameOverEvent()

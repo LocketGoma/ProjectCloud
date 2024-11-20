@@ -15,7 +15,8 @@
 				"GameplayAbilities",
 				"CoreUObject",
 				"EnhancedInput",
-				"GameFeatures"
+				"GameFeatures",
+				"UMG"
 			]
 		}
 	],
@@ -174,6 +175,18 @@
 		},
 		{
 			"Name": "OnlineBase",
+			"Enabled": false
+		},
+		{
+			"Name": "ChaosEditor",
+			"Enabled": false
+		},
+		{
+			"Name": "ChaosNiagara",
+			"Enabled": false
+		},
+		{
+			"Name": "ChaosSolverPlugin",
 			"Enabled": false
 		}
 	],

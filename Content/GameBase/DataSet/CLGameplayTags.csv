@@ -1,0 +1,45 @@
+Name,Tag,DevComment
+Input.Action.Move,Input.Action.Move,
+Input.Action.Attack.Main,Input.Action.Attack.Main,
+Input.Action.Attack.Sub,Input.Action.Attack.Sub,
+Input.Action.Look.Mouse,Input.Action.Look.Mouse,
+Input.Action.Reload,Input.Action.Reload,
+Input.Action.Spell.Action,Input.Action.Spell.Action,
+Input.Action.Spell.Command,Input.Action.Spell.Command,
+Input.Action.Dodge,Input.Action.Dodge,
+Attribute.Data.Damage,Attribute.Data.Damage,
+Attribute.Data.Health,Attribute.Data.Health,
+Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Main Weapon Max MagineAmmo
+Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,Main Weapon Now MagineAmmo
+Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Main Weapon Max Ammo
+Equipment.Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Sub Weapon Max MagineAmmo
+Equipment.Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,Sub Weapon Now MagineAmmo
+Equipment.Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Sub Weapon Max Ammo
+Event.Status.DamageImmunity,Event.Status.DamageImmunity,Immunity
+Ability.Action.Dodge,Ability.Action.Dodge,Ability-Dodge
+Ability.Action.Attack.Main,Ability.Action.Attack.Main,Ability-MainAttack
+Ability.Action.Attack.Sub,Ability.Action.Attack.Sub,Ability-SubAttack
+Event.Action.Active.Dodge,Event.Action.Active.Dodge,Dodge Event
+Event.Spell.Passive.DecMovSpd,Event.Spell.Passive.DecMovSpd,
+Event.Spell.Passive.TotemTaunt,Event.Spell.Passive.TotemTaunt,
+Event.Spell.Passive.HealWave,Event.Spell.Passive.HealWave,
+Event.Spell.Passive.IncHandspd,Event.Spell.Passive.IncHandspd,
+Ability.Action.Spell.MagicHommingBullet,Ability.Action.Spell.MagicHommingBullet,
+Ability.Action.Spell.FireBuckShot,Ability.Action.Spell.FireBuckShot,
+Ability.Action.Spell.DecMovSpd,Ability.Action.Spell.DecMovSpd,
+Ability.Action.Spell.MagicWeakSnipe,Ability.Action.Spell.MagicWeakSnipe,
+Ability.Action.Spell.TotemTaunt,Ability.Action.Spell.TotemTaunt,
+Ability.Action.Spell.HealWave,Ability.Action.Spell.HealWave,
+Ability.Action.Spell.ThunderStrike,Ability.Action.Spell.ThunderStrike,
+Ability.Action.Spell.FireWall,Ability.Action.Spell.FireWall,
+Ability.Action.Spell.IncHandspd,Ability.Action.Spell.IncHandspd,
+GameplayCue.Burst.HitEffect,GameplayCue.Burst.HitEffect,Hit Effect
+GameplayCue.Spell.Burst.Spell.MagicHommingBullet,GameplayCue.Spell.Burst.Spell.MagicHommingBullet,
+GameplayCue.Spell.Burst.Spell.FireBuckShot,GameplayCue.Spell.Burst.Spell.FireBuckShot,
+GameplayCue.Spell.Looping.DecMovSpd,GameplayCue.Spell.Looping.DecMovSpd,
+GameplayCue.Spell.Looping.MagicWeakSnipe,GameplayCue.Spell.Looping.MagicWeakSnipe,
+GameplayCue.Spell.Looping.TotemTaunt,GameplayCue.Spell.Looping.TotemTaunt,
+GameplayCue.Spell.Burst.HealWave,GameplayCue.Spell.Burst.HealWave,
+GameplayCue.Spell.Burst.ThunderStrike,GameplayCue.Burst.Spell.ThunderStrike,Spell Effect - Thunder
+GameplayCue.Spell.Looping.FireWall,GameplayCue.Spell.Looping.FireWall,
+GameplayCue.Spell.Looping.IncHandspd,GameplayCue.Spell.Looping.IncHandspd,

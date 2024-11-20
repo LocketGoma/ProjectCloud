@@ -7,6 +7,7 @@
 #include "CLGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameplayEventDelegate);
+DECLARE_MULTICAST_DELEGATE_OneParam(FTimeEventDelegate, int /*Now Time (second)*/);
 
 class UCLSpawnManagerComponent;
 
@@ -23,6 +24,7 @@ public:
 	ACLGameState(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	//SpawnManagerComponent 호출 : 외부에서 직접 내부 변수 수정 X 함수 호출만 O
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -49,6 +51,8 @@ public:
 	//게임 오버 이벤트
 	UPROPERTY(BlueprintAssignable)
 	FGameplayEventDelegate OnGameOverEvent;
+		
+	FTimeEventDelegate OnPlayTimeUpdateEvent;
 
 	UFUNCTION()
 	void HandleGameOverEvent();
@@ -61,5 +65,9 @@ private:
 	TSubclassOf<UCLSpawnManagerComponent> SpawnManagerComponentClass;
 
 	TObjectPtr<UCLSpawnManagerComponent> SpawnManagerComponent;
+
+	FTimerHandle PlayTimeCountHandle;
+
+	int32 PlayTimeSecond;
 
 };

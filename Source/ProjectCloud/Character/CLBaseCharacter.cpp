@@ -5,6 +5,7 @@
 #include "Engine/CollisionProfile.h"
 #include "ProjectCloud/System/CLAbilitySet.h"
 #include "Components/CapsuleComponent.h"
+#include "PaperFlipbookComponent.h"
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 #include "ProjectCloud/AttributeSet/CLCharacterAttributeSet.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
@@ -12,6 +13,8 @@
 
 ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
+	, ImmmuneTime(0.1f)
+	, bImmune(false)
 {
 	SetCanBeDamaged(true);
 
@@ -29,9 +32,6 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	GetCapsuleComponent()->InitCapsuleSize(12.0f, 8.f);
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
-
-	ImmmuneTime = 0.1f;
-	bImmune = false;
 }
 
 void ACLBaseCharacter::BeginPlay()

@@ -8,6 +8,7 @@
 #include "CLPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/InputComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "GameplayTagContainer.h"
@@ -28,15 +29,7 @@
 ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	SetCanBeDamaged(true);
-
-	SetRemoteRoleForBackwardsCompat(ROLE_SimulatedProxy);
-	bReplicates = true;
-	NetPriority = 3.0f;
-
-	BaseEyeHeight = 0.0f;
-	bCollideWhenPlacing = false;
-	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	GetCapsuleComponent()->InitCapsuleSize(16.0f, 8.f);
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 

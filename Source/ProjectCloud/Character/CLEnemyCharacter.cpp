@@ -16,14 +16,18 @@
 
 ACLEnemyCharacter::ACLEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
+	, HitInterval(0.25f)
 {
 	AbilityComponent = CreateDefaultSubobject<UCLAbilitySystemComponent>("AbilitySystemComponent");	
 	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);	
 
 	RewardDropComponent = CreateDefaultSubobject<UCLRewardDropComponent>("RewardDropComponent");
 
+	GetCapsuleComponent()->InitCapsuleSize(14.0f, 8.f);
+
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACLEnemyCharacter::OnHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACLEnemyCharacter::OnComponentBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &ACLEnemyCharacter::OnComponentEndOverlap);
 }
 
 void ACLEnemyCharacter::BeginPlay()
@@ -56,7 +60,7 @@ float ACLEnemyCharacter::GetHealth()
 
 void ACLEnemyCharacter::SetTargetPlayer(APawn* NewTarget)
 {
-	if (IsValid(NewTarget))
+	if (!IsValid(NewTarget))
 	{
 		UE_LOG(LogCloud, Error, TEXT("Player Character is Dead!"));
 	}
@@ -158,9 +162,42 @@ void ACLEnemyCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 
 void ACLEnemyCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != this && OtherComp)
+	if (IsValid(OtherActor) && OtherActor != this && OtherComp)
 	{
 		ACLHeroCharacter* TargetCharacter = Cast<ACLHeroCharacter>(OtherActor);
+		if (TargetCharacter)
+		{
+			OverlapEvent.TargetActor = OtherActor;
+			OverlapEvent.TargetComponent = OtherComp;
+			OverlapEvent.SweepResult = SweepResult;
+
+			GetWorld()->GetTimerManager().SetTimer(OverlapTimerHandle, FTimerDelegate::CreateLambda([this]() {			
+
+				this->HandleComponentOverlapEvent();
+
+				}), HitInterval, true);
+		}
+	}
+}
+
+void ACLEnemyCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (IsValid(OtherActor) && OtherActor != this && OtherComp)
+	{
+		ACLHeroCharacter* TargetCharacter = Cast<ACLHeroCharacter>(OtherActor);
+		if (TargetCharacter)
+		{
+			GetWorld()->GetTimerManager().ClearTimer(OverlapTimerHandle);
+			OverlapTimerHandle.Invalidate();
+		}
+	}
+}
+
+void ACLEnemyCharacter::HandleComponentOverlapEvent()
+{
+	if (IsValid(OverlapEvent.TargetActor) && OverlapEvent.TargetActor != this && OverlapEvent.TargetComponent)
+	{
+		ACLHeroCharacter* TargetCharacter = Cast<ACLHeroCharacter>(OverlapEvent.TargetActor);
 		if (TargetCharacter)
 		{
 			UAbilitySystemComponent* ASC = TargetCharacter->GetAbilitySystemComponent();

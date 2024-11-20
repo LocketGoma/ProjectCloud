@@ -11,6 +11,17 @@ class AAIController;
 class UCLAbilitySystemComponent;
 class UCLRewardDropComponent;
 class UCLEnemyAttributeSet;
+class UPrimitiveComponent;
+
+USTRUCT()
+struct FComponentOverlapEvent
+{
+	GENERATED_BODY()
+
+	AActor* TargetActor;
+	UPrimitiveComponent* TargetComponent;
+	FHitResult SweepResult = FHitResult();
+};
 
 /**
  * 
@@ -54,14 +65,26 @@ public:
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
-	virtual void OnComponentBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	virtual void HandleComponentOverlapEvent();
 
 public:
 	//충돌시 대미지를 입히는 GameplayEffect
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DamageGE;
 
-private:	
+private:
+	FTimerHandle OverlapTimerHandle;
+
+	FComponentOverlapEvent OverlapEvent;
+
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	float HitInterval;
+
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> BTAsset;
 
