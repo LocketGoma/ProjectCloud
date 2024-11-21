@@ -182,7 +182,7 @@ bool ACLSubActionEquipment::CanActiveWeaponEquipment()
 		return false;
 	}
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
-	if (!ensure(ASC))
+	if (!(IsValid(ASC)))
 	{
 		return false;
 	}

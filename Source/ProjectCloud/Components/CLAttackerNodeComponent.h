@@ -92,10 +92,8 @@ private:
 	USphereComponent* CorePoint;
 
 	UPROPERTY()
-	ACLWeapon* WeaponActor;
+	TObjectPtr<ACLWeapon> WeaponActor;
 
 	UPROPERTY()
-	ACLSubActionEquipment* SubEquipmentActor;
-
-		
+	TObjectPtr<ACLSubActionEquipment> SubEquipmentActor;		
 };

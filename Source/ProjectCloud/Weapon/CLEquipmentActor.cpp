@@ -65,21 +65,21 @@ AController* ACLEquipmentActor::GetOwnerController()
 
 UCLAbilitySystemComponent* ACLEquipmentActor::GetOwnerAbilitySystemComponent() const
 {
-	if (!ensure(GetOwner()))
+	if (!IsValid(GetOwner()))
 	{
 		return nullptr;
 	}
 
 	ACLBaseCharacter* OwnerCharacter = Cast<ACLBaseCharacter>(GetOwner());
 
-	if (!ensure(OwnerCharacter))
+	if (!IsValid(OwnerCharacter))
 	{
 		return nullptr;
 	}
 
 	UCLAbilitySystemComponent* ASC = OwnerCharacter->GetAbilitySystemComponent();
 
-	if (!ensure(ASC))
+	if (!(ASC))
 	{
 		return nullptr;
 	}

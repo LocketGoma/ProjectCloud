@@ -125,6 +125,7 @@ ACLWeapon* UCAttackerNodeComponent::GetWeaponActor()
 	return WeaponActor;
 }
 
+//액터 파괴될때 또 호출하면 pending Destroyed 상태여서 Object는 살아있는데 내부 데이터가 깨져있는 경우가 있음...
 ACLSubActionEquipment* UCAttackerNodeComponent::GetSubEquipmentActor()
 {
 	return SubEquipmentActor;
