@@ -10,6 +10,7 @@ class UPaperFlipbookComponent;
 class ACLProjectileActor;
 class USphereComponent;
 class UCLWeaponInstance;
+class UCLAttackerNodeComponent;
 class UCLAbilitySystemComponent;
 
 //Weapon과 SupEquipment를 통용하는 클래스.
@@ -44,6 +45,7 @@ public:
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	AController* GetOwnerController();
+	UCLAttackerNodeComponent* GetOwnerAttackNodeComponent();
 	UCLAbilitySystemComponent* GetOwnerAbilitySystemComponent() const;
 	
 	//탄창 크기

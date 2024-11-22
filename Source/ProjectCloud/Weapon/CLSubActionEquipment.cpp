@@ -6,6 +6,7 @@
 #include "ProjectCloud/Weapon/CLWeaponInstance.h"
 #include "ProjectCloud/Character/CLPlayerController.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
+#include "ProjectCloud/Components/CLAttackerNodeComponent.h"
 #include "ProjectCloud/Utilites/CLCommonUtilityFunction.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
@@ -170,7 +171,10 @@ void ACLSubActionEquipment::ActiveWeaponEquipment()
 
 	if (GetMagazineAmmo() == 0)
 	{
-		Destroy();
+		if (UCLAttackerNodeComponent* AttackNodeComp = GetOwnerAttackNodeComponent())
+		{
+			AttackNodeComp->OnSubWeaponChanged.Broadcast(nullptr);
+		}
 	}
 }
 
@@ -182,7 +186,8 @@ bool ACLSubActionEquipment::CanActiveWeaponEquipment()
 		return false;
 	}
 	UCLAbilitySystemComponent* ASC = GetOwnerAbilitySystemComponent();
-	if (!(IsValid(ASC)))
+	//if (!(IsValid(ASC)))
+	if (!(ensure(ASC)))
 	{
 		return false;
 	}

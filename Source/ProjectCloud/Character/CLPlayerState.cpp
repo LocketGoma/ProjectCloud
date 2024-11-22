@@ -2,6 +2,7 @@
 
 
 #include "CLPlayerState.h"
+#include "ProjectCloud/Components/CLPlayerSpellManagerComponent.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Components/CLLevelAbilityComponent.h"
 #include "ProjectCloud/Components/CLExperienceComponent.h"
@@ -20,7 +21,7 @@ ACLPlayerState::ACLPlayerState(const FObjectInitializer& ObjectInitializer)
 	AbilityComponent = CreateDefaultSubobject<UCLAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	ExperienceComponent = CreateDefaultSubobject<UCLExperienceComponent>(TEXT("ExperienceComponent"));
 	LevelAbilityComponent = CreateDefaultSubobject<UCLLevelAbilityComponent>(TEXT("LevelAbilityComponent"));
-	AbilityComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	PlayerSpellManagerComponent = CreateDefaultSubobject<UCLPlayerSpellManagerComponent>(TEXT("PlayerSpellManagerComponent"));	
 
 	PlayerLevel = 1;
 }

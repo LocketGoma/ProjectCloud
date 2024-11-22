@@ -54,7 +54,7 @@ UCLAbilitySystemComponent* ACLBaseCharacter::GetAbilitySystemComponent()
 
 void ACLBaseCharacter::InitializeAbilitySystemComponent(UCLAbilitySystemComponent* ASC)
 {
-	//체력 관련 델리게이트는 Character에 연결 (경험치는 PlayerState, 마나는...?)
+	//체력 관련 델리게이트는 Character에 연결 (경험치, 마나는 PlayerState)
 	if (ASC)
 	{
 		HealthAttributeSet = ASC->GetSet<UCLCharacterAttributeSet>();

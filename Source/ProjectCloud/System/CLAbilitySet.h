@@ -122,7 +122,6 @@ class PROJECTCLOUD_API UCLAbilitySet : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-
 	UCLAbilitySet(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	// Grants the ability set to the specified ability system component.
@@ -130,7 +129,6 @@ public:
 	void GiveToAbilitySystem(UCLAbilitySystemComponent* CloudASC, FCLAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject = nullptr) const;
 
 protected:
-
 	// Gameplay abilities to grant when this ability set is granted.
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilities", meta = (TitleProperty = Ability))
 	TArray<FCLAbilitySet_GameplayAbility> GrantedGameplayAbilities;

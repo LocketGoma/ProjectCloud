@@ -5,7 +5,7 @@
 #include "ProjectCloud/Weapon/CLSubActionEquipment.h"
 
 // Sets default values for this component's properties
-UCAttackerNodeComponent::UCAttackerNodeComponent()	
+UCLAttackerNodeComponent::UCLAttackerNodeComponent()	
 {
 	bWeaponRelativeSpin = false;
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
@@ -26,7 +26,7 @@ UCAttackerNodeComponent::UCAttackerNodeComponent()
 }
 
 // Called when the game starts
-void UCAttackerNodeComponent::BeginPlay()
+void UCLAttackerNodeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -43,9 +43,12 @@ void UCAttackerNodeComponent::BeginPlay()
 		WeaponActor->SetEquipmentFromInstance();
 	}
 	EquipSubEquipmentActor(SubEquipmentActorClass);
+
+	OnMainWeaponChanged.AddUObject(this, &ThisClass::HandleEquipMainWeaponActor);
+	OnSubWeaponChanged.AddUObject(this, &ThisClass::HandleEquipSubEquipmentActor);
 }
 
-void UCAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
+void UCLAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
 {
 	if (NewLenght >= 0.0f)
 	{
@@ -55,7 +58,7 @@ void UCAttackerNodeComponent::UpdateAttactPointLength(float NewLenght)
 	}
 }
 
-void UCAttackerNodeComponent::UpdateRotation(float Val)
+void UCLAttackerNodeComponent::UpdateRotation(float Val)
 {
 	SetRelativeRotation(FRotator(0, Val, 0));
 	
@@ -70,7 +73,7 @@ void UCAttackerNodeComponent::UpdateRotation(float Val)
 	K2_UpdateRotation(GetRelativeRotation());
 }
 
-void UCAttackerNodeComponent::AddRotation(float Val)
+void UCLAttackerNodeComponent::AddRotation(float Val)
 {
 	AddRelativeRotation(FRotator(0, Val, 0));
 
@@ -85,7 +88,7 @@ void UCAttackerNodeComponent::AddRotation(float Val)
 	K2_UpdateRotation(GetRelativeRotation());
 }
 
-void UCAttackerNodeComponent::EquipSubEquipmentActor(TSubclassOf<ACLSubActionEquipment> EquipmentActorClass)
+void UCLAttackerNodeComponent::EquipSubEquipmentActor(TSubclassOf<ACLSubActionEquipment> EquipmentActorClass)
 {
 	if (IsValid(SubEquipmentActor))
 	{
@@ -97,6 +100,7 @@ void UCAttackerNodeComponent::EquipSubEquipmentActor(TSubclassOf<ACLSubActionEqu
 		//}
 
 		SubEquipmentActor->Destroy();
+		SubEquipmentActor = nullptr;
 	}
 
 	if (EquipmentActorClass)
@@ -108,30 +112,51 @@ void UCAttackerNodeComponent::EquipSubEquipmentActor(TSubclassOf<ACLSubActionEqu
 	}
 }
 
-const USceneComponent* UCAttackerNodeComponent::GetAttackPoint()
+void UCLAttackerNodeComponent::HandleEquipMainWeaponActor(TObjectPtr<ACLWeapon> NewWeaponActor)
+{
+	if (NewWeaponActor)
+	{
+		//Do Something...
+	}
+}
+
+void UCLAttackerNodeComponent::HandleEquipSubEquipmentActor(TObjectPtr<ACLSubActionEquipment> NewEquipActor)
+{
+	if (NewEquipActor)
+	{
+		EquipSubEquipmentActor(NewEquipActor.GetClass());
+	}
+	else
+	{
+		EquipSubEquipmentActor(nullptr);
+	}
+	
+}
+
+const USceneComponent* UCLAttackerNodeComponent::GetAttackPoint()
 {
 	//방향 뿜어줄때는 AttackPoint의 RightVector 뿜어주면 됨 <- 아니면 바꾸던지
 
 	return AttackPoint;
 }
 
-const FTransform UCAttackerNodeComponent::GetAttackPointTransform()
+const FTransform UCLAttackerNodeComponent::GetAttackPointTransform()
 {
 	return AttackPoint->GetComponentTransform();
 }
 
-ACLWeapon* UCAttackerNodeComponent::GetWeaponActor()
+ACLWeapon* UCLAttackerNodeComponent::GetWeaponActor()
 {
 	return WeaponActor;
 }
 
 //액터 파괴될때 또 호출하면 pending Destroyed 상태여서 Object는 살아있는데 내부 데이터가 깨져있는 경우가 있음...
-ACLSubActionEquipment* UCAttackerNodeComponent::GetSubEquipmentActor()
+ACLSubActionEquipment* UCLAttackerNodeComponent::GetSubEquipmentActor()
 {
 	return SubEquipmentActor;
 }
 
-const EWeaponType UCAttackerNodeComponent::GetWeaponType() const
+const EWeaponType UCLAttackerNodeComponent::GetWeaponType() const
 {
 	return WeaponActor->GetWeaponType();
 }

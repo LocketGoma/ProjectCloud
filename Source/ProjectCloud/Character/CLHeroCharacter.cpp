@@ -33,7 +33,7 @@ ACLHeroCharacter::ACLHeroCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetMovementComponent()->UpdatedComponent = RootComponent;
 
-	AttackerComponent = CreateDefaultSubobject<UCAttackerNodeComponent>(TEXT("AttackerNodeComponent"));		
+	AttackerComponent = CreateDefaultSubobject<UCLAttackerNodeComponent>(TEXT("AttackerNodeComponent"));		
 	AttackerComponent->SetupAttachment(RootComponent);	
 
 	// This is the default pawn class, we want to have it be able to move out of the box.
@@ -54,8 +54,7 @@ void ACLHeroCharacter::BeginPlay()
 
 	if (UEnhancedInputLocalPlayerSubsystem* SubSystem =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(CLController->GetLocalPlayer()))
-		SubSystem->AddMappingContext(InputContext, 0);
-	
+		SubSystem->AddMappingContext(InputContext, 0);	
 
 	OnCharacterInitialized.Broadcast();
 }
@@ -137,7 +136,7 @@ UCLAbilitySystemComponent* ACLHeroCharacter::GetAbilitySystemComponent()
 	return nullptr;
 }
 
-UCAttackerNodeComponent* ACLHeroCharacter::GetAttackerNode()
+UCLAttackerNodeComponent* ACLHeroCharacter::GetAttackerNode()
 {
 	if (!ensure(AttackerComponent))
 	{

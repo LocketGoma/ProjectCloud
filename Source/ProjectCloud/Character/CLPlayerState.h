@@ -9,6 +9,7 @@
 class UCLAbilitySystemComponent;
 class UCLLevelAbilityComponent;
 class UCLExperienceComponent;
+class UCLPlayerSpellManagerComponent;
 class UCLAbilitySet;
 
 //델리게이트 추가
@@ -32,6 +33,7 @@ public:
 	UCLExperienceComponent* GetExperienceComponent() const { return ExperienceComponent; }
 	UCLAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilityComponent; }
 	UCLLevelAbilityComponent* GetLevelAbilityComponent() const { return LevelAbilityComponent; }
+	UCLPlayerSpellManagerComponent* GetPlayerSpellManagerComponent() const { return PlayerSpellManagerComponent; }
 
 //유틸 함수들
 public:
@@ -80,6 +82,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCLLevelAbilityComponent> LevelAbilityComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCLPlayerSpellManagerComponent> PlayerSpellManagerComponent;
 
 	bool bAbilitySet;	
 };

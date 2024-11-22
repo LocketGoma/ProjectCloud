@@ -18,7 +18,7 @@ enum class EControlMode : uint8
 	Touch			//or Mouse
 };
 
-class UCAttackerNodeComponent;
+class UCLAttackerNodeComponent;
 class UCLExperienceComponent;
 class UInputMappingContext;
 class UInputAction;
@@ -64,7 +64,7 @@ public:
 	virtual UCLAbilitySystemComponent* GetAbilitySystemComponent() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Equipment|Weapon")
-	UCAttackerNodeComponent* GetAttackerNode();
+	UCLAttackerNodeComponent* GetAttackerNode();
 
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Equipment")
@@ -120,7 +120,5 @@ private:
 	
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character")
-	TObjectPtr<UCAttackerNodeComponent> AttackerComponent;
-
-
+	TObjectPtr<UCLAttackerNodeComponent> AttackerComponent;
 };

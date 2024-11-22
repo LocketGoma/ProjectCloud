@@ -2,7 +2,7 @@
 
 #pragma once
 
-//무기 타입 지정
+//장비 타입 지정
 UENUM()
 enum class EEquipmentType : uint8
 {
@@ -15,7 +15,6 @@ enum class EEquipmentType : uint8
 	//서브 무기
 	Equipment_SubEquipment		
 };
-
 
 //무기 타입 지정
 UENUM()
@@ -36,7 +35,7 @@ enum class ESubEquipmentType : uint8
 	//무기로 사용되는 서브웨폰
 	SubEquipment_Weapon,			
 	//임시
-	SubEquipment_Shield,			
+	SubEquipment_Shield,
 	//임시
 	SubEquipment_BuffFlag			
 };
@@ -54,6 +53,28 @@ enum class EWeaponEventType : uint8
 	Event_AmmoEmpty		
 };
 
+//방향키 입력
+UENUM()
+enum class EArrowInputHandleType : uint8
+{
+	Arrow_UpArrow,
+	Arrow_DownArrow,
+	Arrow_LeftArrow,
+	Arrow_RightArrow
+};
+
+UENUM()
+enum class EActiveSpellType : uint8
+{
+	//실패한 경우?
+	Spell_None,
+	//Low Level
+	Spell_Low,
+	//Middle Level
+	Spell_Mid,
+	//High Level
+	Spell_High
+};
 
 namespace WeaponUtilites
 {

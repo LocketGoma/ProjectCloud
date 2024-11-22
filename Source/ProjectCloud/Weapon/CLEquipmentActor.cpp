@@ -4,6 +4,7 @@
 #include "CLEquipmentActor.h"
 #include "Components/SphereComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "ProjectCloud/Components/CLAttackerNodeComponent.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
@@ -61,6 +62,19 @@ AController* ACLEquipmentActor::GetOwnerController()
 	}
 
 	return nullptr;
+}
+
+UCLAttackerNodeComponent* ACLEquipmentActor::GetOwnerAttackNodeComponent()
+{
+	if (!GetOwner())
+	{
+		return nullptr;
+	}
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+
+	UCLAttackerNodeComponent* AttackerNodeComp = OwnerPawn->GetComponentByClass<UCLAttackerNodeComponent>();
+
+	return AttackerNodeComp;
 }
 
 UCLAbilitySystemComponent* ACLEquipmentActor::GetOwnerAbilitySystemComponent() const
