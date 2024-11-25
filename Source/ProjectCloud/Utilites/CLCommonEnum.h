@@ -76,6 +76,39 @@ enum class EActiveSpellType : uint8
 	Spell_High
 };
 
+namespace AbilityUtilites
+{
+	static EArrowInputHandleType GetKeyTypeFromVector(FVector2D InputVector)
+	{
+		//X축 인풋
+		if (FMath::IsNearlyZero(InputVector.Y))
+		{
+			if (InputVector.X > 0)
+			{
+				return EArrowInputHandleType::Arrow_RightArrow;
+			}
+			if (InputVector.X < 0)
+			{
+				return EArrowInputHandleType::Arrow_LeftArrow;
+			}
+		}
+		//Y축 인풋
+		if (FMath::IsNearlyZero(InputVector.X))
+		{
+			if (InputVector.Y > 0)
+			{
+				return EArrowInputHandleType::Arrow_UpArrow;
+			}
+			if (InputVector.Y < 0)
+			{
+				return EArrowInputHandleType::Arrow_DownArrow;
+			}
+		}
+		//디폴트
+		return EArrowInputHandleType::Arrow_UpArrow;
+	}
+}
+
 namespace WeaponUtilites
 {
 	static bool IsWeaponActivate(EWeaponEventType Type)
@@ -85,5 +118,4 @@ namespace WeaponUtilites
 		else
 			return false;
 	}
-
 }

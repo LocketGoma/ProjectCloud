@@ -38,6 +38,20 @@ void UCLAbilitySystemComponent::TryActiveAbilityFromInputAction(const FInputActi
 	}
 }
 
+void UCLAbilitySystemComponent::AbilityInputTagTriggered(const FGameplayTag& InputTag)
+{
+	if (InputTag.IsValid())
+	{
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		{
+			if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
+			{				
+				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+			}
+		}
+	}
+}
+
 void UCLAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 	if (InputTag.IsValid())
@@ -46,8 +60,7 @@ void UCLAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Input
 		{
 			if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
 			{
-				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
-				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);				
 			}
 		}
 	}

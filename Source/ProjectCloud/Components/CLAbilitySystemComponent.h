@@ -31,6 +31,7 @@ public:
 
 public:
 	//어빌리티 트리거 관련
+	void AbilityInputTagTriggered(const FGameplayTag& InputTag);
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 

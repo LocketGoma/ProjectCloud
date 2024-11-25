@@ -24,6 +24,7 @@ Event.Spell.Passive.DecMovSpd,Event.Spell.Passive.DecMovSpd,
 Event.Spell.Passive.TotemTaunt,Event.Spell.Passive.TotemTaunt,
 Event.Spell.Passive.HealWave,Event.Spell.Passive.HealWave,
 Event.Spell.Passive.IncHandspd,Event.Spell.Passive.IncHandspd,
+Ability.Action.Spell.SpellCasting,Ability.Action.Spell.SpellCasting,SpellCasting
 Ability.Action.Spell.MagicHommingBullet,Ability.Action.Spell.MagicHommingBullet,
 Ability.Action.Spell.FireBuckShot,Ability.Action.Spell.FireBuckShot,
 Ability.Action.Spell.DecMovSpd,Ability.Action.Spell.DecMovSpd,

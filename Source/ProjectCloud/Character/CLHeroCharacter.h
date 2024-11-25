@@ -82,6 +82,7 @@ public:
 protected:
 	/** Called for movement input */
 	void Input_Move(const FInputActionValue& Value);
+	void Input_AbilityInputTagTriggered(FGameplayTag InputTag);
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 	void Input_LookMouse(const FInputActionValue& InputActionValue);

@@ -19,6 +19,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;
+
+	//단발식인지, 키 인풋-아웃 풋 처리인지 (true = 단발식)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bTriggeredOnly = true;
 };
 
 /**
