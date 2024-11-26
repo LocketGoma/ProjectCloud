@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
 
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Health);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Weapon_MagazineAmmo);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Weapon_MagazineSize);

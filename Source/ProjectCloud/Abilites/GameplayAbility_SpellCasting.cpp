@@ -24,10 +24,8 @@ void UGameplayAbility_SpellCasting::OnGiveAbility(const FGameplayAbilityActorInf
 			InputComponent->BindAction(Action, ETriggerEvent::Triggered, this, &UGameplayAbility_SpellCasting::CommandInputPressed);
 		}
 	}
-	Task = UAbilityTask_WaitInputRelease::WaitInputRelease(this, true);
-	Task->OnRelease.AddDynamic(this, &UGameplayAbility_SpellCasting::TriggerReleased);
-
-	Task->ReadyForActivation();
+	//Task = UAbilityTask_WaitInputRelease::WaitInputRelease(this, false);
+	//Task->OnRelease.AddDynamic(this, &UGameplayAbility_SpellCasting::TriggerReleased);
 
 	InputSpellCommands.Reserve(12);
 }
@@ -44,6 +42,7 @@ void UGameplayAbility_SpellCasting::ActivateAbility(const FGameplayAbilitySpecHa
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	//Task->ReadyForActivation();
 }
 
 void UGameplayAbility_SpellCasting::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -52,9 +51,6 @@ void UGameplayAbility_SpellCasting::EndAbility(const FGameplayAbilitySpecHandle 
 
 	//벡터 테스트
 	InputSpellCommands.Empty();	
-
-	/*if (Task)
-		Task->EndTask();*/
 }
 
 void UGameplayAbility_SpellCasting::CommandInputPressed(const FInputActionValue& Value)

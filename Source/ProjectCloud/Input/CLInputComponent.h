@@ -27,8 +27,8 @@ public:
 	template<class UserClass, typename FuncType>
 	void BindNativeAction(const UCLAbilityInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, bool bLogIfNotFound);
 
-	template<class UserClass, typename PressedFuncType, typename TriggeredFuncType, typename ReleasedFuncType>
-	void BindAbilityActions(const UCLAbilityInputConfig* InputConfig, UserClass* Object, TriggeredFuncType TriggeredFunc, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles);
+	template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
+	void BindAbilityActions(const UCLAbilityInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles);
 
 	void RemoveBinds(TArray<uint32>& BindHandles);
 };
@@ -44,8 +44,8 @@ void UCLInputComponent::BindNativeAction(const UCLAbilityInputConfig* InputConfi
 	}
 }
 
-template<class UserClass, typename PressedFuncType, typename TriggeredFuncType,typename ReleasedFuncType>
-void UCLInputComponent::BindAbilityActions(const UCLAbilityInputConfig* InputConfig, UserClass* Object, TriggeredFuncType TriggeredFunc, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles)
+template<class UserClass, typename PressedFuncType, typename ReleasedFuncType>
+void UCLInputComponent::BindAbilityActions(const UCLAbilityInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles)
 {
 	check(InputConfig);
 
@@ -53,14 +53,9 @@ void UCLInputComponent::BindAbilityActions(const UCLAbilityInputConfig* InputCon
 	{
 		if (Action.InputAction && Action.InputTag.IsValid())
 		{
-			if (TriggeredFunc && Action.bTriggeredOnly)
-			{
-				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());
-			}			
-
 			if (PressedFunc)
 			{
-				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Started, Object, PressedFunc, Action.InputTag).GetHandle());
+				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());
 			}
 
 			if (ReleasedFunc)

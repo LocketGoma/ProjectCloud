@@ -1,4 +1,5 @@
 Name,Tag,DevComment
+Gameplay.AbilityInputBlocked,Gameplay.AbilityInputBlocked,
 Input.Action.Move,Input.Action.Move,
 Input.Action.Attack.Main,Input.Action.Attack.Main,
 Input.Action.Attack.Sub,Input.Action.Attack.Sub,

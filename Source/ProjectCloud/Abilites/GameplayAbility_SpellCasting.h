@@ -36,7 +36,7 @@ public:
 private:
 	void CommandInputPressed(const FInputActionValue& Value);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void TriggerReleased(float TimeHeld);
 
 private:

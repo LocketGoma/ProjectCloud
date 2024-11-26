@@ -6,6 +6,8 @@
 #include "GameplayTagContainer.h"
 #include "CLAbilitySystemComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FCLInputEventDelegate);
+
 class UInputAction;
 class UCLAbilityInputConfig;
 class UEnhancedInputComponent;
@@ -30,10 +32,16 @@ public:
 	void TryActiveAbilityFromInputAction(const FInputActionInstance& Value);
 
 public:
-	//어빌리티 트리거 관련
-	void AbilityInputTagTriggered(const FGameplayTag& InputTag);
+	//어빌리티 트리거 관련	
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+
+	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
+	void ClearAbilityInput();
+
+	FCLInputEventDelegate OnInputPressed;
+	FCLInputEventDelegate OnInputReleased;
+
 
 //BP 함수들
 public:

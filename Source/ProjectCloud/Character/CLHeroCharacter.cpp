@@ -75,7 +75,7 @@ void ACLHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//CLInputComponent->BindNativeAction(InputConfig, TAG_Input_Look_Mouse, ETriggerEvent::Triggered, this, &ACLHeroCharacter::Input_LookMouse, false);
 
 		TArray<uint32> BindHandles;
-		CLInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagTriggered, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ BindHandles);
+		CLInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ BindHandles);
 	}
 	else
 	{
@@ -207,12 +207,6 @@ void ACLHeroCharacter::Input_Move(const FInputActionValue& Value)
 	}
 }
 
-void ACLHeroCharacter::Input_AbilityInputTagTriggered(FGameplayTag InputTag)
-{
-	UCLAbilitySystemComponent* CloudASC = GetAbilitySystemComponent();
-	CloudASC->AbilityInputTagPressed(InputTag);
-}
-
 void ACLHeroCharacter::RotateAttackPoint(float Val)
 {	
 	if (AttackerComponent && Val != 0.f)
@@ -224,7 +218,7 @@ void ACLHeroCharacter::RotateAttackPoint(float Val)
 void ACLHeroCharacter::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 {
 	UCLAbilitySystemComponent* CloudASC = GetAbilitySystemComponent();
-	CloudASC->AbilityInputTagTriggered(InputTag);
+	CloudASC->AbilityInputTagPressed(InputTag);
 }
 
 void ACLHeroCharacter::Input_AbilityInputTagReleased(FGameplayTag InputTag)

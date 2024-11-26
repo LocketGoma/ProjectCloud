@@ -3,6 +3,7 @@
 
 #include "CLCommonTextTags.h"
 
+UE_DEFINE_GAMEPLAY_TAG(TAG_Gameplay_AbilityInputBlocked, "Gameplay.AbilityInputBlocked");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Health, "Attribute.Data.Health");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Weapon_MagazineAmmo, "Weapon.Data.MagazineAmmo");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Weapon_MagazineSize, "Weapon.Data.MagazineSize");
