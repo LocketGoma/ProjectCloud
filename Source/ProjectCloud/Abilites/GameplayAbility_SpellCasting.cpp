@@ -5,9 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ProjectCloud/Character/CLHeroCharacter.h"
 #include "ProjectCloud/Input/CLInputComponent.h"
-#include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
-#include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
-
+#include "Projectcloud/Abilites/Task/CLAbilityTask_WaitInputRelease.h"
 
 //어빌리티 등록
 void UGameplayAbility_SpellCasting::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -24,7 +22,7 @@ void UGameplayAbility_SpellCasting::OnGiveAbility(const FGameplayAbilityActorInf
 			InputComponent->BindAction(Action, ETriggerEvent::Triggered, this, &UGameplayAbility_SpellCasting::CommandInputPressed);
 		}
 	}
-	//Task = UAbilityTask_WaitInputRelease::WaitInputRelease(this, false);
+	//Task = UCLAbilityTask_WaitInputRelease::WaitInputRelease(this, false);
 	//Task->OnRelease.AddDynamic(this, &UGameplayAbility_SpellCasting::TriggerReleased);
 
 	InputSpellCommands.Reserve(12);
