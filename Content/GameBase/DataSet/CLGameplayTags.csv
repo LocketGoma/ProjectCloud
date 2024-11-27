@@ -5,7 +5,9 @@ Input.Action.Attack.Main,Input.Action.Attack.Main,
 Input.Action.Attack.Sub,Input.Action.Attack.Sub,
 Input.Action.Look.Mouse,Input.Action.Look.Mouse,
 Input.Action.Reload,Input.Action.Reload,
-Input.Action.Spell.Action,Input.Action.Spell.Action,
+Input.Action.Spell.Action.Low,Input.Action.Spell.Action.Low,Low Level Spell
+Input.Action.Spell.Action.Mid,Input.Action.Spell.Action.Mid,Mid Level Spell
+Input.Action.Spell.Action.High,Input.Action.Spell.Action.High,High Level Spell
 Input.Action.Spell.Command,Input.Action.Spell.Command,
 Input.Action.Dodge,Input.Action.Dodge,
 Attribute.Data.Damage,Attribute.Data.Damage,

@@ -7,6 +7,8 @@
 #include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLPlayerSpellManagerComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCLSpellCommandDelegate, TArray<EArrowInputHandleType>, InputCommands);
+
 class ACLPlayerState;
 class UCLSpellInstance;
 class UCLManaAttributeSet;
@@ -34,9 +36,15 @@ public:
 
 public:
 	void ActivateSpell(EActiveSpellType SpellType);
-
-private:
 	TSubclassOf<UCLSpellInstance> GetSpellFromType(EActiveSpellType SpellType);
+
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FCLSpellCommandDelegate OnSpellICommandInput;
+
+	UPROPERTY(BlueprintAssignable)
+	FCLSpellCommandDelegate OnFullSpellICommand;
 
 private:
 	//1차 마법
@@ -50,6 +58,11 @@ private:
 	//3차 마법
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCLSpellInstance> HighSpell;
+
+private:
+	TArray<EArrowInputHandleType> LowSpellCommands;
+	TArray<EArrowInputHandleType> MiddleSpellCommands;
+	TArray<EArrowInputHandleType> HighSpellCommands; //High = Full
 
 private:
 	TWeakObjectPtr<ACLPlayerState> PS;

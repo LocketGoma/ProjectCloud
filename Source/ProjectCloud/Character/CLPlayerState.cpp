@@ -17,7 +17,7 @@
 ACLPlayerState::ACLPlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bAbilitySet = false;
+	bAbilityInitialized = false;
 	AbilityComponent = CreateDefaultSubobject<UCLAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	ExperienceComponent = CreateDefaultSubobject<UCLExperienceComponent>(TEXT("ExperienceComponent"));
 	LevelAbilityComponent = CreateDefaultSubobject<UCLLevelAbilityComponent>(TEXT("LevelAbilityComponent"));
@@ -69,26 +69,29 @@ void ACLPlayerState::SetAbilitiesFromActionSet(UCLAbilitySet* AbilitySet)
 		return;
 	}	
 
-	if ((AbilitySet) && (bAbilitySet == false))
+	if ((AbilitySet))
 	{
 		AbilitySet->GiveToAbilitySystem(AbilityComponent, nullptr);
-
-		bAbilitySet = true;;
 	}
-	
-	UCLManaAttributeSet* NewManaAttributeSet = NewObject<UCLManaAttributeSet>(this);
-	UCLCharacterAttributeSet* NewCharacterAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
-	UCLExperiencePointAttributeSet* NewExpAttributeSet = NewObject<UCLExperiencePointAttributeSet>(this);
-	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewManaAttributeSet);
-	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewExpAttributeSet);
-	GetAbilitySystemComponent()->AddAttributeSetSubobject(NewCharacterAttributeSet);
-
-	InitializeDelegates();	
 }
 
 void ACLPlayerState::InitializePlayerState(UCLAbilitySet* AbilitySet)
 {
-	SetAbilitiesFromActionSet(AbilitySet);	
+	if (!bAbilityInitialized)
+	{
+		SetAbilitiesFromActionSet(AbilitySet);
+
+		UCLManaAttributeSet* NewManaAttributeSet = NewObject<UCLManaAttributeSet>(this);
+		UCLCharacterAttributeSet* NewCharacterAttributeSet = NewObject<UCLCharacterAttributeSet>(this);
+		UCLExperiencePointAttributeSet* NewExpAttributeSet = NewObject<UCLExperiencePointAttributeSet>(this);
+		GetAbilitySystemComponent()->AddAttributeSetSubobject(NewManaAttributeSet);
+		GetAbilitySystemComponent()->AddAttributeSetSubobject(NewExpAttributeSet);
+		GetAbilitySystemComponent()->AddAttributeSetSubobject(NewCharacterAttributeSet);
+
+		InitializeDelegates();
+
+		bAbilityInitialized = true;
+	}
 }
 
 void ACLPlayerState::InitializeDelegates()

@@ -7,8 +7,11 @@
 #include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "GameplayAbility_SpellCasting.generated.h"
 
+
+
 struct FCloudInputAction;
 struct FInputActionValue;
+class ACLPlayerState;
 
 /**
  * 스펠 시전을 시도하는 (키 입력) 부분
@@ -31,19 +34,21 @@ public:
 	//어빌리티 종료
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled);
 
-	
-
 private:
 	void CommandInputPressed(const FInputActionValue& Value);
 
 	UFUNCTION(BlueprintCallable)
 	void TriggerReleased(float TimeHeld);
 
-private:
+	void SetSpellCommands();
 
-	//UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UPROPERTY(BlueprintReadWrite , meta = (AllowPrivateAccess = "true"))
+	ACLPlayerState* GetPlayerState();
+
+private:
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))	
 	TArray<EArrowInputHandleType> InputSpellCommands;
+	
+	TArray<EArrowInputHandleType> FullSpellCommand; //High = Full
 
 	UPROPERTY(EditDefaultsOnly , meta = (AllowPrivateAccess = "true"))
 	class UInputAction* Action;

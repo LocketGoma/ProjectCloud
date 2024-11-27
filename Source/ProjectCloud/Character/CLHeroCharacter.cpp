@@ -115,7 +115,8 @@ void ACLHeroCharacter::SetAbilitySystemComponent()
 	if (ACLPlayerState * PS = Cast<ACLPlayerState>(GetPlayerState()))
 	{
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
-		PS->InitializePlayerState(AbilitySet);
+		PS->InitializePlayerState(BaseAbilitySet);			//기본 어빌리티 추가
+		PS->SetAbilitiesFromActionSet(SpellAbilitySet);		//사용가능한 전체 마법 추가
 		PS->GetAbilitySystemComponent()->BindInputActions(InputConfig, EnhancedInputComponent);
 
 		if (IsValid(AttributeGameplayEffect))

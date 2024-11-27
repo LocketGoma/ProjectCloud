@@ -107,6 +107,10 @@ public:
 	//--End of Copy
 
 private:
+	//적용시킬 AbilitySet
+	UPROPERTY(EditDefaultsOnly, Category = "Character|Settings", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCLAbilitySet> SpellAbilitySet;
+
 	/** MappingContext */
 	UPROPERTY(EditDefaultsOnly, Category = "Character|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> InputContext;

@@ -3,8 +3,11 @@
 
 #include "GameplayAbility_SpellCasting.h"
 #include "GameFramework/PlayerController.h"
-#include "ProjectCloud/Character/CLHeroCharacter.h"
+#include "ProjectCloud/Spell/CLSpellInstance.h"
 #include "ProjectCloud/Input/CLInputComponent.h"
+#include "ProjectCloud/Character/CLPlayerState.h"
+#include "ProjectCloud/Character/CLHeroCharacter.h"
+#include "ProjectCloud/Components/CLPlayerSpellManagerComponent.h"
 #include "Projectcloud/Abilites/Task/CLAbilityTask_WaitInputRelease.h"
 
 //어빌리티 등록
@@ -15,17 +18,17 @@ void UGameplayAbility_SpellCasting::OnGiveAbility(const FGameplayAbilityActorInf
 	ACLHeroCharacter* HeroCharacter = Cast<ACLHeroCharacter>(GetAvatarActorFromActorInfo());
 	
 	if (HeroCharacter)
-	{
+	{				
+		//인풋 컴포넌트 관련 세팅
 		UCLInputComponent* InputComponent = HeroCharacter->GetComponentByClass<UCLInputComponent>();
 		if (InputComponent)
 		{
 			InputComponent->BindAction(Action, ETriggerEvent::Triggered, this, &UGameplayAbility_SpellCasting::CommandInputPressed);
 		}
 	}
-	//Task = UCLAbilityTask_WaitInputRelease::WaitInputRelease(this, false);
-	//Task->OnRelease.AddDynamic(this, &UGameplayAbility_SpellCasting::TriggerReleased);
-
 	InputSpellCommands.Reserve(12);
+
+	FullSpellCommand.Reserve(12);
 }
 
 bool UGameplayAbility_SpellCasting::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
@@ -39,7 +42,14 @@ bool UGameplayAbility_SpellCasting::CanActivateAbility(const FGameplayAbilitySpe
 void UGameplayAbility_SpellCasting::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	//어빌리티 발동직전마다 스펠이 바뀌었는지 확인할 필요가 있긴 함...
+	//1. PS의 스펠 매니저에서 현재 스펠 정보 얻어옴	
+	SetSpellCommands();
 
+
+	//왜 안될까?
+	//Task = UCLAbilityTask_WaitInputRelease::WaitInputRelease(this, false);
+	//Task->OnRelease.AddDynamic(this, &UGameplayAbility_SpellCasting::TriggerReleased);
 	//Task->ReadyForActivation();
 }
 
@@ -47,19 +57,59 @@ void UGameplayAbility_SpellCasting::EndAbility(const FGameplayAbilitySpecHandle 
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	//벡터 테스트
+	//Task->EndTask();
+	
 	InputSpellCommands.Empty();	
 }
 
 void UGameplayAbility_SpellCasting::CommandInputPressed(const FInputActionValue& Value)
 {
-	//Do something;
+	//2. 키 입력시 저장된 스펠 커맨드와 입력된 스펠 커맨드가 일치하는지 비교
+	//불일치시 바로 캔슬시킴
+
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	InputSpellCommands.Add(AbilityUtilites::GetKeyTypeFromVector(MovementVector));
+
+	//OnSpellICommandInput.Broadcast(InputSpellCommands);
 }
 
 void UGameplayAbility_SpellCasting::TriggerReleased(float TimeHeld)
 {
+	//3. 스펠 커맨드가 1단계, 2단계, 3단계 통과시 해당 스펠 발동
+
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+}
+
+void UGameplayAbility_SpellCasting::SetSpellCommands()
+{
+	FullSpellCommand.Empty();
+
+	//플레이어 스테이트 관련 세팅
+	if (ACLPlayerState* PS = GetPlayerState())
+	{
+		UCLPlayerSpellManagerComponent* SpellComp = PS->GetPlayerSpellManagerComponent();
+		if (SpellComp)
+		{
+			//Low Command Settings
+			FullSpellCommand = UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_Low));
+
+			//Mid Command Settings			
+			FullSpellCommand.Append(UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_Mid)));
+
+			//High Command Settings
+			FullSpellCommand.Append(UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_High)));
+
+			//UI 세팅
+			SpellComp->OnFullSpellICommand.Broadcast(FullSpellCommand);
+		}
+	}
+}
+
+ACLPlayerState* UGameplayAbility_SpellCasting::GetPlayerState()
+{
+	ACLHeroCharacter* HeroCharacter = Cast<ACLHeroCharacter>(GetAvatarActorFromActorInfo());
+	ACLPlayerState* PS = Cast<ACLPlayerState>(HeroCharacter->GetPlayerState());
+
+	return PS;
 }

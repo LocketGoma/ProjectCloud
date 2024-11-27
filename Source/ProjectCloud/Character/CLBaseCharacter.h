@@ -75,7 +75,7 @@ private:
 protected:
 	//적용시킬 AbilitySet
 	UPROPERTY(EditDefaultsOnly, meta = (Category = "Character|Settings"))
-	TObjectPtr<UCLAbilitySet> AbilitySet;
+	TObjectPtr<UCLAbilitySet> BaseAbilitySet;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character|Attributes")
 	TSubclassOf<UGameplayEffect> AttributeGameplayEffect;

@@ -86,5 +86,5 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCLPlayerSpellManagerComponent> PlayerSpellManagerComponent;
 
-	bool bAbilitySet;	
+	bool bAbilityInitialized;	
 };
