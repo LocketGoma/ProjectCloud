@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright @Locketgoma. All Rights Reserved.
 
 #pragma once
 
@@ -35,7 +35,14 @@ public:
 	static const FGameplayTag GetSpellTag(UCLSpellInstance& Instance);
 	static const FGameplayTag GetSpellTag(TSubclassOf<UCLSpellInstance> Instance);
 
+	static const EActiveSpellType GetSpellType(UCLSpellInstance& Instance);
+	static const EActiveSpellType GetSpellType(TSubclassOf<UCLSpellInstance> Instance);
+
+
 public:
+	UPROPERTY(EditDefaultsOnly)
+	EActiveSpellType SpellType;
+
 	//입력해야하는 커맨드를 순서대로 지정해주세요
 	UPROPERTY(EditDefaultsOnly)
 	TArray<EArrowInputHandleType> SpellCommands;

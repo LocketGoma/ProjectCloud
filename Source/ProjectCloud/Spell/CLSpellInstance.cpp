@@ -32,3 +32,18 @@ const FGameplayTag UCLSpellInstance::GetSpellTag(TSubclassOf<UCLSpellInstance> I
 
 	return FGameplayTag();
 }
+
+const EActiveSpellType UCLSpellInstance::GetSpellType(UCLSpellInstance& Instance)
+{
+	return Instance.SpellType;
+}
+
+const EActiveSpellType UCLSpellInstance::GetSpellType(TSubclassOf<UCLSpellInstance> Instance)
+{
+	if (IsValid(Instance))
+	{
+		return GetSpellType(*(Instance.GetDefaultObject()));
+	}
+
+	return EActiveSpellType();
+}

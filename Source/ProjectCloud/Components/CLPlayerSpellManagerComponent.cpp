@@ -6,6 +6,7 @@
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/AttributeSet/CLManaAttributeSet.h"
 #include "ProjectCloud/Character/CLPlayerState.h"
+#include "ProjectCloud/ProjectCloudLogChannels.h"
 
 UCLPlayerSpellManagerComponent::UCLPlayerSpellManagerComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -18,6 +19,8 @@ UCLPlayerSpellManagerComponent::UCLPlayerSpellManagerComponent(const FObjectInit
 void UCLPlayerSpellManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UpdateSpellCommands(EActiveSpellType::Spell_Low);
 }
 
 void UCLPlayerSpellManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -53,7 +56,7 @@ void UCLPlayerSpellManagerComponent::ActivateSpell(EActiveSpellType SpellType)
 	}
 }
 
-TSubclassOf<UCLSpellInstance> UCLPlayerSpellManagerComponent::GetSpellFromType(EActiveSpellType SpellType)
+const TSubclassOf<UCLSpellInstance> UCLPlayerSpellManagerComponent::GetSpellFromType(EActiveSpellType SpellType)
 {
 	switch (SpellType)
 	{
@@ -66,4 +69,109 @@ TSubclassOf<UCLSpellInstance> UCLPlayerSpellManagerComponent::GetSpellFromType(E
 	}
 
 	return nullptr;
+}
+
+const TArray<EArrowInputHandleType> UCLPlayerSpellManagerComponent::GetSpellCommandFromType(EActiveSpellType SpellType)
+{
+	switch (SpellType)
+	{
+	case EActiveSpellType::Spell_Low:
+		return LowSpellCommands;
+	case EActiveSpellType::Spell_Mid:
+		return MiddleSpellCommands;
+	case EActiveSpellType::Spell_High:
+		return HighSpellCommands;
+	}
+
+	return TArray<EArrowInputHandleType>();
+}
+
+void UCLPlayerSpellManagerComponent::SetSpellFromInstance(TSubclassOf<UCLSpellInstance> NewInstance)
+{
+	if (!IsValid(NewInstance))
+	{
+		UE_LOG(LogCloud, Error, TEXT("Spell Change Failure. Maybe New SpellInstance is Null."));
+		return;
+	}
+	
+	switch (UCLSpellInstance::GetSpellType(NewInstance))
+	{
+		case EActiveSpellType::Spell_Low:
+		{
+			LowSpell = NewInstance;
+			UpdateSpellCommands(EActiveSpellType::Spell_Low);
+			break;
+		}
+		case EActiveSpellType::Spell_Mid:
+		{
+			MidSpell = NewInstance;
+			UpdateSpellCommands(EActiveSpellType::Spell_Mid);
+			break;
+		}
+		case EActiveSpellType::Spell_High:
+		{
+			HighSpell = NewInstance;
+			UpdateSpellCommands(EActiveSpellType::Spell_High);
+			break;
+		}
+	}
+}
+
+void UCLPlayerSpellManagerComponent::UpdateSpellCommands(EActiveSpellType UpdatedSpellType)
+{
+	HighSpellCommands.Empty();
+	
+	switch (UpdatedSpellType)
+	{
+		case EActiveSpellType::Spell_Low:
+		{
+			LowSpellCommands.Empty();
+			MiddleSpellCommands.Empty();
+			
+			//Low Command Settings
+			LowSpellCommands = UCLSpellInstance::GetSpellCommands(LowSpell);
+			MiddleSpellCommands = UCLSpellInstance::GetSpellCommands(LowSpell);
+			HighSpellCommands = UCLSpellInstance::GetSpellCommands(LowSpell);
+
+			//Mid Command Settings			
+			MiddleSpellCommands.Append(UCLSpellInstance::GetSpellCommands(MidSpell));
+			HighSpellCommands.Append(UCLSpellInstance::GetSpellCommands(MidSpell));
+
+			//High Command Settings
+			HighSpellCommands.Append(UCLSpellInstance::GetSpellCommands(HighSpell));			
+
+			break;
+		}
+		case EActiveSpellType::Spell_Mid:
+		{
+			MiddleSpellCommands.Empty();
+
+			//Low Command Settings
+			MiddleSpellCommands = UCLSpellInstance::GetSpellCommands(LowSpell);
+			HighSpellCommands = UCLSpellInstance::GetSpellCommands(LowSpell);
+
+			//Mid Command Settings			
+			MiddleSpellCommands.Append(UCLSpellInstance::GetSpellCommands(MidSpell));
+			HighSpellCommands.Append(UCLSpellInstance::GetSpellCommands(MidSpell));
+
+			//High Command Settings
+			HighSpellCommands.Append(UCLSpellInstance::GetSpellCommands(HighSpell));
+
+			break;
+		}
+		case EActiveSpellType::Spell_High:
+		{
+			//Low Command Settings
+			HighSpellCommands = UCLSpellInstance::GetSpellCommands(LowSpell);
+
+			//Mid Command Settings			
+			HighSpellCommands.Append(UCLSpellInstance::GetSpellCommands(MidSpell));
+
+			//High Command Settings
+			HighSpellCommands.Append(UCLSpellInstance::GetSpellCommands(HighSpell));
+
+			break;
+		}
+	}
+	OnFullSpellCommandChanged.Broadcast();
 }

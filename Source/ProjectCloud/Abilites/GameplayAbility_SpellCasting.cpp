@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright @Locketgoma. All Rights Reserved.
 
 #include "GameplayAbility_SpellCasting.h"
 #include "GameFramework/PlayerController.h"
@@ -90,18 +89,8 @@ void UGameplayAbility_SpellCasting::SetSpellCommands()
 	{
 		UCLPlayerSpellManagerComponent* SpellComp = PS->GetPlayerSpellManagerComponent();
 		if (SpellComp)
-		{
-			//Low Command Settings
-			FullSpellCommand = UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_Low));
-
-			//Mid Command Settings			
-			FullSpellCommand.Append(UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_Mid)));
-
-			//High Command Settings
-			FullSpellCommand.Append(UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_High)));
-
-			//UI 세팅
-			SpellComp->OnFullSpellICommand.Broadcast(FullSpellCommand);
+		{			
+			FullSpellCommand = UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_High));
 		}
 	}
 }

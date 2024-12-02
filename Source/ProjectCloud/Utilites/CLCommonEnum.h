@@ -54,7 +54,7 @@ enum class EWeaponEventType : uint8
 };
 
 //방향키 입력
-UENUM()
+UENUM(BlueprintType)
 enum class EArrowInputHandleType : uint8
 {
 	Arrow_UpArrow,

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright @Locketgoma. All Rights Reserved.
 
 #pragma once
 
@@ -6,8 +6,6 @@
 #include "Abilities/GameplayAbility.h"
 #include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "GameplayAbility_SpellCasting.generated.h"
-
-
 
 struct FCloudInputAction;
 struct FInputActionValue;
@@ -46,7 +44,7 @@ private:
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))	
-	TArray<EArrowInputHandleType> InputSpellCommands;
+	TArray<EArrowInputHandleType> InputSpellCommands;	
 	
 	TArray<EArrowInputHandleType> FullSpellCommand; //High = Full
 
