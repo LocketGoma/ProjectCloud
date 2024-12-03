@@ -25,9 +25,6 @@ void UGameplayAbility_SpellCasting::OnGiveAbility(const FGameplayAbilityActorInf
 			InputComponent->BindAction(Action, ETriggerEvent::Triggered, this, &UGameplayAbility_SpellCasting::CommandInputPressed);
 		}
 	}
-	InputSpellCommands.Reserve(12);
-
-	FullSpellCommand.Reserve(12);
 }
 
 bool UGameplayAbility_SpellCasting::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
@@ -56,9 +53,7 @@ void UGameplayAbility_SpellCasting::EndAbility(const FGameplayAbilitySpecHandle 
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	//Task->EndTask();
-	
-	InputSpellCommands.Empty();	
+	//Task->EndTask();	
 }
 
 void UGameplayAbility_SpellCasting::CommandInputPressed(const FInputActionValue& Value)
@@ -68,29 +63,43 @@ void UGameplayAbility_SpellCasting::CommandInputPressed(const FInputActionValue&
 
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	InputSpellCommands.Add(AbilityUtilites::GetKeyTypeFromVector(MovementVector));
-
-	//OnSpellICommandInput.Broadcast(InputSpellCommands);
+	EArrowInputHandleType InputType = AbilityUtilites::GetKeyTypeFromVector(MovementVector);
+		
+	if (ACLPlayerState* PS = GetPlayerState())
+	{
+		UCLPlayerSpellManagerComponent* SpellComp = PS->GetPlayerSpellManagerComponent();
+		if (SpellComp)
+		{
+			SpellComp->OnSpelICommandInput.Broadcast(InputType);
+		}
+	}
 }
 
 void UGameplayAbility_SpellCasting::TriggerReleased(float TimeHeld)
 {
 	//3. 스펠 커맨드가 1단계, 2단계, 3단계 통과시 해당 스펠 발동
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-}
-
-void UGameplayAbility_SpellCasting::SetSpellCommands()
-{
-	FullSpellCommand.Empty();
-
-	//플레이어 스테이트 관련 세팅
 	if (ACLPlayerState* PS = GetPlayerState())
 	{
 		UCLPlayerSpellManagerComponent* SpellComp = PS->GetPlayerSpellManagerComponent();
 		if (SpellComp)
 		{			
-			FullSpellCommand = UCLSpellInstance::GetSpellCommands(SpellComp->GetSpellFromType(EActiveSpellType::Spell_High));
+			SpellComp->OnTrySpellActivate.Broadcast();
+		}
+	}
+
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+}
+
+void UGameplayAbility_SpellCasting::SetSpellCommands()
+{
+	//플레이어 스테이트 관련 세팅
+	if (ACLPlayerState* PS = GetPlayerState())
+	{
+		UCLPlayerSpellManagerComponent* SpellComp = PS->GetPlayerSpellManagerComponent();
+		if (SpellComp)
+		{
+			SpellComp->OnTrySpellCommandInput.Broadcast();
 		}
 	}
 }

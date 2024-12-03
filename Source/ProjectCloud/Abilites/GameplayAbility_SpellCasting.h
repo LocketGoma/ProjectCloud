@@ -43,11 +43,6 @@ private:
 	ACLPlayerState* GetPlayerState();
 
 private:
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))	
-	TArray<EArrowInputHandleType> InputSpellCommands;	
-	
-	TArray<EArrowInputHandleType> FullSpellCommand; //High = Full
-
 	UPROPERTY(EditDefaultsOnly , meta = (AllowPrivateAccess = "true"))
 	class UInputAction* Action;
 

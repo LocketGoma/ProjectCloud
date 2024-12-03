@@ -20,6 +20,8 @@ void UCLPlayerSpellManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	OnSpelICommandInput.AddDynamic(this, &ThisClass::TryCommandInput);
+
 	UpdateSpellCommands(EActiveSpellType::Spell_Low);
 }
 
@@ -115,6 +117,19 @@ void UCLPlayerSpellManagerComponent::SetSpellFromInstance(TSubclassOf<UCLSpellIn
 			break;
 		}
 	}
+}
+
+bool UCLPlayerSpellManagerComponent::CheckSpellCorrection(TArray<EArrowInputHandleType> InputCommands)
+{
+	//이게 False면 바로 스펠 취소걸림
+	return true;
+}
+
+void UCLPlayerSpellManagerComponent::TryCommandInput(EArrowInputHandleType InputCommand)
+{
+	InputSpellCommands.Add(InputCommand);
+
+	CheckSpellCorrection(InputSpellCommands);
 }
 
 void UCLPlayerSpellManagerComponent::UpdateSpellCommands(EActiveSpellType UpdatedSpellType)

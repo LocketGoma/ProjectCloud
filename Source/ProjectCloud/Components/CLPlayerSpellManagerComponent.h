@@ -7,7 +7,8 @@
 #include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLPlayerSpellManagerComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCLSpellCommandDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCLSpellEventDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCLSpellCommandDelegate, EArrowInputHandleType, inputCommand);
 
 class ACLPlayerState;
 class UCLSpellInstance;
@@ -44,13 +45,24 @@ public:
 
 	void SetSpellFromInstance(TSubclassOf<UCLSpellInstance> NewInstance);
 
+	bool CheckSpellCorrection(TArray<EArrowInputHandleType> InputCommands);
+
+	UFUNCTION()
+	void TryCommandInput(EArrowInputHandleType InputCommand);
 
 public:
 	UPROPERTY(BlueprintAssignable)
 	FCLSpellCommandDelegate OnSpelICommandInput;
 
 	UPROPERTY(BlueprintAssignable)
-	FCLSpellCommandDelegate OnFullSpellCommandChanged;
+	FCLSpellEventDelegate OnFullSpellCommandChanged;
+	//스펠 입력 액티브 체크
+	UPROPERTY(BlueprintAssignable)
+	FCLSpellEventDelegate OnTrySpellCommandInput;
+
+	//스펠 액티브 체크
+	UPROPERTY(BlueprintAssignable)
+	FCLSpellEventDelegate OnTrySpellActivate;
 
 private:
 	void UpdateSpellCommands(EActiveSpellType UpdatedSpellType);
@@ -69,6 +81,10 @@ private:
 	TSubclassOf<UCLSpellInstance> HighSpell;
 
 private:
+	//인풋 들어온 커맨드
+	TArray<EArrowInputHandleType> InputSpellCommands;
+
+	//예약 커맨드
 	TArray<EArrowInputHandleType> LowSpellCommands;
 	TArray<EArrowInputHandleType> MiddleSpellCommands;
 	TArray<EArrowInputHandleType> HighSpellCommands; //High = Full
@@ -77,5 +93,4 @@ private:
 	TWeakObjectPtr<ACLPlayerState> PS;
 
 	TObjectPtr<UCLManaAttributeSet> ManaAttributeSet;
-
 };
