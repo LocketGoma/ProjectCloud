@@ -43,7 +43,7 @@ private:
 	ACLPlayerState* GetPlayerState();
 
 private:
-	UPROPERTY(EditDefaultsOnly , meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* Action;
 
 	class UAbilityTask_WaitInputRelease* Task;

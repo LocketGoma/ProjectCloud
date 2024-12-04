@@ -19,9 +19,7 @@ UCLPlayerSpellManagerComponent::UCLPlayerSpellManagerComponent(const FObjectInit
 void UCLPlayerSpellManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	OnSpelICommandInput.AddDynamic(this, &ThisClass::TryCommandInput);
-
+	InitializeDelegates();
 	UpdateSpellCommands(EActiveSpellType::Spell_Low);
 }
 
@@ -32,9 +30,8 @@ void UCLPlayerSpellManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayR
 
 void UCLPlayerSpellManagerComponent::InitializeComponent()
 {
-	Super::InitializeComponent();
+	Super::InitializeComponent();	
 
-	UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
 }
 
 void UCLPlayerSpellManagerComponent::UninitializeComponent()
@@ -44,18 +41,29 @@ void UCLPlayerSpellManagerComponent::UninitializeComponent()
 
 void UCLPlayerSpellManagerComponent::InitializeDelegates()
 {
-	UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
+	OnSpelICommandInput.AddDynamic(this, &ThisClass::TryCommandInput);
+	OnTrySpellActivate.AddDynamic(this, &ThisClass::TryActivateSpell);
+}
+
+void UCLPlayerSpellManagerComponent::TryActivateSpell()
+{
+	EActiveSpellType SpellType = CheckSpellCommandLevel(InputSpellCommands);
+
+	ActivateSpell(SpellType);
 }
 
 void UCLPlayerSpellManagerComponent::ActivateSpell(EActiveSpellType SpellType)
 {
 	TSubclassOf<UCLSpellInstance> TryActiveSpell = GetSpellFromType(SpellType);
 
-	if (!TryActiveSpell)
+	if (TryActiveSpell)
 	{
-		//실패 판정
-		return;
+		//ASC 호출하고 스킬 발동
+
+		UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
+		ASC->TryActivateAbilityByClass(UCLSpellInstance::GetSpellAbility(TryActiveSpell));		
 	}
+	ClearSpellCommand();
 }
 
 const TSubclassOf<UCLSpellInstance> UCLPlayerSpellManagerComponent::GetSpellFromType(EActiveSpellType SpellType)
@@ -122,14 +130,49 @@ void UCLPlayerSpellManagerComponent::SetSpellFromInstance(TSubclassOf<UCLSpellIn
 bool UCLPlayerSpellManagerComponent::CheckSpellCorrection(TArray<EArrowInputHandleType> InputCommands)
 {
 	//이게 False면 바로 스펠 취소걸림
+	EActiveSpellType SpellType = CheckSpellCommandLevel(InputCommands);	
+
+	if (SpellType == EActiveSpellType::Spell_None)
+	{
+		return false;
+	}
+
 	return true;
+}
+
+EActiveSpellType UCLPlayerSpellManagerComponent::CheckSpellCommandLevel(TArray<EArrowInputHandleType> InputCommands)
+{
+	if (!InputCommands.IsEmpty())
+	{
+		if (InputCommands[InputCommands.Num() - 1] == HighSpellCommands[InputCommands.Num() - 1])
+		{
+			if (InputCommands.Num() >= HighSpellCommands.Num())
+			{
+				return EActiveSpellType::Spell_High;
+			}
+			else if (InputCommands.Num() >= MiddleSpellCommands.Num())
+			{
+				return EActiveSpellType::Spell_Mid;
+			}
+			//else if (InputCommands.Num() >= LowSpellCommands.Num())
+
+			return EActiveSpellType::Spell_Low;
+		}
+	}
+
+	return EActiveSpellType::Spell_None;
 }
 
 void UCLPlayerSpellManagerComponent::TryCommandInput(EArrowInputHandleType InputCommand)
 {
-	InputSpellCommands.Add(InputCommand);
+	if (HighSpellCommands.Num() > InputSpellCommands.Num())
+		InputSpellCommands.Add(InputCommand);	
 
-	CheckSpellCorrection(InputSpellCommands);
+	if (!CheckSpellCorrection(InputSpellCommands))
+	{
+		//실패하면 뭐 이벤트 줘야하나...?
+		ClearSpellCommand();
+	}
 }
 
 void UCLPlayerSpellManagerComponent::UpdateSpellCommands(EActiveSpellType UpdatedSpellType)
@@ -189,4 +232,9 @@ void UCLPlayerSpellManagerComponent::UpdateSpellCommands(EActiveSpellType Update
 		}
 	}
 	OnFullSpellCommandChanged.Broadcast();
+}
+
+void UCLPlayerSpellManagerComponent::ClearSpellCommand()
+{
+	InputSpellCommands.Empty();
 }

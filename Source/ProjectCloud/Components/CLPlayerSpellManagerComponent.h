@@ -36,7 +36,6 @@ public:
 	void InitializeDelegates();
 
 public:
-	void ActivateSpell(EActiveSpellType SpellType);
 
 	const TSubclassOf<UCLSpellInstance> GetSpellFromType(EActiveSpellType SpellType);
 
@@ -44,8 +43,6 @@ public:
 	const TArray<EArrowInputHandleType> GetSpellCommandFromType(EActiveSpellType SpellType);
 
 	void SetSpellFromInstance(TSubclassOf<UCLSpellInstance> NewInstance);
-
-	bool CheckSpellCorrection(TArray<EArrowInputHandleType> InputCommands);
 
 	UFUNCTION()
 	void TryCommandInput(EArrowInputHandleType InputCommand);
@@ -65,7 +62,18 @@ public:
 	FCLSpellEventDelegate OnTrySpellActivate;
 
 private:
-	void UpdateSpellCommands(EActiveSpellType UpdatedSpellType);
+	UFUNCTION()
+	void TryActivateSpell();
+
+	void ActivateSpell(EActiveSpellType SpellType);
+
+	void UpdateSpellCommands(EActiveSpellType UpdatedSpellType);	
+
+	void ClearSpellCommand();
+
+	bool CheckSpellCorrection(TArray<EArrowInputHandleType> InputCommands);
+
+	EActiveSpellType CheckSpellCommandLevel(TArray<EArrowInputHandleType> InputCommands);
 
 private:
 	//1차 마법

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "CLSpellInstance.h"
+#include "Abilities/GameplayAbility.h"
 
 const TArray<EArrowInputHandleType> UCLSpellInstance::GetSpellCommands(UCLSpellInstance& Instance)
 {
@@ -18,19 +18,19 @@ const TArray<EArrowInputHandleType> UCLSpellInstance::GetSpellCommands(TSubclass
 	return TArray<EArrowInputHandleType>();
 }
 
-const FGameplayTag UCLSpellInstance::GetSpellTag(UCLSpellInstance& Instance)
+const TSubclassOf<UGameplayAbility> UCLSpellInstance::GetSpellAbility(UCLSpellInstance& Instance)
 {
-	return Instance.SpellTag;
+	return Instance.SpellAbility;
 }
 
-const FGameplayTag UCLSpellInstance::GetSpellTag(TSubclassOf<UCLSpellInstance> Instance)
+const TSubclassOf<UGameplayAbility> UCLSpellInstance::GetSpellAbility(TSubclassOf<UCLSpellInstance> Instance)
 {
 	if (IsValid(Instance))
 	{
-		return GetSpellTag(*(Instance.GetDefaultObject()));
+		return GetSpellAbility(*(Instance.GetDefaultObject()));
 	}
 
-	return FGameplayTag();
+	return nullptr;
 }
 
 const EActiveSpellType UCLSpellInstance::GetSpellType(UCLSpellInstance& Instance)
