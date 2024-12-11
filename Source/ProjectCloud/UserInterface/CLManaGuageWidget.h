@@ -14,7 +14,7 @@
 * 4. 현재 마나 수치
 * 
 * 
-* 5. 게이지 올라가는 속도 - 이건 위젯별 별도
+* 5. 게이지 올라가는 속도 - 이건 위젯별 동일 (일단 크기랑 상관없대용)
 */
 
 /**
@@ -28,16 +28,19 @@ class PROJECTCLOUD_API UCLManaGuageWidget : public UUserWidget
 public:
 	UCLManaGuageWidget(const FObjectInitializer& ObjectInitializer);
 
-	void UpdateStatus(float NewMaximumManaAmount, float NewNowManaAmount);
+	void UpdateManaGuage(float NewMaximumManaAmount, float NewNowManaAmount);
+	void AddManaGuage(float AddManaAmount);
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateGuageSize(float NewMinimumManaGuage, float NewMaximumManaGuage, float NewGuageUISize);
+	void UpdateGuageSize(float NewMaximumManaGuage, float NewGuageUISize);
+
+	//마나게이지 충전이 가능한지 여부 (가득 찼으면 X)
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	const bool CanManaGuageCharging();
 
 	//얘는 마나 게이지 길이 바꿔주는애고
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateManaGuageUISize(float NewSize);
-
-
 
 	//이건 차오른 마나 게이지 퍼센트를 반영시켜주는 애고
 	UFUNCTION(BlueprintImplementableEvent)
@@ -48,22 +51,12 @@ private:
 	void CaculateManaGuagePercentage();
 
 
-private:
-	//전체 마나 총량
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	float MaximumManaAmount;
-
-	//위젯기 가질 수 있는 마나 게이지의 "바닥"
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	float MinimumManaGuage;
-
-	//위젯이 가질 수 잇는 마나 게이지의 "천장"
+private:	
+	//게이지가 담을수 있는 총 마나 용량
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	float MaximumManaGuage;
 
-	//현재 소지중인 마나 용량
+	//게이지에 걸린 마나 용량
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	float NowManaAmount;
-
-	
+	float NowManaGuageAmount;	
 };

@@ -47,3 +47,18 @@ const EActiveSpellType UCLSpellInstance::GetSpellType(TSubclassOf<UCLSpellInstan
 
 	return EActiveSpellType();
 }
+
+const float UCLSpellInstance::GetSpellCost(UCLSpellInstance& Instance)
+{
+	return Instance.SpellCost;
+}
+
+const float UCLSpellInstance::GetSpellCost(TSubclassOf<UCLSpellInstance> Instance)
+{
+	if (IsValid(Instance))
+	{
+		return GetSpellCost(*(Instance.GetDefaultObject()));
+	}
+
+	return 0.0f;
+}

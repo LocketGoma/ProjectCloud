@@ -6,10 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "CLManaAttributeSet.generated.h"
 
-/**
- * 
- */
-
 DECLARE_MULTICAST_DELEGATE_SixParams(FOnManaAttributeValueChanged, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/, const FGameplayEffectSpec* /*EffectSpec*/, float /*EffectMagnitude*/, float /*OldValue*/, float /*NewValue*/);
 
 UCLASS()
@@ -22,7 +18,7 @@ public:
 
 	ATTRIBUTE_ACCESSORS(UCLManaAttributeSet, Mana);
 	ATTRIBUTE_ACCESSORS(UCLManaAttributeSet, MaxMana);
-	ATTRIBUTE_ACCESSORS(UCLManaAttributeSet, ManaHealing);
+	ATTRIBUTE_ACCESSORS(UCLManaAttributeSet, ChangeManaAmount);
 
 	mutable FOnManaAttributeValueChanged OnManaChanged;
 	mutable FOnManaAttributeValueChanged OnMaxManaChanged;
@@ -44,5 +40,5 @@ private:
 	FGameplayAttributeData MaxMana;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|UpdateAttribute", Meta = (HideFromModifiers, AllowPrivateAccess = true))
-	FGameplayAttributeData ManaHealing;
+	FGameplayAttributeData ChangeManaAmount;
 };

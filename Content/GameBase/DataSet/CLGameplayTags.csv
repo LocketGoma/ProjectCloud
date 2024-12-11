@@ -19,14 +19,14 @@ Equipment.Weapon.Data.MagazineSize,Weapon.Data.MagazineSize,Sub Weapon Max Magin
 Equipment.Weapon.Data.MagazineAmmo,Weapon.Data.MagazineAmmo,Sub Weapon Now MagineAmmo
 Equipment.Weapon.Data.SpareAmmo,Weapon.Data.SpareAmmo,Sub Weapon Max Ammo
 Event.Status.DamageImmunity,Event.Status.DamageImmunity,Immunity
-Ability.Action.Dodge,Ability.Action.Dodge,Ability-Dodge
-Ability.Action.Attack.Main,Ability.Action.Attack.Main,Ability-MainAttack
-Ability.Action.Attack.Sub,Ability.Action.Attack.Sub,Ability-SubAttack
 Event.Action.Active.Dodge,Event.Action.Active.Dodge,Dodge Event
 Event.Spell.Passive.DecMovSpd,Event.Spell.Passive.DecMovSpd,
 Event.Spell.Passive.TotemTaunt,Event.Spell.Passive.TotemTaunt,
 Event.Spell.Passive.HealWave,Event.Spell.Passive.HealWave,
 Event.Spell.Passive.IncHandspd,Event.Spell.Passive.IncHandspd,
+Ability.Action.Dodge,Ability.Action.Dodge,Ability-Dodge
+Ability.Action.Attack.Main,Ability.Action.Attack.Main,Ability-MainAttack
+Ability.Action.Attack.Sub,Ability.Action.Attack.Sub,Ability-SubAttack
 Ability.Action.Spell.SpellCasting,Ability.Action.Spell.SpellCasting,SpellCasting
 Ability.Action.Spell.MagicHommingBullet,Ability.Action.Spell.MagicHommingBullet,
 Ability.Action.Spell.FireBuckShot,Ability.Action.Spell.FireBuckShot,
@@ -37,6 +37,8 @@ Ability.Action.Spell.HealWave,Ability.Action.Spell.HealWave,
 Ability.Action.Spell.ThunderStrike,Ability.Action.Spell.ThunderStrike,
 Ability.Action.Spell.FireWall,Ability.Action.Spell.FireWall,
 Ability.Action.Spell.IncHandspd,Ability.Action.Spell.IncHandspd,
+Ability.Passive.Restore.Mana,Ability.Passive.Restore.Mana,Mana Restore Passive Ability
+Ability.Passive.Restore.Health,Ability.Passive.Restore.Health,Health Restore Passive Ability
 GameplayCue.Burst.HitEffect,GameplayCue.Burst.HitEffect,Hit Effect
 GameplayCue.Spell.Burst.Spell.MagicHommingBullet,GameplayCue.Spell.Burst.Spell.MagicHommingBullet,
 GameplayCue.Spell.Burst.Spell.FireBuckShot,GameplayCue.Spell.Burst.Spell.FireBuckShot,

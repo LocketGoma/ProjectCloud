@@ -5,38 +5,46 @@
 
 UCLManaGuageWidget::UCLManaGuageWidget(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
-	, MaximumManaAmount(1)
-	, MinimumManaGuage(0)
 	, MaximumManaGuage(0)
-	, NowManaAmount(0)
+	, NowManaGuageAmount(0)
 {
 }
 
-void UCLManaGuageWidget::UpdateStatus(float NewMaximumManaAmount, float NewNowManaAmount)
+void UCLManaGuageWidget::UpdateManaGuage(float NewMaximumManaAmount, float NewNowManaAmount)
 {
-	NowManaAmount = NewNowManaAmount;
-	MaximumManaAmount = NewMaximumManaAmount;
+	MaximumManaGuage = NewMaximumManaAmount;
+	NowManaGuageAmount = NewNowManaAmount;
+
+}
+
+void UCLManaGuageWidget::AddManaGuage(float AddManaAmount)
+{
+	NowManaGuageAmount += AddManaAmount;
 
 	CaculateManaGuagePercentage();
 }
 
-void UCLManaGuageWidget::UpdateGuageSize(float NewMinimumManaGuage, float NewMaximumManaGuage, float NewGuageUISize)
+void UCLManaGuageWidget::UpdateGuageSize(float NewMaximumManaGuage, float NewGuageUISize)
 {
-	MinimumManaGuage = NewMinimumManaGuage;
 	MaximumManaGuage = NewMaximumManaGuage;
 
 	UpdateManaGuageUISize(NewGuageUISize);
 }
 
+const bool UCLManaGuageWidget::CanManaGuageCharging()
+{
+	return MaximumManaGuage > NowManaGuageAmount;
+}
+
 void UCLManaGuageWidget::CaculateManaGuagePercentage()
 {
-	if (FMath::IsNearlyZero(MaximumManaGuage - MinimumManaGuage))
+	if (FMath::IsNearlyZero(MaximumManaGuage))
 	{
 		UE_LOG(LogCloud, Error, TEXT("ManaGuageWidget's Guage Amount is Zero! Guage is Must Over Zero."));
 		return;
 	}
 
-	float Percentage = FMath::Clamp(((NowManaAmount - MinimumManaGuage)/(MaximumManaGuage - MinimumManaGuage)), 0.f, 1.f);
+	float Percentage = FMath::Clamp(((NowManaGuageAmount)/(MaximumManaGuage)), 0.f, 1.f);
 
 	UpdateManaGuageUI(Percentage);
 }

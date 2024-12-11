@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "CLCharacterAttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
@@ -9,8 +8,8 @@
 #include "ProjectCloud/Utilites/CLCommonTextTags.h"
 
 UCLCharacterAttributeSet::UCLCharacterAttributeSet()
-    : Health(100.f)
-    , MaxHealth(100.f)
+    : Health(0.f)
+    , MaxHealth(0.f)
 {
     bOutOfHealth = false;
     MaxHealthBeforeAttributeChange = 0.0f;
@@ -33,14 +32,15 @@ bool UCLCharacterAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallba
     {
         Character = Cast<ACLBaseCharacter>(GetOwningActor());
     }
-
+    
+    //여기는 터트리는게 맞음
     if (!ensure(Character))
     {
         return false;
     }
 
     //무적 상태면 피격 X
-    if (Character->IsImmunity() || Data.Target.HasMatchingGameplayTag(TAG_Event_Status_DamageImmunity))
+    if ((Data.EvaluatedData.Attribute == GetDamageAttribute()) && (Character->IsImmunity() || Data.Target.HasMatchingGameplayTag(TAG_Event_Status_DamageImmunity)))
     {
         Data.EvaluatedData.Magnitude = 0.0f;
         Damage.SetCurrentValue(0.f);
@@ -83,19 +83,27 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
 
     //대미지 입을때
     if (Data.EvaluatedData.Attribute == GetDamageAttribute())
-    {        
-        SetHealthCurrentValue(FMath::Clamp(GetHealth()- GetDamage(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
+    {
+        float NowDamage = GetDamage();
+        float ChangeValue = FMath::Clamp(GetHealth() - GetDamage(), ATTRIBUTE_MINVALUE, GetMaxHealth());
+
+        SetHealthCurrentValue(FMath::Clamp(GetHealth() - GetDamage(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
         SetDamageToTarget(0.0f, Character);
     }
     //체력 직접 업데이트
     else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {   
+        if (GetHealth() > GetMaxHealth())
+        {
+            SetMaxHealth(GetHealth());
+        }
+
         SetHealthCurrentValue(FMath::Clamp(GetHealth(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
     }
     //체력 회복 업데이트
     else if (Data.EvaluatedData.Attribute == GetHealingAttribute())
     {
-        SetHealthCurrentValue(FMath::Clamp(GetHealth()+GetHealing(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
+        SetHealthCurrentValue(FMath::Clamp(GetHealth() + GetHealing(), ATTRIBUTE_MINVALUE, GetMaxHealth()));
         SetHealingToTarget(0.f, Character);
     }
     //최대 체력 업데이트
@@ -109,7 +117,7 @@ void UCLCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectMo
         OnHealthChanged.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, HealthBeforeAttributeChange, GetHealth());
     }
 
-    if (GetHealth() <= 0.0f)
+    if (GetHealth() <= 0.f)
     {
         OnOutOfHealth.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, HealthBeforeAttributeChange, GetHealth());
     }

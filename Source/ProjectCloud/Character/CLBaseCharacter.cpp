@@ -95,6 +95,8 @@ void ACLBaseCharacter::HandleHealthChanged(AActor* DamageInstigator, AActor* Dam
 
 void ACLBaseCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
+	//디버깅용
+	checkNoEntry();
 }
 
 void ACLBaseCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)

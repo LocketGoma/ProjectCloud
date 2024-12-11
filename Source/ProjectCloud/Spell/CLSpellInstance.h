@@ -40,8 +40,11 @@ public:
 	static const EActiveSpellType GetSpellType(UCLSpellInstance& Instance);
 	static const EActiveSpellType GetSpellType(TSubclassOf<UCLSpellInstance> Instance);
 
+	static const float GetSpellCost(UCLSpellInstance& Instance);
+	static const float GetSpellCost(TSubclassOf<UCLSpellInstance> Instance);
 
-public:
+
+private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayAbility> SpellAbility;
 
@@ -51,4 +54,7 @@ public:
 	//입력해야하는 커맨드를 순서대로 지정해주세요
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<EArrowInputHandleType> SpellCommands;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true", UIMin = "0", UiMax = "100", ClampMin = "0", ClampMax = "100"))
+	float SpellCost;
 };
