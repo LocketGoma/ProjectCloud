@@ -237,24 +237,22 @@ bool UCLAbilitySystemComponent::AddGameplayEffect(const TSubclassOf<UGameplayEff
 		{
 			FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
 
-			FActiveGameplayEffectHandle EffectHandle = ApplyGameplayEffectSpecToSelf(*Spec);			
+			FActiveGameplayEffectHandle EffectHandle = ApplyGameplayEffectSpecToSelf(*Spec);
 
-			if (!EffectHandle.IsValid())
-			{
-				UE_LOG(LogCloudAbilitySystem, Warning, TEXT("Try AddGameplayEffect But Adding %s Effect has failure in %s."), *(GameplayEffect.Get()->GetName(), *GetOwnerActor()->GetName()));
-				return false;
-			}
-
-			//즉발성 Policy면 저장안함.
+			//즉발성 Policy면 저장안함 (애초에 핸들도 유효하지 않음) 
 			if (GameplayEffect.GetDefaultObject()->DurationPolicy != EGameplayEffectDurationType::Instant)
 			{
+				if (!EffectHandle.IsValid())
+				{
+					UE_LOG(LogCloudAbilitySystem, Warning, TEXT("Try AddGameplayEffect But Adding %s Effect has failure in %s."), *(GameplayEffect.Get()->GetName(), *GetOwnerActor()->GetName()));
+					return false;
+				}
 				ActiveGameplayEffectHandle.Add(EffectHandle);
 			}
-
-			return true;
 		}
-	}
 
+		return true;		
+	}
 	return false;
 }
 

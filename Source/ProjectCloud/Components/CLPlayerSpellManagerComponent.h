@@ -13,6 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCLSpellCommandDelegate, EArrowInput
 class ACLPlayerState;
 class UCLSpellInstance;
 class UCLManaAttributeSet;
+class UGameplayEffect;
 
 /**
  * 스펠 정보 관리 + 스펠 발동 여부 검사하는 컴포넌트
@@ -34,6 +35,7 @@ public:
 	virtual void UninitializeComponent() override;
 
 	void InitializeDelegates();
+	void InitializeTimer();	
 
 public:
 
@@ -65,6 +67,10 @@ private:
 	UFUNCTION()
 	void TryActivateSpell();
 
+	void AddMana();
+
+	void EditMana();
+
 	void ActivateSpell(EActiveSpellType SpellType);
 
 	void UpdateSpellCommands(EActiveSpellType UpdatedSpellType);	
@@ -76,6 +82,12 @@ private:
 	EActiveSpellType CheckSpellCommandLevel(TArray<EArrowInputHandleType> InputCommands);
 
 private:
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	float RestoreInterval = 0.1f;
+	
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> RestoreManaGameplayEffect;
+
 	//1차 마법
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCLSpellInstance> LowSpell;
@@ -88,6 +100,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCLSpellInstance> HighSpell;
 
+	//커맨드 처리
 private:
 	//인풋 들어온 커맨드
 	TArray<EArrowInputHandleType> InputSpellCommands;
@@ -98,7 +111,8 @@ private:
 	TArray<EArrowInputHandleType> HighSpellCommands; //High = Full
 
 private:
-	TWeakObjectPtr<ACLPlayerState> PS;
+	FTimerHandle ManaRestoreTimerHandle;
 
+	TWeakObjectPtr<ACLPlayerState> PS;
 	TObjectPtr<UCLManaAttributeSet> ManaAttributeSet;
 };

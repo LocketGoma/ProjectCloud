@@ -13,12 +13,23 @@ void UCLManaGuageGroupWidget::AddManaguage(float AddManaAmount)
 	if (WidgetBoxes.IsEmpty())
 		return;
 
+	float RemainManaAmount = AddManaAmount;
+
 	for (UCLManaGuageWidget* WidgetBox : WidgetBoxes)
 	{
 		if (WidgetBox->CanManaGuageCharging())
 		{
-			WidgetBox->AddManaGuage(AddManaAmount);	//To do : 남은 양 이월하는 기능 추가
-			return;
+			RemainManaAmount = WidgetBox->AddManaGuage(RemainManaAmount);	//To do : 남은 양 이월하는 기능 추가
+
+			if (FMath::IsNearlyZero(RemainManaAmount))
+				return;
+
+			//Remain이 0 미만이 나오면 안됨.
+			if (RemainManaAmount < 0)
+			{
+				checkNoEntry();
+				return;
+			}
 		}
 	}
 }
@@ -26,4 +37,6 @@ void UCLManaGuageGroupWidget::AddManaguage(float AddManaAmount)
 //edit는 어케 하지...?
 void UCLManaGuageGroupWidget::EditManaGuage(float NewManaAmount)
 {
+
+
 }

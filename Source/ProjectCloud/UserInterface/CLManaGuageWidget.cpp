@@ -17,11 +17,13 @@ void UCLManaGuageWidget::UpdateManaGuage(float NewMaximumManaAmount, float NewNo
 
 }
 
-void UCLManaGuageWidget::AddManaGuage(float AddManaAmount)
+float UCLManaGuageWidget::AddManaGuage(float AddManaAmount)
 {
 	NowManaGuageAmount += AddManaAmount;
 
 	CaculateManaGuagePercentage();
+
+	return FMath::Clamp(NowManaGuageAmount - MaximumManaGuage, 0.f, NowManaGuageAmount);
 }
 
 void UCLManaGuageWidget::UpdateGuageSize(float NewMaximumManaGuage, float NewGuageUISize)

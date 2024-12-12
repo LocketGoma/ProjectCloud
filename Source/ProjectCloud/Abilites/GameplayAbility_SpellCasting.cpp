@@ -61,16 +61,19 @@ void UGameplayAbility_SpellCasting::CommandInputPressed(const FInputActionValue&
 	//2. 키 입력시 저장된 스펠 커맨드와 입력된 스펠 커맨드가 일치하는지 비교
 	//불일치시 바로 캔슬시킴
 
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	EArrowInputHandleType InputType = AbilityUtilites::GetKeyTypeFromVector(MovementVector);
-		
-	if (ACLPlayerState* PS = GetPlayerState())
+	if (IsActive())
 	{
-		UCLPlayerSpellManagerComponent* SpellComp = PS->GetPlayerSpellManagerComponent();
-		if (SpellComp)
+		FVector2D MovementVector = Value.Get<FVector2D>();
+
+		EArrowInputHandleType InputType = AbilityUtilites::GetKeyTypeFromVector(MovementVector);
+
+		if (ACLPlayerState* PS = GetPlayerState())
 		{
-			SpellComp->OnSpelICommandInput.Broadcast(InputType);
+			UCLPlayerSpellManagerComponent* SpellComp = PS->GetPlayerSpellManagerComponent();
+			if (SpellComp)
+			{
+				SpellComp->OnSpelICommandInput.Broadcast(InputType);
+			}
 		}
 	}
 }

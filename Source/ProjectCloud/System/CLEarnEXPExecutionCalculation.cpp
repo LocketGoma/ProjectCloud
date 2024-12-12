@@ -1,16 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright @Locketgoma. All Rights Reserved.
 
 
-#include "CLEarnEXPtExecutionCalculation.h"
+#include "CLEarnEXPExecutionCalculation.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 
 
-UCLEarnEXPtExecutionCalculation::UCLEarnEXPtExecutionCalculation()
+UCLEarnEXPExecutionCalculation::UCLEarnEXPExecutionCalculation()
 {
 	RelevantAttributesToCapture.Add(FPlayerExperienceEarning::Get().ExpDef);
 }
 
-void UCLEarnEXPtExecutionCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void UCLEarnEXPExecutionCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	FGameplayEffectContext* TypedContext = ExecutionParams.GetOwningSpec().GetContext().Get();
 

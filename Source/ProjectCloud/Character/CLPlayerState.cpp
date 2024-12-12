@@ -79,7 +79,7 @@ void ACLPlayerState::InitializePlayerState(UCLAbilitySet* AbilitySet)
 {
 	if (!bAbilityInitialized)
 	{
-		SetAbilitiesFromActionSet(AbilitySet);
+		SetAbilitiesFromActionSet(AbilitySet);		
 
 		UCLManaAttributeSet* NewManaAttributeSet = NewObject<UCLManaAttributeSet>(this);
 		UCLCharacterAttributeSet* NewCharacterAttributeSet = NewObject<UCLCharacterAttributeSet>(this);

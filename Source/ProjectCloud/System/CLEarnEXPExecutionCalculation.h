@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright @Locketgoma. All Rights Reserved.
 
 #pragma once
 
 #include "GameplayEffectExecutionCalculation.h"
 #include "ProjectCloud/AttributeSet/CLExperiencePointAttributeSet.h"
-#include "CLEarnEXPtExecutionCalculation.generated.h"
+#include "CLEarnEXPExecutionCalculation.generated.h"
 
 /**
  * 경험치 획득 처리 계산 이벤트
@@ -30,12 +30,12 @@ struct PROJECTCLOUD_API FPlayerExperienceEarning
 };
 
 UCLASS()
-class PROJECTCLOUD_API UCLEarnEXPtExecutionCalculation : public UGameplayEffectExecutionCalculation
+class PROJECTCLOUD_API UCLEarnEXPExecutionCalculation : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 
 public:
-	UCLEarnEXPtExecutionCalculation();
+	UCLEarnEXPExecutionCalculation();
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };

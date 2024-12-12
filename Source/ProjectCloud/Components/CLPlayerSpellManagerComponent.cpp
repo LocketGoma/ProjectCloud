@@ -19,19 +19,20 @@ UCLPlayerSpellManagerComponent::UCLPlayerSpellManagerComponent(const FObjectInit
 void UCLPlayerSpellManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	InitializeDelegates();
 	UpdateSpellCommands(EActiveSpellType::Spell_Low);
+	InitializeDelegates();
+	InitializeTimer();
 }
 
 void UCLPlayerSpellManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+	ManaRestoreTimerHandle.Invalidate();
 }
 
 void UCLPlayerSpellManagerComponent::InitializeComponent()
 {
-	Super::InitializeComponent();	
-
+	Super::InitializeComponent();
 }
 
 void UCLPlayerSpellManagerComponent::UninitializeComponent()
@@ -45,11 +46,31 @@ void UCLPlayerSpellManagerComponent::InitializeDelegates()
 	OnTrySpellActivate.AddDynamic(this, &ThisClass::TryActivateSpell);
 }
 
+void UCLPlayerSpellManagerComponent::InitializeTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(ManaRestoreTimerHandle, this, &ThisClass::AddMana, RestoreInterval, true, 0);
+}
+
 void UCLPlayerSpellManagerComponent::TryActivateSpell()
 {
 	EActiveSpellType SpellType = CheckSpellCommandLevel(InputSpellCommands);
 
 	ActivateSpell(SpellType);
+}
+
+void UCLPlayerSpellManagerComponent::AddMana()
+{
+	UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
+	if (IsValid(RestoreManaGameplayEffect) && IsValid(ASC) && ASC->HasBeenInitialized())
+	{
+		
+
+		ASC->AddGameplayEffect(RestoreManaGameplayEffect);
+	}
+}
+
+void UCLPlayerSpellManagerComponent::EditMana()
+{
 }
 
 void UCLPlayerSpellManagerComponent::ActivateSpell(EActiveSpellType SpellType)
@@ -76,8 +97,9 @@ const TSubclassOf<UCLSpellInstance> UCLPlayerSpellManagerComponent::GetSpellFrom
 		return MidSpell;		
 	case EActiveSpellType::Spell_High:
 		return HighSpell;		
-	}
+	}	
 
+	//스펠타입 None 뜨면서 실패할수도 있음...
 	return nullptr;
 }
 
