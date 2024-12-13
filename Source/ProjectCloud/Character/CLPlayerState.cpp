@@ -105,6 +105,7 @@ void ACLPlayerState::InitializeDelegates()
 
 	ExperienceComponent->InitializeDelegates();
 	LevelAbilityComponent->InitializeDelegates();
+	PlayerSpellManagerComponent->InitializeDelegates();
 }
 
 void ACLPlayerState::UnInitializeDelegates()

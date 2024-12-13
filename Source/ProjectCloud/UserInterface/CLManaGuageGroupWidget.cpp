@@ -34,9 +34,22 @@ void UCLManaGuageGroupWidget::AddManaguage(float AddManaAmount)
 	}
 }
 
-//edit는 어케 하지...?
+//싹 비우고 다시 채움
 void UCLManaGuageGroupWidget::EditManaGuage(float NewManaAmount)
 {
+	if (WidgetBoxes.IsEmpty())
+		return;
 
+	float RemainManaAmount = NewManaAmount;
+
+	for (UCLManaGuageWidget* WidgetBox : WidgetBoxes)
+	{
+		WidgetBox->ClearManaGuage();
+		
+		if (RemainManaAmount > 0)
+		{
+			RemainManaAmount = WidgetBox->AddManaGuage(RemainManaAmount);
+		}
+	}
 
 }

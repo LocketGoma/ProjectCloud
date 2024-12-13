@@ -2,6 +2,8 @@
 
 #include "CLSpellInstance.h"
 #include "Abilities/GameplayAbility.h"
+#include "GameplayEffect.h"
+#include "CLManaCostGameplayEffect.h"
 
 const TArray<EArrowInputHandleType> UCLSpellInstance::GetSpellCommands(UCLSpellInstance& Instance)
 {
@@ -48,17 +50,21 @@ const EActiveSpellType UCLSpellInstance::GetSpellType(TSubclassOf<UCLSpellInstan
 	return EActiveSpellType();
 }
 
-const float UCLSpellInstance::GetSpellCost(UCLSpellInstance& Instance)
+const TSubclassOf<UGameplayEffect> UCLSpellInstance::GetSpellCost(UCLSpellInstance& Instance)
 {
-	return Instance.SpellCost;
+	if (Instance.SpellCostGE)
+	{
+		return TSubclassOf<UGameplayEffect>(Instance.SpellCostGE);
+	}
+	
+	return nullptr;
 }
 
-const float UCLSpellInstance::GetSpellCost(TSubclassOf<UCLSpellInstance> Instance)
+const TSubclassOf<UGameplayEffect> UCLSpellInstance::GetSpellCost(TSubclassOf<UCLSpellInstance> Instance)
 {
 	if (IsValid(Instance))
 	{
 		return GetSpellCost(*(Instance.GetDefaultObject()));
 	}
-
-	return 0.0f;
+	return nullptr;	
 }

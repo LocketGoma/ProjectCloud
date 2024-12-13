@@ -23,6 +23,8 @@
 //};
 
 class UGameplayAbility;
+class UGameplayEffect;
+class UCLManaCostGameplayEffect;
 
 UCLASS(BlueprintType, Blueprintable)
 class PROJECTCLOUD_API UCLSpellInstance : public UObject
@@ -40,13 +42,16 @@ public:
 	static const EActiveSpellType GetSpellType(UCLSpellInstance& Instance);
 	static const EActiveSpellType GetSpellType(TSubclassOf<UCLSpellInstance> Instance);
 
-	static const float GetSpellCost(UCLSpellInstance& Instance);
-	static const float GetSpellCost(TSubclassOf<UCLSpellInstance> Instance);
+	static const TSubclassOf<UGameplayEffect> GetSpellCost(UCLSpellInstance& Instance);
+	static const TSubclassOf<UGameplayEffect> GetSpellCost(TSubclassOf<UCLSpellInstance> Instance);
 
 
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayAbility> SpellAbility;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true", UIMin = "0", UiMax = "100", ClampMin = "0", ClampMax = "100"))
+	TSubclassOf<UCLManaCostGameplayEffect> SpellCostGE;
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	EActiveSpellType SpellType;
@@ -54,7 +59,4 @@ private:
 	//입력해야하는 커맨드를 순서대로 지정해주세요
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<EArrowInputHandleType> SpellCommands;
-
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true", UIMin = "0", UiMax = "100", ClampMin = "0", ClampMax = "100"))
-	float SpellCost;
 };

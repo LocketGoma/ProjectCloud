@@ -66,8 +66,10 @@ enum class EArrowInputHandleType : uint8
 UENUM()
 enum class EActiveSpellType : uint8
 {
-	//실패한 경우?
+	//기본 상태
 	Spell_None,
+	//실패한 경우?
+	Spell_Failure,
 	//Low Level
 	Spell_Low,
 	//Middle Level

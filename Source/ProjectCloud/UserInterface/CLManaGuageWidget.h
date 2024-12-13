@@ -29,6 +29,7 @@ public:
 	UCLManaGuageWidget(const FObjectInitializer& ObjectInitializer);
 
 	void UpdateManaGuage(float NewMaximumManaAmount, float NewNowManaAmount);
+	void ClearManaGuage();
 	float AddManaGuage(float AddManaAmount);
 
 	UFUNCTION(BlueprintCallable)

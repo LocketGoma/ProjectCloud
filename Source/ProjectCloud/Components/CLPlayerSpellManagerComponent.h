@@ -9,6 +9,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCLSpellEventDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCLSpellCommandDelegate, EArrowInputHandleType, inputCommand);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCLManaAmountDelegate, float, Amount);
 
 class ACLPlayerState;
 class UCLSpellInstance;
@@ -38,7 +39,6 @@ public:
 	void InitializeTimer();	
 
 public:
-
 	const TSubclassOf<UCLSpellInstance> GetSpellFromType(EActiveSpellType SpellType);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -63,13 +63,19 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FCLSpellEventDelegate OnTrySpellActivate;
 
+	UPROPERTY(BlueprintAssignable)
+	FCLManaAmountDelegate OnManaAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FCLManaAmountDelegate OnManaEdited;
+
 private:
 	UFUNCTION()
 	void TryActivateSpell();
 
 	void AddMana();
 
-	void EditMana();
+	void ApplyPenaltyManaAmount();
 
 	void ActivateSpell(EActiveSpellType SpellType);
 
@@ -81,12 +87,20 @@ private:
 
 	EActiveSpellType CheckSpellCommandLevel(TArray<EArrowInputHandleType> InputCommands);
 
+	//Handlers
+private:	
+	void HandleChangeMana(AActor* Instigator, float Magnitude, float OldValue, float NewValue);
+	void HandleAddMana(AActor* Instigator, float Magnitude, float OldValue, float NewAddValue);
+
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	float RestoreInterval = 0.1f;
 	
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayEffect> RestoreManaGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> PenaltyManaGameplayEffect;
 
 	//1차 마법
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
@@ -112,7 +126,5 @@ private:
 
 private:
 	FTimerHandle ManaRestoreTimerHandle;
-
-	TWeakObjectPtr<ACLPlayerState> PS;
-	TObjectPtr<UCLManaAttributeSet> ManaAttributeSet;
+	TWeakObjectPtr<ACLPlayerState> PS;	
 };

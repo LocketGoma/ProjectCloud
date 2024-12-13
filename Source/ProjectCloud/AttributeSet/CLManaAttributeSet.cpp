@@ -65,6 +65,16 @@ void UCLManaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	if (Data.EvaluatedData.Attribute == GetChangeManaAmountAttribute())
 	{
 		SetManaCurrentValue(FMath::Clamp((GetMana() + GetChangeManaAmount()),ATTRIBUTE_MINVALUE, GetMaxMana()));
+
+		if (GetChangeManaAmount() >= 0)
+		{
+			OnManaAdded.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetChangeManaAmount());
+		}
+		else if (GetMana() != ManaBeforeAttributeChange)
+		{
+			OnManaChanged.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetMana());
+		}
+
 		SetChangeManaAmountToTarget(0.f, Character);
 	}
 	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
@@ -76,14 +86,9 @@ void UCLManaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 		SetManaCurrentValue(FMath::Clamp(GetMana(), ATTRIBUTE_MINVALUE, GetMaxMana()));
 	}
 
-	if (GetMana() != ManaBeforeAttributeChange)
-	{
-		OnManaChanged.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetMana());
-	}
-
 	if (GetMana() <= 0.f)
 	{
-		OnOutOfMana.Broadcast(Instigator, Causer, &Data.EffectSpec, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetMana());
+		OnOutOfMana.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetMana());
 	}
 
 }

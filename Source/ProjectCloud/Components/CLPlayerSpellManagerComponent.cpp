@@ -19,9 +19,7 @@ UCLPlayerSpellManagerComponent::UCLPlayerSpellManagerComponent(const FObjectInit
 void UCLPlayerSpellManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	UpdateSpellCommands(EActiveSpellType::Spell_Low);
-	InitializeDelegates();
-	InitializeTimer();
+	UpdateSpellCommands(EActiveSpellType::Spell_Low);		
 }
 
 void UCLPlayerSpellManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -44,6 +42,18 @@ void UCLPlayerSpellManagerComponent::InitializeDelegates()
 {
 	OnSpelICommandInput.AddDynamic(this, &ThisClass::TryCommandInput);
 	OnTrySpellActivate.AddDynamic(this, &ThisClass::TryActivateSpell);
+
+	UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
+	if (ASC)
+	{
+		const UCLManaAttributeSet* ManaAttributeSet = ASC->GetSet<UCLManaAttributeSet>();
+		if (ManaAttributeSet)
+		{
+			ManaAttributeSet->OnManaAdded.AddUObject(this, &ThisClass::HandleAddMana);
+			ManaAttributeSet->OnManaChanged.AddUObject(this, &ThisClass::HandleChangeMana);
+		}
+	}
+	InitializeTimer();
 }
 
 void UCLPlayerSpellManagerComponent::InitializeTimer()
@@ -63,16 +73,20 @@ void UCLPlayerSpellManagerComponent::AddMana()
 	UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
 	if (IsValid(RestoreManaGameplayEffect) && IsValid(ASC) && ASC->HasBeenInitialized())
 	{
-		
-
 		ASC->AddGameplayEffect(RestoreManaGameplayEffect);
 	}
 }
 
-void UCLPlayerSpellManagerComponent::EditMana()
+void UCLPlayerSpellManagerComponent::ApplyPenaltyManaAmount()
 {
+	UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
+	if (IsValid(PenaltyManaGameplayEffect) && IsValid(ASC) && ASC->HasBeenInitialized())
+	{
+		ASC->AddGameplayEffect(PenaltyManaGameplayEffect);
+	}
 }
 
+//스펠 발동 함수
 void UCLPlayerSpellManagerComponent::ActivateSpell(EActiveSpellType SpellType)
 {
 	TSubclassOf<UCLSpellInstance> TryActiveSpell = GetSpellFromType(SpellType);
@@ -83,6 +97,7 @@ void UCLPlayerSpellManagerComponent::ActivateSpell(EActiveSpellType SpellType)
 
 		UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
 		ASC->TryActivateAbilityByClass(UCLSpellInstance::GetSpellAbility(TryActiveSpell));		
+		ASC->AddGameplayEffect(UCLSpellInstance::GetSpellCost(TryActiveSpell));
 	}
 	ClearSpellCommand();
 }
@@ -154,7 +169,7 @@ bool UCLPlayerSpellManagerComponent::CheckSpellCorrection(TArray<EArrowInputHand
 	//이게 False면 바로 스펠 취소걸림
 	EActiveSpellType SpellType = CheckSpellCommandLevel(InputCommands);	
 
-	if (SpellType == EActiveSpellType::Spell_None)
+	if (SpellType == EActiveSpellType::Spell_Failure)
 	{
 		return false;
 	}
@@ -176,13 +191,25 @@ EActiveSpellType UCLPlayerSpellManagerComponent::CheckSpellCommandLevel(TArray<E
 			{
 				return EActiveSpellType::Spell_Mid;
 			}
-			//else if (InputCommands.Num() >= LowSpellCommands.Num())
-
-			return EActiveSpellType::Spell_Low;
+			else if (InputCommands.Num() >= LowSpellCommands.Num())
+			{
+				return EActiveSpellType::Spell_Low;
+			}
+			return EActiveSpellType::Spell_None;
 		}
+		return EActiveSpellType::Spell_Failure;
 	}
-
 	return EActiveSpellType::Spell_None;
+}
+
+void UCLPlayerSpellManagerComponent::HandleChangeMana(AActor* Instigator, float Magnitude, float OldValue, float NewValue)
+{
+	OnManaEdited.Broadcast(NewValue);
+}
+
+void UCLPlayerSpellManagerComponent::HandleAddMana(AActor* Instigator, float Magnitude, float OldValue, float NewAddValue)
+{
+	OnManaAdded.Broadcast(NewAddValue);
 }
 
 void UCLPlayerSpellManagerComponent::TryCommandInput(EArrowInputHandleType InputCommand)
@@ -191,9 +218,9 @@ void UCLPlayerSpellManagerComponent::TryCommandInput(EArrowInputHandleType Input
 		InputSpellCommands.Add(InputCommand);	
 
 	if (!CheckSpellCorrection(InputSpellCommands))
-	{
-		//실패하면 뭐 이벤트 줘야하나...?
-		ClearSpellCommand();
+	{		
+		ApplyPenaltyManaAmount();		//실패시 마나 감소 이벤트
+		ClearSpellCommand();			//스펠 초기화
 	}
 }
 

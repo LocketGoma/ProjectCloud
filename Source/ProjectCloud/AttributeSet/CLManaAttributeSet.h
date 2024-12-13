@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "CLManaAttributeSet.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_SixParams(FOnManaAttributeValueChanged, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/, const FGameplayEffectSpec* /*EffectSpec*/, float /*EffectMagnitude*/, float /*OldValue*/, float /*NewValue*/);
+DECLARE_MULTICAST_DELEGATE_FourParams(FOnManaAttributeValueChanged, AActor* /*EffectInstigator*/, float /*EffectMagnitude*/, float /*OldValue*/, float /*NewValue*/);
 
 UCLASS()
 class PROJECTCLOUD_API UCLManaAttributeSet : public UCLBaseAttributeSet
@@ -21,6 +21,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UCLManaAttributeSet, ChangeManaAmount);
 
 	mutable FOnManaAttributeValueChanged OnManaChanged;
+	mutable FOnManaAttributeValueChanged OnManaAdded;
 	mutable FOnManaAttributeValueChanged OnMaxManaChanged;
 	mutable FOnManaAttributeValueChanged OnOutOfMana;
 
