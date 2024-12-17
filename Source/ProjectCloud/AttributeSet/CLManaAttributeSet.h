@@ -20,6 +20,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UCLManaAttributeSet, MaxMana);
 	ATTRIBUTE_ACCESSORS(UCLManaAttributeSet, ChangeManaAmount);
 
+	mutable FOnManaAttributeValueChanged OnSpellCastFailure;
 	mutable FOnManaAttributeValueChanged OnManaChanged;
 	mutable FOnManaAttributeValueChanged OnManaAdded;
 	mutable FOnManaAttributeValueChanged OnMaxManaChanged;

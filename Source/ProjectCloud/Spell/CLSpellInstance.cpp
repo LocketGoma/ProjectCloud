@@ -54,6 +54,11 @@ const TSubclassOf<UGameplayEffect> UCLSpellInstance::GetSpellCost(UCLSpellInstan
 {
 	if (Instance.SpellCostGE)
 	{
+		float Magnitude;
+
+		TArray<FGameplayEffectExecutionDefinition> Executions = Instance.SpellCostGE.GetDefaultObject()->Executions;		
+		Executions[0].CalculationModifiers[0].ModifierMagnitude.GetStaticMagnitudeIfPossible(1, Magnitude);
+		 
 		return TSubclassOf<UGameplayEffect>(Instance.SpellCostGE);
 	}
 	

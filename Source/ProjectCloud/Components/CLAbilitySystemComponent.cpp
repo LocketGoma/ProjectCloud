@@ -230,7 +230,8 @@ bool UCLAbilitySystemComponent::AddGameplayEffect(const TSubclassOf<UGameplayEff
 	//특정 GameplayEffect에서 데이터 가져오는 방법
 	if (IsValid(GameplayEffect))
 	{
-		FGameplayEffectContextHandle EffectContext = MakeEffectContext();
+		FGameplayEffectContext Context;
+		FGameplayEffectContextHandle EffectContext = MakeEffectContext();		
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingSpec(GameplayEffect, 1.0f, EffectContext);
 
 		if (SpecHandle.IsValid())

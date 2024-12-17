@@ -89,11 +89,21 @@ void UCLPlayerSpellManagerComponent::ApplyPenaltyManaAmount()
 //스펠 발동 함수
 void UCLPlayerSpellManagerComponent::ActivateSpell(EActiveSpellType SpellType)
 {
+	/*
+	* To do : 마나 사용량 체크
+	* 1. 현재 스펠이 정해지지 않은 경우 마나 차감 - 그냥 0까지 알아서 차감함
+	* 1-1. 스펠 정해지지 않은 경우를 Manager 접근을 통해 알 수 있게 처리. 스펠 정해지지 않았을때에만 마나 체크하도록 처리
+	* 2. 현재 스펠이 정해진 경우 - 
+	* 2-1. 발동시 현재 마나량 > 스펠 코스트일때만 발동
+	* 2-2. 발동시 마나량 조건 불만족시 마나 소비 X, 마법 발동 X
+	* FGameplayEffectModCallbackData 를 이용할 수 있는 방법은 없을까?
+	*/
+
 	TSubclassOf<UCLSpellInstance> TryActiveSpell = GetSpellFromType(SpellType);
 
 	if (TryActiveSpell)
 	{
-		//ASC 호출하고 스킬 발동
+		//ASC 호출하고 스킬 발동		
 
 		UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
 		ASC->TryActivateAbilityByClass(UCLSpellInstance::GetSpellAbility(TryActiveSpell));		

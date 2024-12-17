@@ -43,7 +43,8 @@ bool UCLManaAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackDat
 
 void UCLManaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
-	Super::PostGameplayEffectExecute(Data);
+	Super::PostGameplayEffectExecute(Data);	
+
 	const FGameplayEffectContextHandle& EffectContext = Data.EffectSpec.GetEffectContext();
 	AActor* Instigator = EffectContext.GetOriginalInstigator();
 	AActor* Causer = EffectContext.GetEffectCauser();
@@ -61,18 +62,31 @@ void UCLManaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 		return;
 	}
 
+
+
+
+
 	//회복, 사용 등
 	if (Data.EvaluatedData.Attribute == GetChangeManaAmountAttribute())
-	{
-		SetManaCurrentValue(FMath::Clamp((GetMana() + GetChangeManaAmount()),ATTRIBUTE_MINVALUE, GetMaxMana()));
-
-		if (GetChangeManaAmount() >= 0)
+	{		
+		//발동확률이 1 이하이고 + 값이 Failvaiue 일때 = 실패로 판정함
+		if ((ATTRIBUTE_ONEVALUE > Data.EffectSpec.GetChanceToApplyToTarget()) && FMath::IsNearlyEqual(ATTRIBUTE_FAILUREVALUE, GetChangeManaAmount()))
 		{
-			OnManaAdded.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetChangeManaAmount());
+			//On Magic Casting Failure
+			OnSpellCastFailure.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetMana());
 		}
-		else if (GetMana() != ManaBeforeAttributeChange)
+		else
 		{
-			OnManaChanged.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetMana());
+			SetManaCurrentValue(FMath::Clamp((GetMana() + GetChangeManaAmount()), ATTRIBUTE_MINVALUE, GetMaxMana()));
+
+			if (GetChangeManaAmount() >= 0)
+			{
+				OnManaAdded.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetChangeManaAmount());
+			}
+			else if (GetMana() != ManaBeforeAttributeChange)
+			{
+				OnManaChanged.Broadcast(Instigator, Data.EvaluatedData.Magnitude, ManaBeforeAttributeChange, GetMana());
+			}
 		}
 
 		SetChangeManaAmountToTarget(0.f, Character);

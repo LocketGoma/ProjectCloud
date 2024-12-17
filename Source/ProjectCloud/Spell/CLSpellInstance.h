@@ -42,8 +42,11 @@ public:
 	static const EActiveSpellType GetSpellType(UCLSpellInstance& Instance);
 	static const EActiveSpellType GetSpellType(TSubclassOf<UCLSpellInstance> Instance);
 
-	static const TSubclassOf<UGameplayEffect> GetSpellCost(UCLSpellInstance& Instance);
-	static const TSubclassOf<UGameplayEffect> GetSpellCost(TSubclassOf<UCLSpellInstance> Instance);
+	static const float GetSpellCost(UCLSpellInstance& Instance);
+	static const float GetSpellCost(TSubclassOf<UCLSpellInstance> Instance);
+
+	static const TSubclassOf<UGameplayEffect> GetSpellCostGameplayEffect(UCLSpellInstance& Instance);
+	static const TSubclassOf<UGameplayEffect> GetSpellCostGameplayEffect(TSubclassOf<UCLSpellInstance> Instance);
 
 
 private:

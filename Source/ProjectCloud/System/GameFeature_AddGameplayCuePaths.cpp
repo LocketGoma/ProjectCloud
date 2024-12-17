@@ -11,7 +11,6 @@
 #include "Misc/DataValidation.h"
 #endif
 
-#define LOCTEXT_NAMESPACE "GameFeatures"
 
 UGameFeatureAction_AddGameplayCuePath::UGameFeatureAction_AddGameplayCuePath()
 {
@@ -27,7 +26,7 @@ EDataValidationResult UGameFeatureAction_AddGameplayCuePath::IsDataValid(FDataVa
 	{
 		if (Directory.Path.IsEmpty())
 		{
-			const FText InvalidCuePathError = FText::Format(LOCTEXT("InvalidCuePathError", "'{0}' is not a valid path!"), FText::FromString(Directory.Path));
+			const FText InvalidCuePathError = FText::Format(FText::FromString("InvalidCuePathError : '{0}' is not a valid path!"), FText::FromString(Directory.Path));
 			Context.AddError(InvalidCuePathError);
 			Result = CombineDataValidationResults(Result, EDataValidationResult::Invalid);
 		}
