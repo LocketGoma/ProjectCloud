@@ -106,8 +106,17 @@ void UCLPlayerSpellManagerComponent::ActivateSpell(EActiveSpellType SpellType)
 		//ASC 호출하고 스킬 발동		
 
 		UCLAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
-		ASC->TryActivateAbilityByClass(UCLSpellInstance::GetSpellAbility(TryActiveSpell));		
-		ASC->AddGameplayEffect(UCLSpellInstance::GetSpellCost(TryActiveSpell));
+
+		const UCLManaAttributeSet* ManaAttributeSet = ASC->GetSet<UCLManaAttributeSet>();
+		if (ManaAttributeSet->GetMana() + UCLSpellInstance::GetSpellCost(TryActiveSpell) > ATTRIBUTE_MINVALUE)
+		{
+			ASC->TryActivateAbilityByClass(UCLSpellInstance::GetSpellAbility(TryActiveSpell));		
+			ASC->AddGameplayEffect(UCLSpellInstance::GetSpellCostGameplayEffect(TryActiveSpell));			
+		}
+		else // (마나 부족시 실패)
+		{
+			ApplyPenaltyManaAmount();
+		}
 	}
 	ClearSpellCommand();
 }

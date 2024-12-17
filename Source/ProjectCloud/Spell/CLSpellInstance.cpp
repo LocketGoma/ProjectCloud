@@ -50,26 +50,46 @@ const EActiveSpellType UCLSpellInstance::GetSpellType(TSubclassOf<UCLSpellInstan
 	return EActiveSpellType();
 }
 
-const TSubclassOf<UGameplayEffect> UCLSpellInstance::GetSpellCost(UCLSpellInstance& Instance)
+const float UCLSpellInstance::GetSpellCost(UCLSpellInstance& Instance)
 {
 	if (Instance.SpellCostGE)
 	{
 		float Magnitude;
 
-		TArray<FGameplayEffectExecutionDefinition> Executions = Instance.SpellCostGE.GetDefaultObject()->Executions;		
+		TArray<FGameplayEffectExecutionDefinition> Executions = Instance.SpellCostGE.GetDefaultObject()->Executions;
 		Executions[0].CalculationModifiers[0].ModifierMagnitude.GetStaticMagnitudeIfPossible(1, Magnitude);
-		 
+
+		return Magnitude;
+	}
+
+	return 0.0f;
+}
+
+const float UCLSpellInstance::GetSpellCost(TSubclassOf<UCLSpellInstance> Instance)
+{
+	if (IsValid(Instance))
+	{
+		return GetSpellCost(*(Instance.GetDefaultObject()));
+	}
+
+	return 0.0f;
+}
+
+const TSubclassOf<UGameplayEffect> UCLSpellInstance::GetSpellCostGameplayEffect(UCLSpellInstance& Instance)
+{
+	if (Instance.SpellCostGE)
+	{		 
 		return TSubclassOf<UGameplayEffect>(Instance.SpellCostGE);
 	}
 	
 	return nullptr;
 }
 
-const TSubclassOf<UGameplayEffect> UCLSpellInstance::GetSpellCost(TSubclassOf<UCLSpellInstance> Instance)
+const TSubclassOf<UGameplayEffect> UCLSpellInstance::GetSpellCostGameplayEffect(TSubclassOf<UCLSpellInstance> Instance)
 {
 	if (IsValid(Instance))
 	{
-		return GetSpellCost(*(Instance.GetDefaultObject()));
+		return GetSpellCostGameplayEffect(*(Instance.GetDefaultObject()));
 	}
 	return nullptr;	
 }
