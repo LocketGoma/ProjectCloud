@@ -16,6 +16,7 @@
 #include "ProjectCloud/Character/CLBaseCharacter.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Curves/CurveVector.h"
 
 FName ACLProjectileActor::SpriteComponentName(TEXT("MainSprite"));
 // Sets default values
@@ -24,17 +25,22 @@ ACLProjectileActor::ACLProjectileActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));	
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
+
+	NiagaraComponents.Add(CreateDefaultSubobject<UNiagaraComponent>(TEXT("MainNiagaraComponent")));
+	NiagaraComponents.Add(CreateDefaultSubobject<UNiagaraComponent>(TEXT("SubNiagaraComponent")));
+	NiagaraComponents.Add(CreateDefaultSubobject<UNiagaraComponent>(TEXT("TrailNiagaraComponent")));
+	NiagaraComponents[0]->SetupAttachment(RootComponent);
+	NiagaraComponents[1]->SetupAttachment(RootComponent);
+	NiagaraComponents[2]->SetupAttachment(RootComponent);
 
 	CapsuleComponent->InitCapsuleSize(16.0f, 8.f);
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	RootComponent = CapsuleComponent;
-	NiagaraComponent->SetupAttachment(RootComponent);
+	RootComponent = CapsuleComponent;	
 
 	if (MovementComponent)
 	{
@@ -80,7 +86,8 @@ ACLProjectileActor::ACLProjectileActor()
 	
 	//변수 초기화
 	BaseDamageFromWeapon = 1.f;
-	EffectSize = 100.f;	
+	MainEffectSize = 100.f;	
+	SubEffectSize = 200.f;
 	MaximimLifetime = 30.f;
 	bDestroyWhenHit = true;
 	bStartLaunch = false;
@@ -108,16 +115,39 @@ void ACLProjectileActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	GetWorld()->GetTimerManager().ClearTimer(DestroyTimerHandle);
-	DestroyTimerHandle.Invalidate();
+	for (UNiagaraComponent* NiagaraComponent : NiagaraComponents)
+	{
+		if (NiagaraComponent)
+		{
+			NiagaraComponent->Deactivate();
+			NiagaraComponent->DestroyComponent();
+		}
+	}
+	NiagaraComponents.Empty();
+
+	if (DestroyTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(DestroyTimerHandle);
+		DestroyTimerHandle.Invalidate();
+	}
 }
 
 void ACLProjectileActor::Tick(float DeltaTime)
 {
-	if (NiagaraComponent)
-	{
-		NiagaraComponent->SetWorldLocation(GetActorLocation());
+	Super::Tick(DeltaTime);	
+
+	if (CurveData)
+	{		
+		AdditionalVector = CurveData.GetDefaultObject()->GetVectorValue(GetWorld()->GetTimeSeconds());
 	}
+
+	for (UNiagaraComponent* NiagaraComponent : NiagaraComponents)
+	{
+		if(NiagaraComponent)
+			NiagaraComponent->SetWorldLocation(GetActorLocation() + AdditionalVector);
+	}
+
+
 }
 
 void ACLProjectileActor::LaunchProjectile()
@@ -196,22 +226,33 @@ void ACLProjectileActor::SetNiagaraEffect()
 
 	if (MainVFX)
 	{
-		NiagaraComponent->SetAsset(MainVFX);
-	
-	//그냥 나이아가라컴포넌트 여러개 만들래요
-	//UNiagaraFunctionLibrary::SpawnSystemAttached(MainVFX, NiagaraComponent, FName(), FVector::ZeroVector, GetActorRotation(), EAttachLocation::SnapToTarget, true, true);
+		NiagaraComponents[0]->SetAsset(MainVFX);
+		NiagaraComponents[0]->SetWorldLocation(GetActorLocation());
 
-	//if (SubVFX)
-	//{
-	//	UNiagaraFunctionLibrary::SpawnSystemAttached(SubVFX, NiagaraComponent, FName(), FVector::ZeroVector, GetActorRotation(), EAttachLocation::SnapToTarget, true, true);
-	//}
+		NiagaraComponents[0]->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
+		NiagaraComponents[0]->SetFloatParameter("SpriteSize", MainEffectSize);
+		NiagaraComponents[0]->Activate();
+	}
 
-	//if (TrailVFX)
-	//{
-	//	UNiagaraFunctionLibrary::SpawnSystemAttached(TrailVFX, NiagaraComponent, FName(), FVector::ZeroVector, GetActorRotation(), EAttachLocation::SnapToTarget, true, true);
-	//}
-		NiagaraComponent->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
-		NiagaraComponent->SetFloatParameter("SpriteSize", EffectSize);
-		NiagaraComponent->Activate();	
+	if (SubVFX)
+	{
+		NiagaraComponents[1]->SetAsset(SubVFX);
+		NiagaraComponents[1]->SetWorldLocation(GetActorLocation());
+
+		NiagaraComponents[1]->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
+		NiagaraComponents[1]->SetFloatParameter("SpriteSize", SubEffectSize);
+		NiagaraComponents[1]->Activate();
+	}
+
+	if (TrailVFX)	
+	{
+		NiagaraComponents[2]->SetAsset(TrailVFX);
+		NiagaraComponents[2]->SetWorldLocation(GetActorLocation());
+
+		NiagaraComponents[2]->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
+		NiagaraComponents[2]->SetFloatParameter("SpriteSize", SubEffectSize);
+		NiagaraComponents[2]->SetFloatParameter("TrailLength", TrailLength);
+
+		NiagaraComponents[2]->Activate();
 	}
 }

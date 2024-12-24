@@ -40,6 +40,22 @@ enum class ESubEquipmentType : uint8
 	SubEquipment_BuffFlag			
 };
 
+//투사체 타입 지정
+UENUM()
+enum class EProjectileType : uint8
+{
+	//초기값, 해당 값으로 사용되면 오류 리턴
+	Projectile_None,
+	//일반형 프로젝타일 (맞으면 사라짐)
+	Projectile_Normal,
+	//추적형 프로젝타일 (타겟을 추적함)
+	Projectile_Chaser,
+	//수류탄형 프로젝타일 (어느정도 날아갔다가 멈추고 폭발)
+	Projectile_Grenade,
+	//레이저형 프로젝타일 (관통 + 맞아도 안사라짐)
+	Projectile_Laser
+};
+
 UENUM()
 enum class EWeaponEventType : uint8
 {

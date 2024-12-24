@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Curves/CurveVector.h"
 #include "ProjectCloud/Utilites/CLCommonEnum.h"
 #include "CLProjectileActor.generated.h"
 
@@ -49,28 +50,39 @@ public:
 
 public:
 	//추적할 타겟 캐릭터 여부
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Target")	
 	TWeakObjectPtr<ACLBaseCharacter> TargetCharacter;
 
+	//타겟을 정확히 맞춰야만 터지는지 여부 (타겟이 있을때 한정)
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Target")	
+	bool bIsPrecision;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Options")
+	EProjectileType ProjectileType;
+
+	//상부 커브 하나 추가해서 커브를 통해서 위로 던졌다가 아래로 내려오게 하기
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Movement")
+	TSubclassOf<UCurveVector> CurveData;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> GameplayEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlVFX")
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|VFX")
 	TObjectPtr<UNiagaraSystem> MainVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlVFX")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|VFX")
 	TObjectPtr<UNiagaraSystem> SubVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlVFX")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|VFX")
 	TObjectPtr<UNiagaraSystem> TrailVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlSFX")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|SFX")
 	TObjectPtr<USoundBase> LaunchSound;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlSFX")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|SFX")
 	TObjectPtr<USoundBase> ExplosionSound;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectlSFX")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|SFX")
 	TObjectPtr<USoundBase> DestroySound;
 
 
@@ -90,7 +102,7 @@ private:
 	float BaseDamageFromWeapon;
 
 	UPROPERTY()
-	TObjectPtr<UNiagaraComponent> NiagaraComponent;
+	TArray<TObjectPtr<UNiagaraComponent>> NiagaraComponents;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
@@ -99,7 +111,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UProjectileMovementComponent> MovementComponent;
 		
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisualSettings", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UPaperFlipbookComponent> Sprite;
 
 	
@@ -109,8 +121,17 @@ private:
 	UPROPERTY()
 	TObjectPtr<UArrowComponent> ArrowComponent;
 #endif
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float EffectSize;
+
+	//메인이펙트 크기
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
+	float MainEffectSize;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
+	float SubEffectSize;
+
+	//트레일 길이
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
+	float TrailLength;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	bool bDestroyWhenHit;
@@ -119,6 +140,8 @@ private:
 	float MaximimLifetime;
 
 	FTimerHandle DestroyTimerHandle;
+
+	FVector AdditionalVector = FVector::ZeroVector;
 
 	bool bStartLaunch;
 
