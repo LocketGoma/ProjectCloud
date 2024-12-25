@@ -35,6 +35,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LaunchProjectile();
 
+	void SetTargetCharacter(ACLBaseCharacter* NewTarget);
+
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UProjectileMovementComponent* GetMovementComponent() { return MovementComponent; }
@@ -48,9 +50,15 @@ public:
 
 	void ActiveDestroyEvent();
 
+
+private:
+	void FindNextNearestTarget();
+
+	void SetNiagaraEffect();
+
 public:
 	//추적할 타겟 캐릭터 여부
-	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Target")	
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Target")	
 	TWeakObjectPtr<ACLBaseCharacter> TargetCharacter;
 
 	//타겟을 정확히 맞춰야만 터지는지 여부 (타겟이 있을때 한정)
@@ -96,9 +104,6 @@ public:
 	static FName SpriteComponentName;
 
 private:
-	void SetNiagaraEffect();
-
-private:
 	float BaseDamageFromWeapon;
 
 	UPROPERTY()
@@ -106,31 +111,27 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
-		
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	
 	UPROPERTY()
 	TObjectPtr<UProjectileMovementComponent> MovementComponent;
 		
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UPaperFlipbookComponent> Sprite;
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UPaperFlipbookComponent> Sprite;	
 
-	
-
-#if WITH_EDITORONLY_DATA
-	/** Component shown in the editor only to indicate character facing */
+#if WITH_EDITORONLY_DATA	
 	UPROPERTY()
 	TObjectPtr<UArrowComponent> ArrowComponent;
 #endif
 
 	//메인이펙트 크기
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
 	float MainEffectSize;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
 	float SubEffectSize;
 
 	//트레일 길이
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Visual|Settings", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
 	float TrailLength;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes", meta = (AllowPrivateAccess = "true"))

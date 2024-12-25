@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CLCommonUtilityFunction.h"
+#include "ProjectCloud/System/ActorStateManagerSubsystem.h"
 #include "ProjectCloud/Character/CLPlayerState.h"
 #include "ProjectCloud/Character/CLHeroCharacter.h"
 #include "ProjectCloud/Character/CLPlayerController.h"
@@ -24,4 +25,31 @@ ACLPlayerController* CLCommonUtilites::GetPlayerControllerFromActor(AActor* Acto
 		}
 	}
 	return CLPlayerController;
+}
+
+TArray<TObjectPtr<AActor>> CLCommonUtilites::GetSpawnedEnemies(UObject* WorldContext, bool bCheckValidation, bool bForceUpdate)
+{
+	if (!WorldContext)
+		return TArray<TObjectPtr<AActor>>();
+	
+	UWorld* World = GEngine->GetWorldFromContextObjectChecked(WorldContext);
+
+	if (World)
+	{
+		UActorStateManagerSubsystem* ASMSubSystem =	World->GetSubsystem<UActorStateManagerSubsystem>();
+
+		return ASMSubSystem->GetSpawnedEnemies(bCheckValidation, bForceUpdate);
+	}
+
+	return TArray<TObjectPtr<AActor>>();
+}
+
+TArray<TObjectPtr<AActor>> CLCommonUtilites::GetSpawnedProjectiles(UObject* WorldContext, bool bCheckValidation, bool bForceUpdate)
+{
+	return TArray<TObjectPtr<AActor>>();
+}
+
+TArray<TObjectPtr<AActor>> CLCommonUtilites::GetSpawnedItems(UObject* WorldContext, bool bCheckValidation, bool bForceUpdate)
+{
+	return TArray<TObjectPtr<AActor>>();
 }

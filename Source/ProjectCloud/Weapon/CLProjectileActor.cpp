@@ -1,22 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CLProjectileActor.h"
+#include "PaperFlipbookComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Sound/SoundCue.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "AbilitySystemGlobals.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectTypes.h"
-#include "PaperFlipbookComponent.h"
-#include "AbilitySystemGlobals.h"
 #include "ProjectCloud/Components/CLAbilitySystemComponent.h"
 #include "ProjectCloud/Character/CLBaseCharacter.h"
-#include "Sound/SoundCue.h"
-#include "Kismet/GameplayStatics.h"
 #include "Curves/CurveVector.h"
+#include "Kismet/GameplayStatics.h"
+#include "ProjectCloud/Utilites/CLCommonUtilityFunction.h"
 
 FName ACLProjectileActor::SpriteComponentName(TEXT("MainSprite"));
 // Sets default values
@@ -109,6 +110,11 @@ void ACLProjectileActor::BeginPlay()
 #endif // WITH_EDITORONLY_DATA
 		
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACLProjectileActor::ActiveDestroyEvent, MaximimLifetime, false);
+
+	if (ProjectileType == EProjectileType::Projectile_Chaser)
+	{
+		FindNextNearestTarget();
+	}
 }
 
 void ACLProjectileActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -146,8 +152,6 @@ void ACLProjectileActor::Tick(float DeltaTime)
 		if(NiagaraComponent)
 			NiagaraComponent->SetWorldLocation(GetActorLocation() + AdditionalVector);
 	}
-
-
 }
 
 void ACLProjectileActor::LaunchProjectile()
@@ -164,6 +168,45 @@ void ACLProjectileActor::LaunchProjectile()
 	bStartLaunch = true;
 }
 
+void ACLProjectileActor::SetTargetCharacter(ACLBaseCharacter* NewTarget)
+{
+	if (NewTarget)
+	{
+		NewTarget->OnOutOfHealth.AddUObject(this, &ThisClass::FindNextNearestTarget);
+	}
+
+	TargetCharacter = NewTarget;
+}
+
+
+void ACLProjectileActor::FindNextNearestTarget()
+{
+	if (TargetCharacter.IsValid())
+	{
+		TargetCharacter->OnOutOfHealth.RemoveAll(this);
+	}
+
+	TArray<AActor*> Enemies = CLCommonUtilites::GetSpawnedEnemies(GetWorld(), true);
+
+	AActor* Target = nullptr;
+	double MinLength = FLT_MAX;
+	for (AActor* Actor : Enemies)
+	{
+		if (Actor)
+		{
+			double TargetLength = (Actor->GetActorLocation() - GetActorLocation()).Length();
+			if (MinLength > TargetLength)
+			{
+				Target = Actor;
+				MinLength = TargetLength;
+			}
+		}
+	}
+
+	SetTargetCharacter(Cast<ACLBaseCharacter>(Target));
+
+}
+
 void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//Launch 전에는 충돌 처리 X
@@ -171,9 +214,19 @@ void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 	{
 		return;
 	}
-
+	
 	if ((OtherActor && (OtherActor != this) && OtherComp) && (GetOwner() && (GetOwner() != OtherActor)))
 	{
+
+		if (bIsPrecision)
+		{
+			//타겟이 정확해야지만 추적 가능한 경우
+			if ((TargetCharacter.IsValid()) && (OtherActor != TargetCharacter))
+			{
+				return;
+			}
+		}
+
 		ACLBaseCharacter* SourceOwner = Cast<ACLBaseCharacter>(GetOwner());
 
 		UCLAbilitySystemComponent* SourceASC = SourceOwner->GetAbilitySystemComponent();
@@ -215,6 +268,7 @@ void ACLProjectileActor::ActiveDestroyEvent()
 
 	Destroy();
 }
+
 
 void ACLProjectileActor::SetNiagaraEffect()
 {
