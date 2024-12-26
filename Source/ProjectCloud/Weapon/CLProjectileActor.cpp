@@ -142,28 +142,52 @@ void ACLProjectileActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
 
-	if (CurveData)
-	{		
-		AdditionalVector = CurveData.GetDefaultObject()->GetVectorValue(GetWorld()->GetTimeSeconds());
-	}
+	//틱에 들어가기엔 좀 무거운데
+	if (bStartLaunch && CurveData)
+	{	
+		double LaunchTime = (GetWorld()->GetTimeSeconds() - StartTime);
 
-	for (UNiagaraComponent* NiagaraComponent : NiagaraComponents)
+		AdditionalVector = Cast<UCurveVector>(CurveData)->GetVectorValue(LaunchTime);
+		if (ProjectileType == EProjectileType::Projectile_Chaser)
+		{
+			if (TargetCharacter.IsValid())
+			{
+				FVector TargetCharacterLocation = TargetCharacter->GetActorLocation();
+
+				double ToTargetRange = (TargetCharacterLocation - StartLocation).Size() + 1;
+				SetActorLocation(FMath::Lerp(StartLocation, TargetCharacterLocation, (LaunchSpeed * LaunchTime) / ToTargetRange));
+				SetActorRotation(UKismetMathLibrary::MakeRotFromX(TargetCharacterLocation - StartLocation));
+			}
+			UpdateNiagaraEffectTransform();
+
+		}
+		//이거 말고 다른 방법 없을까......... 계산된 최종 좌표는 유지한채 액터 위치만 바꾸고싶음
+		AddActorWorldOffset(AdditionalVector);
+	}
+	else
 	{
-		if(NiagaraComponent)
-			NiagaraComponent->SetWorldLocation(GetActorLocation() + AdditionalVector);
+		UpdateNiagaraEffectLotation();
 	}
 }
 
+//근데 유도탄 쐈을때 적이 사라지면 이동은 어케됨? 꺾나 아님 원래위치로 떨어져서 박나
 void ACLProjectileActor::LaunchProjectile()
 {
 	SetNiagaraEffect();
-	LaunchVector = FVector(GetActorForwardVector().X, -GetActorForwardVector().Y, GetActorForwardVector().Z);
-	MovementComponent->Velocity = LaunchVector * LaunchSpeed;
+	StartLocation = GetActorLocation();	
+
+	if ((ProjectileType != EProjectileType::Projectile_Chaser) || !TargetCharacter.IsValid())
+	{
+		LaunchVector = FVector(GetActorForwardVector().X, -GetActorForwardVector().Y, GetActorForwardVector().Z);
+		MovementComponent->Velocity = LaunchVector * LaunchSpeed;
+	}
 
 	if (LaunchSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
 	}
+
+	StartTime = GetWorld()->GetTimeSeconds();
 
 	bStartLaunch = true;
 }
@@ -171,11 +195,15 @@ void ACLProjectileActor::LaunchProjectile()
 void ACLProjectileActor::SetTargetCharacter(ACLBaseCharacter* NewTarget)
 {
 	if (NewTarget)
-	{
+	{		
 		NewTarget->OnOutOfHealth.AddUObject(this, &ThisClass::FindNextNearestTarget);
 	}
 
 	TargetCharacter = NewTarget;
+	
+	//추적시간 업데이트 필요
+	StartLocation = GetActorLocation();
+	StartTime = GetWorld()->GetTimeSeconds();
 }
 
 
@@ -192,7 +220,7 @@ void ACLProjectileActor::FindNextNearestTarget()
 	double MinLength = FLT_MAX;
 	for (AActor* Actor : Enemies)
 	{
-		if (Actor)
+		if (Actor && Actor != TargetCharacter && !Actor->IsActorBeingDestroyed())
 		{
 			double TargetLength = (Actor->GetActorLocation() - GetActorLocation()).Length();
 			if (MinLength > TargetLength)
@@ -200,11 +228,10 @@ void ACLProjectileActor::FindNextNearestTarget()
 				Target = Actor;
 				MinLength = TargetLength;
 			}
-		}
+		}		
 	}
 
 	SetTargetCharacter(Cast<ACLBaseCharacter>(Target));
-
 }
 
 void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -251,7 +278,7 @@ void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetActorLocation());
 		}
-
+		
 		if (bDestroyWhenHit)
 		{
 			ActiveDestroyEvent();
@@ -308,5 +335,28 @@ void ACLProjectileActor::SetNiagaraEffect()
 		NiagaraComponents[2]->SetFloatParameter("TrailLength", TrailLength);
 
 		NiagaraComponents[2]->Activate();
+	}
+}
+
+void ACLProjectileActor::UpdateNiagaraEffectLotation()
+{
+	for (UNiagaraComponent* NiagaraComponent : NiagaraComponents)
+	{
+		if (NiagaraComponent)
+		{
+			NiagaraComponent->SetWorldLocation(GetActorLocation());
+		}
+	}
+}
+
+void ACLProjectileActor::UpdateNiagaraEffectTransform()
+{
+	for (UNiagaraComponent* NiagaraComponent : NiagaraComponents)
+	{
+		if (NiagaraComponent)
+		{
+			NiagaraComponent->SetWorldLocation(GetActorLocation());	
+			NiagaraComponent->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()).Yaw);
+		}
 	}
 }

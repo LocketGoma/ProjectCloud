@@ -15,6 +15,7 @@ ACLBaseCharacter::ACLBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 	, ImmmuneTime(0.1f)
 	, bImmune(false)
+	, bIsAlive(true)
 {
 	SetCanBeDamaged(true);
 
@@ -101,6 +102,7 @@ void ACLBaseCharacter::HandleMaxHealthChanged(AActor* DamageInstigator, AActor* 
 
 void ACLBaseCharacter::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec* DamageEffectSpec, float DamageMagnitude, float OldValue, float NewValue)
 {
+	bIsAlive = false;
 	OnOutOfHealth.Broadcast();
 }
 
@@ -122,8 +124,7 @@ void ACLBaseCharacter::SetImmunity(bool NewImmunity)
 
 void ACLBaseCharacter::DeathEvent()
 {
-	//Do Something
-
+	//Do Something	
 	Destroy();
 }
 

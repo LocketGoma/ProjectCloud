@@ -56,6 +56,9 @@ private:
 
 	void SetNiagaraEffect();
 
+	void UpdateNiagaraEffectLotation();
+	void UpdateNiagaraEffectTransform();
+
 public:
 	//추적할 타겟 캐릭터 여부
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Target")	
@@ -67,10 +70,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Options")
 	EProjectileType ProjectileType;
+	
 
 	//상부 커브 하나 추가해서 커브를 통해서 위로 던졌다가 아래로 내려오게 하기
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Movement")
-	TSubclassOf<UCurveVector> CurveData;
+	TObjectPtr<UCurveBase> CurveData;	
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> GameplayEffect;
@@ -92,7 +96,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|SFX")
 	TObjectPtr<USoundBase> DestroySound;
-
 
 	//나아가는 방향
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attributes")
@@ -140,9 +143,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	float MaximimLifetime;
 
+private:
+
 	FTimerHandle DestroyTimerHandle;
 
+	//커브에서 뽑아낸 벡터
+	FVector StartLocation = FVector::ZeroVector;
+
 	FVector AdditionalVector = FVector::ZeroVector;
+
+	double StartTime = 0.f;
 
 	bool bStartLaunch;
 

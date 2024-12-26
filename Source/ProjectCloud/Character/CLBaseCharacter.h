@@ -63,6 +63,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsImmunity() { return bImmune; }
+
+	bool IsKilled() { return !bIsAlive; }
 		
 
 	UFUNCTION()
@@ -94,5 +96,8 @@ private:
 	float ImmmuneTime;
 
 	bool bImmune;
+
+	bool bIsAlive;
+
 	FTimerHandle ImmuneTimerHandle;
 };
