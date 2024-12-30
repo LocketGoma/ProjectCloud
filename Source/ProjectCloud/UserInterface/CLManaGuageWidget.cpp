@@ -1,6 +1,7 @@
 // Copyright @Locketgoma. All Rights Reserved.
 
 #include "CLManaGuageWidget.h"
+#include "CLManaGuageGroupWidget.h"
 #include "ProjectCloud/ProjectCloudLogChannels.h"
 
 UCLManaGuageWidget::UCLManaGuageWidget(const FObjectInitializer& ObjectInitializer)
@@ -32,11 +33,11 @@ float UCLManaGuageWidget::AddManaGuage(float AddManaAmount)
 	return FMath::Clamp(NowManaGuageAmount - MaximumManaGuage, 0.f, NowManaGuageAmount);
 }
 
-void UCLManaGuageWidget::UpdateGuageSize(float NewMaximumManaGuage, float NewGuageUISize)
+void UCLManaGuageWidget::UpdateGuageVisualSetting(FGuageVisualSetting NewSetting)
 {
-	MaximumManaGuage = NewMaximumManaGuage;
-
-	UpdateManaGuageUISize(NewGuageUISize);
+	MaximumManaGuage = NewSetting.MaximumGuage;
+	UpdateManaGuageUISize(NewSetting.GuageUILength);
+	UpdateManaGuageColor(NewSetting.UIColor);
 }
 
 const bool UCLManaGuageWidget::CanManaGuageCharging()

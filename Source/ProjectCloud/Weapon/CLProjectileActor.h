@@ -137,6 +137,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
 	float TrailLength;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
+	float RotationCorrection = 180.f;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes", meta = (AllowPrivateAccess = "true"))
 	bool bDestroyWhenHit;
 

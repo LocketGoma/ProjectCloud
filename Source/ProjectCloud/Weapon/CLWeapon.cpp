@@ -67,7 +67,7 @@ void ACLWeapon::ActiveEquipment()
 		SpawnParameter.Owner = GetOwner();
 
 		FRotator Rotation = GetRootComponent()->GetRelativeRotation();
-		ACLProjectileActor* ProjectileActor = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), Rotation, SpawnParameter);
+		ACLProjectileActor* ProjectileActor = GetWorld()->SpawnActor<ACLProjectileActor>(ProjectileClass, GetActorLocation(), -1 * Rotation, SpawnParameter);
 
 		if (!ensureAlways(ProjectileActor))
 		{

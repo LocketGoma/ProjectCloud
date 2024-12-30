@@ -155,19 +155,13 @@ void ACLProjectileActor::Tick(float DeltaTime)
 				FVector TargetCharacterLocation = TargetCharacter->GetActorLocation();
 
 				double ToTargetRange = (TargetCharacterLocation - StartLocation).Size() + 1;
-				SetActorLocation(FMath::Lerp(StartLocation, TargetCharacterLocation, (LaunchSpeed * LaunchTime) / ToTargetRange));
-				SetActorRotation(UKismetMathLibrary::MakeRotFromX(TargetCharacterLocation - StartLocation));
+				SetActorLocation(FMath::Lerp(StartLocation, TargetCharacterLocation, (LaunchSpeed * LaunchTime) / ToTargetRange));				
 			}
-			UpdateNiagaraEffectTransform();
-
 		}
 		//이거 말고 다른 방법 없을까......... 계산된 최종 좌표는 유지한채 액터 위치만 바꾸고싶음
 		AddActorWorldOffset(AdditionalVector);
-	}
-	else
-	{
-		UpdateNiagaraEffectLotation();
-	}
+	}	
+	UpdateNiagaraEffectLotation();	
 }
 
 //근데 유도탄 쐈을때 적이 사라지면 이동은 어케됨? 꺾나 아님 원래위치로 떨어져서 박나
@@ -178,7 +172,7 @@ void ACLProjectileActor::LaunchProjectile()
 
 	if ((ProjectileType != EProjectileType::Projectile_Chaser) || !TargetCharacter.IsValid())
 	{
-		LaunchVector = FVector(GetActorForwardVector().X, -GetActorForwardVector().Y, GetActorForwardVector().Z);
+		LaunchVector = FVector(GetActorForwardVector().X, GetActorForwardVector().Y, GetActorForwardVector().Z);
 		MovementComponent->Velocity = LaunchVector * LaunchSpeed;
 	}
 
@@ -310,7 +304,7 @@ void ACLProjectileActor::SetNiagaraEffect()
 		NiagaraComponents[0]->SetAsset(MainVFX);
 		NiagaraComponents[0]->SetWorldLocation(GetActorLocation());
 
-		NiagaraComponents[0]->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
+		NiagaraComponents[0]->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw + RotationCorrection);
 		NiagaraComponents[0]->SetFloatParameter("SpriteSize", MainEffectSize);
 		NiagaraComponents[0]->Activate();
 	}
@@ -320,7 +314,7 @@ void ACLProjectileActor::SetNiagaraEffect()
 		NiagaraComponents[1]->SetAsset(SubVFX);
 		NiagaraComponents[1]->SetWorldLocation(GetActorLocation());
 
-		NiagaraComponents[1]->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
+		NiagaraComponents[1]->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw + RotationCorrection);
 		NiagaraComponents[1]->SetFloatParameter("SpriteSize", SubEffectSize);
 		NiagaraComponents[1]->Activate();
 	}
@@ -330,7 +324,7 @@ void ACLProjectileActor::SetNiagaraEffect()
 		NiagaraComponents[2]->SetAsset(TrailVFX);
 		NiagaraComponents[2]->SetWorldLocation(GetActorLocation());
 
-		NiagaraComponents[2]->SetFloatParameter("SpriteRotation", -1 * UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw);
+		NiagaraComponents[2]->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw + RotationCorrection);
 		NiagaraComponents[2]->SetFloatParameter("SpriteSize", SubEffectSize);
 		NiagaraComponents[2]->SetFloatParameter("TrailLength", TrailLength);
 
@@ -356,7 +350,7 @@ void ACLProjectileActor::UpdateNiagaraEffectTransform()
 		if (NiagaraComponent)
 		{
 			NiagaraComponent->SetWorldLocation(GetActorLocation());	
-			NiagaraComponent->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()).Yaw);
+			NiagaraComponent->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()).Yaw);			
 		}
 	}
 }

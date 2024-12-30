@@ -12,7 +12,7 @@
 #include "CLManaGuageGroupWidget.generated.h"
 
 USTRUCT(BlueprintType)
-struct FGuageScale
+struct FGuageVisualSetting
 {
 	GENERATED_BODY()
 
@@ -23,6 +23,9 @@ struct FGuageScale
 	//게이지 UI 길이
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (UiMin = "0", UiMax = "200", ClampMin = "0", ClampMax = "200"))
 	float GuageUILength = 40;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FLinearColor UIColor;
 };
 
 class UCLManaGuageWidget;
@@ -50,7 +53,7 @@ public:
 private:
 	//TTuple은 UProperty 안됨...
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TArray<FGuageScale> GuageScale;	
+	TArray<FGuageVisualSetting> GuageVisualSettings;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCLManaGuageWidget> WidgetBoxClass;

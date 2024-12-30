@@ -33,7 +33,7 @@ public:
 	float AddManaGuage(float AddManaAmount);
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateGuageSize(float NewMaximumManaGuage, float NewGuageUISize);
+	void UpdateGuageVisualSetting(FGuageVisualSetting NewSetting);
 
 	//마나게이지 충전이 가능한지 여부 (가득 찼으면 X)
 	UFUNCTION(BlueprintPure, BlueprintCallable)
@@ -46,6 +46,10 @@ public:
 	//이건 차오른 마나 게이지 퍼센트를 반영시켜주는 애고
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateManaGuageUI(float Percentage);
+
+	//얘는 컬러바꿔주는애
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateManaGuageColor (FLinearColor NewColor);
 
 private:
 	//이건 마나 게이지 차오르는 정도 계산해주는 함수고...
