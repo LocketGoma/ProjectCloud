@@ -17,6 +17,18 @@ class UArrowComponent;
 class ACLBaseCharacter;
 class UProjectileMovementComponent;
 
+USTRUCT(BlueprintType)
+struct FNiagaraSettingStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UNiagaraSystem> NiagaraSystem;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (UiMin = "0", UiMax = "1000", ClampMin = "0", ClampMax = "1000"))
+	float EffectScale;
+};
+
 UCLASS(BlueprintType)
 class PROJECTCLOUD_API ACLProjectileActor : public AActor
 {
@@ -69,8 +81,7 @@ public:
 	bool bIsPrecision;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Options")
-	EProjectileType ProjectileType;
-	
+	EProjectileType ProjectileType;	
 
 	//상부 커브 하나 추가해서 커브를 통해서 위로 던졌다가 아래로 내려오게 하기
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes|Movement")
@@ -80,13 +91,16 @@ public:
 	TSubclassOf<UGameplayEffect> GameplayEffect;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|VFX")
-	TObjectPtr<UNiagaraSystem> MainVFX;
+	FNiagaraSettingStruct MainVFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|VFX")
-	TObjectPtr<UNiagaraSystem> SubVFX;
+	FNiagaraSettingStruct SubVFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|VFX")
-	TObjectPtr<UNiagaraSystem> TrailVFX;
+	FNiagaraSettingStruct TrailVFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|VFX")
+	FNiagaraSettingStruct ExplosionVFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes|Effect|SFX")
 	TObjectPtr<USoundBase> LaunchSound;
@@ -109,7 +123,7 @@ public:
 private:
 	float BaseDamageFromWeapon;
 
-	UPROPERTY()
+	UPROPERTY(VisibleDefaultsOnly)
 	TArray<TObjectPtr<UNiagaraComponent>> NiagaraComponents;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -125,13 +139,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UArrowComponent> ArrowComponent;
 #endif
-
-	//메인이펙트 크기
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
-	float MainEffectSize;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))
-	float SubEffectSize;
 
 	//트레일 길이
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attributes|Effect", meta = (AllowPrivateAccess = "true"))

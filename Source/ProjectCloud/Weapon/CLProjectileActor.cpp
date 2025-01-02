@@ -27,7 +27,12 @@ ACLProjectileActor::ACLProjectileActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));	
-	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
+	CapsuleComponent->InitCapsuleSize(16.0f, 8.f);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	RootComponent = CapsuleComponent;
 
 	NiagaraComponents.Add(CreateDefaultSubobject<UNiagaraComponent>(TEXT("MainNiagaraComponent")));
 	NiagaraComponents.Add(CreateDefaultSubobject<UNiagaraComponent>(TEXT("SubNiagaraComponent")));
@@ -36,12 +41,7 @@ ACLProjectileActor::ACLProjectileActor()
 	NiagaraComponents[1]->SetupAttachment(RootComponent);
 	NiagaraComponents[2]->SetupAttachment(RootComponent);
 
-	CapsuleComponent->InitCapsuleSize(16.0f, 8.f);
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CapsuleComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	CapsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
-	RootComponent = CapsuleComponent;	
+	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 
 	if (MovementComponent)
 	{
@@ -87,8 +87,6 @@ ACLProjectileActor::ACLProjectileActor()
 	
 	//변수 초기화
 	BaseDamageFromWeapon = 1.f;
-	MainEffectSize = 100.f;	
-	SubEffectSize = 200.f;
 	MaximimLifetime = 30.f;
 	bDestroyWhenHit = true;
 	bStartLaunch = false;
@@ -143,11 +141,10 @@ void ACLProjectileActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);	
 
 	//틱에 들어가기엔 좀 무거운데
-	if (bStartLaunch && CurveData)
+	if (bStartLaunch)
 	{	
 		double LaunchTime = (GetWorld()->GetTimeSeconds() - StartTime);
 
-		AdditionalVector = Cast<UCurveVector>(CurveData)->GetVectorValue(LaunchTime);
 		if (ProjectileType == EProjectileType::Projectile_Chaser)
 		{
 			if (TargetCharacter.IsValid())
@@ -158,8 +155,13 @@ void ACLProjectileActor::Tick(float DeltaTime)
 				SetActorLocation(FMath::Lerp(StartLocation, TargetCharacterLocation, (LaunchSpeed * LaunchTime) / ToTargetRange));				
 			}
 		}
-		//이거 말고 다른 방법 없을까......... 계산된 최종 좌표는 유지한채 액터 위치만 바꾸고싶음
-		AddActorWorldOffset(AdditionalVector);
+
+		if (CurveData)
+		{
+			//이거 말고 다른 방법 없을까......... 계산된 최종 좌표는 유지한채 액터 위치만 바꾸고싶음
+			AdditionalVector = Cast<UCurveVector>(CurveData)->GetVectorValue(LaunchTime);
+			AddActorWorldOffset(AdditionalVector);
+		}
 	}	
 	UpdateNiagaraEffectLotation();	
 }
@@ -282,6 +284,11 @@ void ACLProjectileActor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 
 void ACLProjectileActor::ActiveDestroyEvent()
 {
+	if (ExplosionVFX.NiagaraSystem)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionVFX.NiagaraSystem, GetActorLocation());
+	}
+
 	if (DestroySound)
 	{		
 		UGameplayStatics::PlaySoundAtLocation(this, DestroySound, GetActorLocation());
@@ -290,42 +297,41 @@ void ACLProjectileActor::ActiveDestroyEvent()
 	Destroy();
 }
 
-
 void ACLProjectileActor::SetNiagaraEffect()
 {
-	if (!(MainVFX) && !(Sprite->GetFlipbook()))
+	if (!(MainVFX.NiagaraSystem) && !(Sprite->GetFlipbook()))
 	{
 		UE_LOG(LogTemp, Error, TEXT("ACLProjectileActor[ %s ] are Not Have MainVFX & Sprite. That Actor must have MainVFX or Sprite. Fix It."), *GetName());
 		return;
 	}
 
-	if (MainVFX)
+	if (MainVFX.NiagaraSystem)
 	{
-		NiagaraComponents[0]->SetAsset(MainVFX);
+		NiagaraComponents[0]->SetAsset(MainVFX.NiagaraSystem);
 		NiagaraComponents[0]->SetWorldLocation(GetActorLocation());
 
 		NiagaraComponents[0]->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw + RotationCorrection);
-		NiagaraComponents[0]->SetFloatParameter("SpriteSize", MainEffectSize);
+		NiagaraComponents[0]->SetFloatParameter("SpriteSize", MainVFX.EffectScale);
 		NiagaraComponents[0]->Activate();
 	}
 
-	if (SubVFX)
+	if (SubVFX.NiagaraSystem)
 	{
-		NiagaraComponents[1]->SetAsset(SubVFX);
+		NiagaraComponents[1]->SetAsset(SubVFX.NiagaraSystem);
 		NiagaraComponents[1]->SetWorldLocation(GetActorLocation());
 
 		NiagaraComponents[1]->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw + RotationCorrection);
-		NiagaraComponents[1]->SetFloatParameter("SpriteSize", SubEffectSize);
+		NiagaraComponents[1]->SetFloatParameter("SpriteSize", SubVFX.EffectScale);
 		NiagaraComponents[1]->Activate();
 	}
 
-	if (TrailVFX)	
+	if (TrailVFX.NiagaraSystem)
 	{
-		NiagaraComponents[2]->SetAsset(TrailVFX);
+		NiagaraComponents[2]->SetAsset(TrailVFX.NiagaraSystem);
 		NiagaraComponents[2]->SetWorldLocation(GetActorLocation());
 
 		NiagaraComponents[2]->SetFloatParameter("SpriteRotation", UKismetMathLibrary::MakeRotFromX(GetActorRightVector()).Yaw + RotationCorrection);
-		NiagaraComponents[2]->SetFloatParameter("SpriteSize", SubEffectSize);
+		NiagaraComponents[2]->SetFloatParameter("SpriteSize", TrailVFX.EffectScale);
 		NiagaraComponents[2]->SetFloatParameter("TrailLength", TrailLength);
 
 		NiagaraComponents[2]->Activate();
